@@ -1476,6 +1476,9 @@
             if (!data) {
                 let rawData = appData[menu] || [];
                 data = rawData.filter(isValidRow);
+            } else {
+                let rawData = appData[menu] || [];
+                data = rawData.filter(isValidRow);
             }
 
             let total = data.length;
@@ -1719,7 +1722,17 @@
                 options: { 
                     cutout: '68%', 
                     plugins: { 
-                        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { family: 'Prompt', size: 11 } } }
+                        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { family: 'Prompt', size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = Number(context.raw) || 0;
+                                    const totalVal = context.dataset.data.reduce((a, b) => a + (Number(b) || 0), 0);
+                                    const pct = totalVal > 0 ? ((val / totalVal) * 100).toFixed(1) : '0.0';
+                                    return ` ${context.label}: ${val.toLocaleString()} รายการ (${pct}%)`;
+                                }
+                            }
+                        }
                     },
                     onHover: (event, chartElement) => {
                         if (event.native && event.native.target) {
@@ -1761,6 +1774,25 @@
                     responsive: true, 
                     maintainAspectRatio: false, 
                     scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = Number(context.raw) || 0;
+                                    const i = context.dataIndex;
+                                    let colTotal = 0;
+                                    let grandTotal = 0;
+                                    context.chart.data.datasets.forEach(ds => {
+                                        colTotal += (Number(ds.data[i]) || 0);
+                                        ds.data.forEach(v => grandTotal += (Number(v) || 0));
+                                    });
+                                    const colPct = colTotal > 0 ? ((val / colTotal) * 100).toFixed(1) : '0.0';
+                                    const grandPct = grandTotal > 0 ? ((val / grandTotal) * 100).toFixed(1) : '0.0';
+                                    return ` ${context.dataset.label}: ${val.toLocaleString()} รายการ (${colPct}% ของระดับนี้, ${grandPct}% ของทั้งหมด)`;
+                                }
+                            }
+                        }
+                    },
                     onHover: (event, chartElement) => {
                         if (event.native && event.native.target) {
                             event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
@@ -1799,6 +1831,25 @@
                     responsive: true, 
                     maintainAspectRatio: false, 
                     scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = Number(context.raw) || 0;
+                                    const i = context.dataIndex;
+                                    let colTotal = 0;
+                                    let grandTotal = 0;
+                                    context.chart.data.datasets.forEach(ds => {
+                                        colTotal += (Number(ds.data[i]) || 0);
+                                        ds.data.forEach(v => grandTotal += (Number(v) || 0));
+                                    });
+                                    const colPct = colTotal > 0 ? ((val / colTotal) * 100).toFixed(1) : '0.0';
+                                    const grandPct = grandTotal > 0 ? ((val / grandTotal) * 100).toFixed(1) : '0.0';
+                                    return ` ${context.dataset.label}: ${val.toLocaleString()} รายการ (${colPct}% ของปีนี้, ${grandPct}% ของทั้งหมด)`;
+                                }
+                            }
+                        }
+                    },
                     onHover: (event, chartElement) => {
                         if (event.native && event.native.target) {
                             event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
@@ -1843,6 +1894,25 @@
                     responsive: true, 
                     maintainAspectRatio: false, 
                     layout: { padding: { right: 50 } },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = Number(context.raw) || 0;
+                                    const i = context.dataIndex;
+                                    let rowTotal = 0;
+                                    let grandTotal = 0;
+                                    context.chart.data.datasets.forEach(ds => {
+                                        rowTotal += (Number(ds.data[i]) || 0);
+                                        ds.data.forEach(v => grandTotal += (Number(v) || 0));
+                                    });
+                                    const rowPct = rowTotal > 0 ? ((val / rowTotal) * 100).toFixed(1) : '0.0';
+                                    const grandPct = grandTotal > 0 ? ((val / grandTotal) * 100).toFixed(1) : '0.0';
+                                    return ` ${context.dataset.label}: ${val.toLocaleString()} รายการ (${rowPct}% ของคนนี้, ${grandPct}% ของทั้งหมด)`;
+                                }
+                            }
+                        }
+                    },
                     onHover: (event, chartElement) => {
                         if (event.native && event.native.target) {
                             event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
@@ -1888,6 +1958,18 @@
                     responsive: true, 
                     maintainAspectRatio: false, 
                     layout: { padding: { right: 45 } },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = Number(context.raw) || 0;
+                                    const grandTotal = context.dataset.data.reduce((a, b) => a + (Number(b) || 0), 0);
+                                    const pct = grandTotal > 0 ? ((val / grandTotal) * 100).toFixed(1) : '0.0';
+                                    return ` จำนวนรายการ: ${val.toLocaleString()} รายการ (${pct}%)`;
+                                }
+                            }
+                        }
+                    },
                     onHover: (event, chartElement) => {
                         if (event.native && event.native.target) {
                             event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
@@ -2252,6 +2334,7 @@
 
             document.getElementById('loginAlert').style.display = 'none';
 
+            // ตรวจสอบความยาวอย่างน้อย 6 ตัวอักษร
             if (user.length < 6 || pass.length < 6) {
                 return Swal.fire({
                     icon: 'error',
@@ -2260,6 +2343,7 @@
                 });
             }
 
+            // ตรวจสอบความถูกต้องแบบ Strict Case-Sensitive (ตรงตามพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข และอักขระพิเศษ)
             const foundUser = appData['Users'].find(u => 
                 String(u.Username || u['ชื่อผู้ใช้'] || '').trim() === user && 
                 String(u.Password || u['รหัสผ่าน'] || '').trim() === pass && 
