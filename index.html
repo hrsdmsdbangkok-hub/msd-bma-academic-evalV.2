@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบติดตามการประเมินผลงานทางวิชาการ (Ver.2) - BMA</title>
+    <title>ระบบติดตามการประเมินผลงานทางวิชาการ (Ver.2) - MSD BMA</title>
     
     <!-- CSS Libraries -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -62,17 +62,25 @@
             background: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
         }
-        .sidebar-brand img {
-            width: 65px;
-            height: 65px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid rgba(52, 211, 153, 0.4);
+        .sidebar-brand .brand-logo-badge {
+            width: auto;
+            min-width: 75px;
+            padding: 0 12px;
+            height: 48px;
+            margin: 0 auto 10px;
+            border-radius: 12px;
+            background: #059669;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(52, 211, 153, 0.4);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            margin-bottom: 10px;
             transition: transform 0.3s ease;
         }
-        .sidebar-brand img:hover { transform: scale(1.05); }
+        .sidebar-brand .brand-logo-badge:hover { transform: scale(1.05); }
         .sidebar .nav-item { margin: 4px 14px; }
         .sidebar .nav-link { 
             color: #99f6e4; 
@@ -314,8 +322,8 @@
         .print-modal { font-family: 'Prompt', 'Sarabun', sans-serif !important; padding: 16px 20px; background: #ffffff; color: #1e293b; }
         .report-header { text-align: center; position: relative; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 2px solid #059669; }
         .report-logo-badge {
-            display: inline-flex; align-items: center; justify-content: center; min-width: 42px; width: auto; padding: 0 10px; height: 42px;
-            background: #059669; color: white; font-weight: 800; font-size: 0.95rem; border-radius: 8px; margin-bottom: 4px;
+            display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 80px; padding: 0 12px; height: 38px;
+            background: #059669; color: white; font-weight: 800; font-size: 0.9rem; border-radius: 8px; margin-bottom: 4px;
             box-shadow: 0 4px 10px rgba(5,150,105,0.3);
         }
         .report-title { font-weight: 800; font-size: 1.25rem; color: #064e3b; margin-bottom: 1px; letter-spacing: -0.3px; }
@@ -368,7 +376,7 @@
             .modal-footer, .btn-close { display: none !important; }
             .print-modal { padding: 0 !important; margin: 0 !important; background: #ffffff !important; }
             .report-header { padding-bottom: 4px !important; margin-bottom: 6px !important; border-bottom: 2px solid #059669 !important; }
-            .report-logo-badge { min-width: 36px !important; width: auto !important; padding: 0 8px !important; height: 36px !important; font-size: 0.85rem !important; margin-bottom: 2px !important; }
+            .report-logo-badge { height: 32px !important; font-size: 0.85rem !important; margin-bottom: 2px !important; }
             .report-title { font-size: 1.15rem !important; margin-bottom: 0 !important; }
             .report-subtitle { font-size: 0.88rem !important; margin-bottom: 4px !important; }
             .report-level-pill { padding: 1px 14px !important; font-size: 0.78rem !important; }
@@ -386,10 +394,9 @@
 </head>
 <body>
 
-    <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-brand">
-            <img src="https://placehold.co/150x150/064e3b/34d399?text=MSD+BMA" alt="โลโก้สำนักการแพทย์" onerror="this.src='https://placehold.co/150x150/064e3b/ffffff?text=MSD+BMA'">
+            <div class="brand-logo-badge">MSD BMA</div>
             <div style="letter-spacing: 0.5px; font-weight: 700; font-size: 1rem;">ระบบติดตามการประเมินผลงานทางวิชาการ <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;">Ver.2</span></div>
             <div class="mt-1 text-info" style="font-size: 0.78rem; font-weight: 500; opacity: 0.85;">สำนักการแพทย์ กรุงเทพมหานคร</div>
         </div>
@@ -539,6 +546,7 @@
                 </div>
             </div>
 
+            <!-- KPI Cards Row -->
             <div class="row g-4 mb-4">
                 <div class="col-xl-3 col-md-6">
                     <div class="kpi-card" id="kpiCardTotal" onclick="filterByKpi('all')" style="border-bottom: 4px solid #3b82f6;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
@@ -570,6 +578,7 @@
                 </div>
             </div>
 
+            <!-- Charts Row 1 -->
             <div class="row g-4 mb-4">
                 <div class="col-lg-8">
                     <div class="chart-container">
@@ -589,7 +598,16 @@
                 </div>
             </div>
 
+            <!-- Charts Row 2: Top 10 Positions & Year Comparison -->
             <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title"><i class="fas fa-list-ol"></i> 10 อันดับแรกของตำแหน่งที่ส่งเล่มประเมินผลงานสูงที่สุด <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบเพื่อกรอง</span></div>
+                        </div>
+                        <div id="topPositionsChartWrapper" style="position: relative; min-height: 300px;"><canvas id="topPositionsChart"></canvas></div>
+                    </div>
+                </div>
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
@@ -598,6 +616,10 @@
                         <div style="height: 300px; position: relative;"><canvas id="yearChart"></canvas></div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Charts Row 3: Staff & Hospital Workload -->
+            <div class="row g-4 mb-4">
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
@@ -606,27 +628,12 @@
                         <div id="staffChartWrapper" style="position: relative; min-height: 320px;"><canvas id="staffChart"></canvas></div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Top 10 Positions Chart Row -->
-            <div class="row g-4 mb-4">
-                <div class="col-12">
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-award"></i> 10 อันดับแรกของตำแหน่งที่ส่งเล่มประเมินผลงานสูงที่สุด <span class="badge bg-info-subtle text-info border border-info-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกแถบเพื่อกรองข้อมูล</span></div>
-                        </div>
-                        <div id="topPositionsChartWrapper" style="position: relative; min-height: 320px;"><canvas id="topPositionsChart"></canvas></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row g-4">
-                <div class="col-12">
+                <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
                             <div class="chart-title"><i class="fas fa-hospital"></i> จำนวนรายการประเมินแยกตามส่วนราชการ / โรงพยาบาล <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกแถบเพื่อกรองข้อมูล</span></div>
                         </div>
-                        <div id="hospitalChartWrapper" style="position: relative; min-height: 340px;"><canvas id="hospitalChart"></canvas></div>
+                        <div id="hospitalChartWrapper" style="position: relative; min-height: 320px;"><canvas id="hospitalChart"></canvas></div>
                     </div>
                 </div>
             </div>
@@ -737,7 +744,7 @@
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content" style="border-radius: 24px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
                 <div class="modal-header bg-white text-center d-block border-0 pt-4 pb-2">
-                    <img src="https://placehold.co/100x100/059669/ffffff?text=MSD+BMA" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid #059669; box-shadow: 0 4px 10px rgba(5,150,105,0.2);">
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background: #059669; color: white; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 2px solid #059669; box-shadow: 0 4px 10px rgba(5,150,105,0.2);">MSD BMA</div>
                     <h5 class="modal-title fw-bold text-dark" style="font-size: 1.25rem;">STAFF LOGIN</h5>
                     <p class="text-muted small mb-0">เข้าสู่ระบบติดตามการประเมินผลงาน</p>
                 </div>
@@ -809,8 +816,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyxNQMZAhd5kjeFemkAV9tiQjpwi0VahOR4yXUjtnSFjcS7LKMroKdKsuVsh53IhIJcg/exec";
-        const LOCAL_CACHE_KEY = 'bma_academic_data_cache_v3';
+        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9nxxWst57iAdA0-2nLS7G8IPUgM8v60586NGjydvUUvHRvmR5ne8NTn48CqRlxeb7ww/exec";
+        const LOCAL_CACHE_KEY = 'bma_academic_data_cache_v4';
 
         let appData = {};
         let currentMenu = 'dashboard';
@@ -820,6 +827,8 @@
         let autoRefreshTimer = null;
         let isFetching = false;
         let isDemoMode = false;
+        let lastMutationTime = 0;
+        let editingRowData = null;
 
         let activeKpiFilter = 'all';
         let activeSubKpiFilter = 'all';
@@ -831,12 +840,62 @@
             Level: ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ']
         };
 
+        let formDropdownStores = {};
+
         const baseColors = {
             greenStart: '#047857', greenEnd: '#34d399',
             amberStart: '#d97706', amberEnd: '#fcd34d',
             roseStart: '#e11d48', roseEnd: '#fb7185',
             palette: ['#0d9488', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#10b981', '#f43f5e', '#06b6d4', '#84cc16', '#6366f1']
         };
+
+        function syncToGoogleSheets(action, sheetName, data, isNew = false) {
+            lastMutationTime = Date.now();
+            
+            let rowId = '';
+            if (data && typeof data === 'object') {
+                let firstKey = Object.keys(data)[0];
+                if (firstKey) rowId = String(data[firstKey] || '');
+            }
+
+            let syncUrl = GOOGLE_APPS_SCRIPT_URL;
+            try {
+                let urlObj = new URL(GOOGLE_APPS_SCRIPT_URL);
+                urlObj.searchParams.set('action', action);
+                urlObj.searchParams.set('sheetName', sheetName);
+                urlObj.searchParams.set('sheet', sheetName);
+                urlObj.searchParams.set('isNew', String(isNew));
+                if (rowId) urlObj.searchParams.set('id', rowId);
+                syncUrl = urlObj.toString();
+            } catch(e) {
+                let sep = GOOGLE_APPS_SCRIPT_URL.includes('?') ? '&' : '?';
+                syncUrl = `${GOOGLE_APPS_SCRIPT_URL}${sep}action=${encodeURIComponent(action)}&sheetName=${encodeURIComponent(sheetName)}&sheet=${encodeURIComponent(sheetName)}&isNew=${isNew}`;
+            }
+
+            let bodyObj = {
+                action: action,
+                type: action,
+                operation: action,
+                method: action,
+                sheetName: sheetName,
+                sheet: sheetName,
+                tab: sheetName,
+                sheet_name: sheetName,
+                data: data,
+                rowData: data,
+                row: data,
+                payload: data,
+                isNew: !!isNew,
+                id: rowId
+            };
+
+            return fetch(syncUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(bodyObj)
+            }).catch(err => console.warn('Background sync failed:', err));
+        }
 
         function createGradientV(ctx, chartArea, colorStart, colorEnd) {
             if (!ctx || !chartArea) return colorStart;
@@ -1156,36 +1215,30 @@
                 return rowObj;
             };
 
-            // Total = 1,203 (Pass: 826, Wait: 253, Fail: 124)
-            // 1. ชำนาญการ = 202 (Pass: 126, Wait: 60, Fail: 16)
             let chamnangkanList = [];
             for (let i = 1; i <= 202; i++) {
                 let st = (i <= 126) ? "ผ่านการประเมิน" : (i <= 186 ? "อยู่ระหว่างดำเนินการ" : "ไม่ผ่านการประเมิน");
                 chamnangkanList.push(makeRow(i, `สพบ.${100+i}`, "นาย", `เจ้าหน้าที่${i}`, `ทดสอบ${i}`, "นักวิชาการสาธารณสุขปฏิบัติการ", "นักวิชาการสาธารณสุขชำนาญการ", i % 2 === 0 ? "โรงพยาบาลตากสิน" : "โรงพยาบาลกลาง", "ดวงชนก", st, 2024));
             }
 
-            // 2. ชำนาญการ (พยาบาลวิชาชีพ) = 550 (Pass: 425, Wait: 100, Fail: 25)
             let nurseList = [];
             for (let i = 1; i <= 550; i++) {
                 let st = (i <= 425) ? "ผ่านการประเมิน" : (i <= 525 ? "อยู่ระหว่างดำเนินการ" : "ยกเลิกการประเมิน");
                 nurseList.push(makeRow(i, `รพต.${300+i}`, "นางสาว", `พยาบาล${i}`, `เคส${i}`, "พยาบาลวิชาชีพปฏิบัติการ", "พยาบาลวิชาชีพชำนาญการ", i % 3 === 0 ? "โรงพยาบาลสิรินธร" : "โรงพยาบาลตากสิน", "ดวงชนก", st, 2024));
             }
 
-            // 3. ชำนาญการพิเศษ = 399 (Pass: 245, Wait: 78, Fail: 76)
             let specialList = [];
             for (let i = 1; i <= 399; i++) {
                 let st = (i <= 245) ? "ผ่านการประเมิน" : (i <= 323 ? "อยู่ระหว่างดำเนินการ" : "ไม่ผ่านการประเมิน");
                 specialList.push(makeRow(i, `รพต.${100+i}`, "นายแพทย์", `หมอ${i}`, `เจริญยิ่ง${i}`, "นายแพทย์ชำนาญการ", "นายแพทย์ชำนาญการพิเศษ", i % 2 === 0 ? "โรงพยาบาลกลาง" : "โรงพยาบาลตากสิน", "จุฑานันท์", st, 2023));
             }
 
-            // 4. เชี่ยวชาญ = 47 (Pass: 28, Wait: 13, Fail: 6)
             let expertList = [];
             for (let i = 1; i <= 47; i++) {
                 let st = (i <= 28) ? "ผ่านการประเมิน" : (i <= 41 ? "อยู่ระหว่างดำเนินการ" : "ถอนเรื่อง");
                 expertList.push(makeRow(i, `สนพ.${100+i}`, "นายแพทย์", `เชี่ยวชาญ${i}`, `เลิศวรวัฒน์${i}`, "นายแพทย์ชำนาญการพิเศษ", "นายแพทย์เชี่ยวชาญ", "โรงพยาบาลกลาง", "ศรัญญู", st, 2024, true));
             }
 
-            // 5. ทรงคุณวุฒิ = 5 (Pass: 2, Wait: 2, Fail: 1)
             let seniorList = [];
             for (let i = 1; i <= 5; i++) {
                 let st = (i <= 2) ? "ผ่านการประเมิน" : (i <= 4 ? "อยู่ระหว่างดำเนินการ" : "ไม่ผ่านการประเมิน");
@@ -1203,6 +1256,8 @@
         }
 
         async function fetchData(isSilent = false) {
+            if (Date.now() - lastMutationTime < 25000) return;
+
             if (!isSilent && Object.keys(appData).length === 0) {
                 try {
                     const cachedStr = localStorage.getItem(LOCAL_CACHE_KEY);
@@ -1220,6 +1275,8 @@
             if (isFetching) return;
             isFetching = true;
 
+            const requestStartTime = Date.now();
+
             const lastSync = document.getElementById('lastSyncTime');
             if (!isSilent && lastSync && Object.keys(appData).length === 0) {
                 lastSync.innerText = 'กำลังโหลด...';
@@ -1232,6 +1289,10 @@
                 }
                 const result = await response.json();
                 
+                if (requestStartTime < lastMutationTime) {
+                    return;
+                }
+
                 if (result && result.data) {
                     appData = result.data;
                 } else if (result && typeof result === 'object') {
@@ -1269,7 +1330,6 @@
             startAutoRefresh();
         });
 
-        // Focus search input automatically when any dropdown menu is opened
         document.addEventListener('shown.bs.dropdown', function (event) {
             const dropdownMenu = event.target.nextElementSibling;
             if (dropdownMenu) {
@@ -1308,6 +1368,93 @@
             }
         }
 
+        function getFieldOptions(fieldName) {
+            let optionsSet = new Set();
+            let hasMasterSheet = false;
+            
+            // 1. Check sheet with exact or similar name
+            for (let sheetKey in appData) {
+                let normSheet = sheetKey.replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
+                let normField = fieldName.replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
+                if (normSheet === normField && Array.isArray(appData[sheetKey]) && appData[sheetKey].length > 0) {
+                    appData[sheetKey].forEach(row => {
+                        let v = getRowValue(row, fieldName) || getRowValue(row, 'ชื่อ') || getRowValue(row, 'รายการ') || getRowValue(row, 'ชื่อกลุ่มงาน') || getRowValue(row, 'ชื่อกลุ่มภารกิจ') || getRowValue(row, 'ชื่อสังกัด') || getRowValue(row, 'โรงพยาบาล') || Object.values(row)[0];
+                        if (v && String(v).trim() !== '' && String(v).trim() !== '-') {
+                            let cleanV = String(v).replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s*-\s*/g, '-').replace(/\s+/g, ' ').trim();
+                            if (cleanV) {
+                                optionsSet.add(cleanV);
+                                hasMasterSheet = true;
+                            }
+                        }
+                    });
+                }
+            }
+
+            // 2. Extract from evaluation level sheets ONLY if no master sheet found
+            if (!hasMasterSheet || optionsSet.size === 0) {
+                const levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
+                levels.forEach(lvl => {
+                    let rows = appData[lvl] || [];
+                    rows.forEach(row => {
+                        let v = getRowValue(row, fieldName);
+                        if (v && String(v).trim() !== '' && String(v).trim() !== '-') {
+                            let cleanV = String(v).replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s*-\s*/g, '-').replace(/\s+/g, ' ').trim();
+                            if (cleanV) optionsSet.add(cleanV);
+                        }
+                    });
+                });
+            }
+
+            return Array.from(optionsSet).sort((a, b) => a.localeCompare(b, 'th'));
+        }
+
+        function renderFormDropdownList(fieldId, query = '') {
+            const container = document.getElementById(`list_${fieldId}`);
+            if (!container) return;
+
+            const options = formDropdownStores[fieldId] || [];
+            const q = query.trim().toLowerCase();
+            const filtered = options.filter(opt => !q || opt.toLowerCase().includes(q));
+
+            let html = '';
+            if (filtered.length === 0) {
+                html += `<div class="text-muted small text-center py-2"><i class="fas fa-search me-1"></i> ไม่พบข้อมูล</div>`;
+            } else {
+                filtered.forEach(opt => {
+                    const safeVal = String(opt).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    html += `<a class="dropdown-item rounded-2 py-1 px-2 small text-truncate" style="cursor:pointer;" onclick="selectFormOption('${fieldId}', '${safeVal}')">${opt}</a>`;
+                });
+            }
+
+            html += `<div class="dropdown-divider my-1"></div>`;
+            html += `<a class="dropdown-item rounded-2 py-1 px-2 small text-truncate text-primary fw-bold" style="cursor:pointer;" onclick="selectFormOption('${fieldId}', '__OTHER__')"><i class="fas fa-pen me-1"></i> อื่นๆ (พิมพ์ระบุเอง)</a>`;
+
+            container.innerHTML = html;
+        }
+
+        function filterFormDropdownOptions(fieldId) {
+            const searchInput = document.getElementById(`search_${fieldId}`);
+            renderFormDropdownList(fieldId, searchInput ? searchInput.value : '');
+        }
+
+        function selectFormOption(fieldId, val) {
+            const inputEl = document.getElementById(`input_${fieldId}`);
+            if (!inputEl) return;
+
+            if (val === '__OTHER__') {
+                inputEl.value = '';
+                inputEl.focus();
+            } else {
+                inputEl.value = val;
+            }
+
+            const btnEl = inputEl.nextElementSibling;
+            if (btnEl) {
+                const bsDropdown = bootstrap.Dropdown.getInstance(btnEl);
+                if (bsDropdown) bsDropdown.hide();
+            }
+        }
+
         function populateFilterDropdowns() {
             const yearsSet = new Set();
             const hospSet = new Set();
@@ -1326,7 +1473,8 @@
 
                     const hosp = getRowValue(row, 'สังกัด');
                     if (hosp && hosp !== '-' && hosp.trim() !== '') {
-                        hospSet.add(hosp.trim());
+                        let cleanHosp = hosp.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s*-\s*/g, '-').replace(/\s+/g, ' ').trim();
+                        if (cleanHosp) hospSet.add(cleanHosp);
                     }
 
                     const rawPos = getRowValue(row, 'ตำแหน่งปัจจุบัน') || getRowValue(row, 'ตำแหน่งที่ขอประเมิน') || getRowValue(row, 'ตำแหน่ง');
@@ -1486,32 +1634,8 @@
             
             let data = filteredData;
             if (!data) {
-                let searchVal = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
                 let rawData = appData[menu] || [];
-                data = rawData.filter(row => {
-                    if (!isValidRow(row)) return false;
-                    if (!searchVal) return true;
-                    let seq = String(getRowValue(row, 'ลำดับ')).toLowerCase();
-                    let posNo = String(getRowValue(row, 'ตำแหน่งเลขที่')).toLowerCase();
-                    let prefix = String(getRowValue(row, 'คำนำหน้า') || getRowValue(row, 'คำนำหน้านาม')).toLowerCase();
-                    let fname = String(getRowValue(row, 'ชื่อ -') || getRowValue(row, 'ชื่อ-') || getRowValue(row, 'ชื่อ')).toLowerCase();
-                    let lname = String(getRowValue(row, 'สกุล') || getRowValue(row, 'นามสกุล')).toLowerCase();
-                    let fullName = `${prefix}${fname} ${lname}`.trim().toLowerCase();
-                    let curPos = String(getRowValue(row, 'ตำแหน่งปัจจุบัน')).toLowerCase();
-                    let reqPos = String(getRowValue(row, 'ตำแหน่งที่ขอประเมิน')).toLowerCase();
-                    let hosp = String(getRowValue(row, 'สังกัด')).toLowerCase();
-                    let staff1 = String(getRowValue(row, 'เจ้าหน้าที่ 1')).toLowerCase();
-                    let staff2 = String(getRowValue(row, 'เจ้าหน้าที่ 2')).toLowerCase();
-
-                    return seq.includes(searchVal) ||
-                           posNo.includes(searchVal) ||
-                           fullName.includes(searchVal) ||
-                           curPos.includes(searchVal) ||
-                           reqPos.includes(searchVal) ||
-                           hosp.includes(searchVal) ||
-                           staff1.includes(searchVal) ||
-                           staff2.includes(searchVal);
-                });
+                data = rawData.filter(isValidRow);
             }
 
             let total = data.length;
@@ -1605,10 +1729,10 @@
             let levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
             let levelCounts = [0,0,0,0,0];
             let hospCounts = {};
-            let positionCounts = {};
             let staffBreakdown = {};
             let statusByLevel = {};
             let yearBreakdown = {};
+            let positionCounts = {};
 
             levels.forEach(l => statusByLevel[l] = { pass: 0, wait: 0, fail: 0 });
 
@@ -1707,9 +1831,11 @@
                     let hosp = getRowValue(row, 'สังกัด') || 'ไม่ระบุโรงพยาบาล';
                     if(hosp && hosp !== '-') hospCounts[hosp] = (hospCounts[hosp] || 0) + 1;
 
-                    let rawPos = getRowValue(row, 'ตำแหน่งปัจจุบัน') || getRowValue(row, 'ตำแหน่งที่ขอประเมิน') || getRowValue(row, 'ตำแหน่ง');
-                    let basePos = extractBasePosition(rawPos);
-                    if(basePos && basePos !== '-') positionCounts[basePos] = (positionCounts[basePos] || 0) + 1;
+                    let rawPosVal = getRowValue(row, 'ตำแหน่งปัจจุบัน') || getRowValue(row, 'ตำแหน่งที่ขอประเมิน') || getRowValue(row, 'ตำแหน่ง');
+                    let cleanPosVal = extractBasePosition(rawPosVal);
+                    if (cleanPosVal && cleanPosVal !== '-') {
+                        positionCounts[cleanPosVal] = (positionCounts[cleanPosVal] || 0) + 1;
+                    }
 
                     let dateStr = getRowValue(row, 'วันที่ส่งเล่ม 1');
                     let yVal = extractYearBE(dateStr);
@@ -1735,6 +1861,7 @@
 
             ['level', 'hosp', 'stacked', 'staff', 'year', 'topPos'].forEach(c => { if(charts[c]) charts[c].destroy(); });
 
+            // 1. Level Chart (Doughnut)
             charts.level = new Chart(document.getElementById('levelChart'), { 
                 type: 'doughnut', 
                 data: { 
@@ -1795,6 +1922,7 @@
                 }
             });
 
+            // 2. Stacked Status Chart
             let stackPass = levels.map(l => statusByLevel[l].pass);
             let stackWait = levels.map(l => statusByLevel[l].wait);
             let stackFail = levels.map(l => statusByLevel[l].fail);
@@ -1854,6 +1982,73 @@
                 }
             });
 
+            // 3. Top 10 Positions Chart
+            let sortedPositions = Object.keys(positionCounts).sort((a, b) => positionCounts[b] - positionCounts[a]).slice(0, 10);
+            let topPosWrapper = document.getElementById('topPositionsChartWrapper');
+            if (topPosWrapper) {
+                topPosWrapper.style.height = Math.max(300, sortedPositions.length * 28 + 50) + 'px';
+            }
+
+            charts.topPos = new Chart(document.getElementById('topPositionsChart'), {
+                type: 'bar',
+                data: {
+                    labels: sortedPositions,
+                    datasets: [{
+                        label: 'จำนวนรายการส่งเล่ม',
+                        data: sortedPositions.map(p => positionCounts[p]),
+                        backgroundColor: function(context) {
+                            const { ctx, chartArea } = context.chart;
+                            if (!chartArea) return '#059669';
+                            return createGradientH(ctx, chartArea, '#6ee7b7', '#064e3b');
+                        },
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { right: 40 } },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = Number(context.raw) || 0;
+                                    const grandTotal = total;
+                                    const pct = grandTotal > 0 ? ((val / grandTotal) * 100).toFixed(1) : '0.0';
+                                    return ` จำนวนรายการ: ${val.toLocaleString()} รายการ (${pct}%)`;
+                                }
+                            }
+                        }
+                    },
+                    onHover: (event, chartElement) => {
+                        if (event.native && event.native.target) {
+                            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements && elements.length > 0) {
+                            const index = elements[0].index;
+                            const clickedPos = sortedPositions[index];
+                            const posInput = document.getElementById('filterPosition');
+                            const posLabel = document.getElementById('labelPosition');
+                            if (posInput) {
+                                const newVal = (posInput.value === clickedPos) ? '' : clickedPos;
+                                posInput.value = newVal;
+                                if (posLabel) posLabel.innerText = newVal ? clickedPos : '-- ทุกตำแหน่ง --';
+                                renderSearchDropdownOptions('Position', '-- ทุกตำแหน่ง --');
+                                updateDashboard();
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, grace: '10%' },
+                        y: { ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } }
+                    }
+                }
+            });
+
+            // 4. Year Comparison Chart
             let sortedYears = Object.keys(yearBreakdown).sort();
             charts.year = new Chart(document.getElementById('yearChart'), {
                 type: 'bar',
@@ -1911,6 +2106,7 @@
                 }
             });
 
+            // 5. Staff Chart
             let sortedStaff = Object.keys(staffBreakdown).filter(s => staffBreakdown[s].total > 0).sort((a,b) => staffBreakdown[b].total - staffBreakdown[a].total);
             let staffWrapper = document.getElementById('staffChartWrapper');
             if (staffWrapper) {
@@ -1970,80 +2166,11 @@
                 }
             });
 
-            // Top 10 Positions Chart Rendering
-            let sortedPosKeys = Object.keys(positionCounts).sort((a,b) => positionCounts[b] - positionCounts[a]).slice(0, 10);
-            let topPosWrapper = document.getElementById('topPositionsChartWrapper');
-            if (topPosWrapper) {
-                topPosWrapper.style.height = Math.max(320, sortedPosKeys.length * 32 + 60) + 'px';
-            }
-
-            charts.topPos = new Chart(document.getElementById('topPositionsChart'), {
-                type: 'bar',
-                data: { 
-                    labels: sortedPosKeys, 
-                    datasets: [{ 
-                        label: 'จำนวนรายการ', 
-                        data: sortedPosKeys.map(p => positionCounts[p]), 
-                        backgroundColor: function(context) {
-                            const { ctx, chartArea } = context.chart;
-                            if (!chartArea) return '#059669';
-                            return createGradientH(ctx, chartArea, '#6ee7b7', '#064e3b');
-                        }, 
-                        borderRadius: 6 
-                    }] 
-                },
-                options: { 
-                    indexAxis: 'y', 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    layout: { padding: { right: 45 } },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const val = Number(context.raw) || 0;
-                                    const grandTotal = context.dataset.data.reduce((a, b) => a + (Number(b) || 0), 0);
-                                    const pct = grandTotal > 0 ? ((val / grandTotal) * 100).toFixed(1) : '0.0';
-                                    return ` จำนวนรายการ: ${val.toLocaleString()} รายการ (${pct}%)`;
-                                }
-                            }
-                        }
-                    },
-                    onHover: (event, chartElement) => {
-                        if (event.native && event.native.target) {
-                            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
-                        }
-                    },
-                    onClick: (event, elements) => {
-                        if (elements && elements.length > 0) {
-                            const index = elements[0].index;
-                            const clickedPos = sortedPosKeys[index];
-                            const posInput = document.getElementById('filterPosition');
-                            const posLabel = document.getElementById('labelPosition');
-                            if (posInput) {
-                                if (posInput.value === clickedPos) {
-                                    posInput.value = '';
-                                    if (posLabel) posLabel.innerText = '-- ทุกตำแหน่ง --';
-                                } else {
-                                    posInput.value = clickedPos;
-                                    if (posLabel) posLabel.innerText = clickedPos;
-                                }
-                                renderSearchDropdownOptions('Position', '-- ทุกตำแหน่ง --');
-                                updateDashboard();
-                            }
-                        }
-                    },
-                    scales: { 
-                        x: { beginAtZero: true, grace: '12%' },
-                        y: { ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } }
-                    } 
-                }
-            });
-
+            // 6. Hospital Chart
             let sortedHospKeys = Object.keys(hospCounts).sort((a,b) => hospCounts[b] - hospCounts[a]);
             let hospWrapper = document.getElementById('hospitalChartWrapper');
             if (hospWrapper) {
-                hospWrapper.style.height = Math.max(340, sortedHospKeys.length * 32 + 60) + 'px';
+                hospWrapper.style.height = Math.max(320, sortedHospKeys.length * 32 + 60) + 'px';
             }
 
             charts.hosp = new Chart(document.getElementById('hospitalChart'), {
@@ -2286,11 +2413,10 @@
         }
 
         function toggleLockRecord(row, shouldLock) {
-            let firstColKey = currentHeaders[0];
-            let rowId = getRowValue(row, firstColKey);
             let lockStatusStr = shouldLock ? 'TRUE' : 'FALSE';
             let actionName = shouldLock ? 'ล็อคข้อมูล' : 'ปลดล็อคข้อมูล';
 
+            lastMutationTime = Date.now();
             row['IsLocked'] = lockStatusStr;
             renderTable();
 
@@ -2304,14 +2430,7 @@
                 position: 'top-end'
             });
 
-            fetch(GOOGLE_APPS_SCRIPT_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    sheetName: currentMenu,
-                    data: row,
-                    isNew: false
-                })
-            }).catch(err => console.warn('Background lock update failed', err));
+            syncToGoogleSheets('update', currentMenu, row, false);
         }
 
         function deleteRecord(row) {
@@ -2323,15 +2442,17 @@
 
             Swal.fire({
                 title: 'ยืนยันการลบรายการ?',
-                html: `คุณต้องการลบรายการ <b>${displayName}</b> ออกจากระบบหรือไม่?`,
+                html: `คุณต้องการลบรายการ <b>${displayName}</b> ออกจากระบบหรือไม่?<br><small class="text-danger mt-2 d-block"><i class="fas fa-exclamation-triangle me-1"></i>การดำเนินการนี้ไม่สามารถยกเลิกหรือคืนค่ากลับมาได้</small>`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ef4444',
                 cancelButtonColor: '#64748b',
                 confirmButtonText: '<i class="fas fa-trash-alt me-1"></i> ยืนยันการลบ',
-                cancelButtonText: 'ยกเลิก'
+                cancelButtonText: 'ยกเลิก',
+                focusCancel: true
             }).then((result) => {
                 if (result.isConfirmed) {
+                    lastMutationTime = Date.now();
                     if (appData[currentMenu]) {
                         appData[currentMenu] = appData[currentMenu].filter(r => String(getRowValue(r, firstColKey)) !== String(rowId));
                     }
@@ -2347,16 +2468,7 @@
                         position: 'top-end'
                     });
 
-                    let payload = {
-                        action: 'delete',
-                        sheetName: currentMenu,
-                        id: rowId,
-                        data: row
-                    };
-                    fetch(GOOGLE_APPS_SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify(payload)
-                    }).catch(err => console.warn('Background delete failed', err));
+                    syncToGoogleSheets('delete', currentMenu, row, false);
                 }
             });
         }
@@ -2364,12 +2476,19 @@
         function saveData() {
             const form = document.getElementById('dynamicForm');
             const isNew = form.getAttribute('data-is-new') === 'true';
-            let payload = {};
+            let payload = (editingRowData && !isNew) ? { ...editingRowData } : {};
 
+            let formElements = Array.from(form.elements);
             currentHeaders.forEach(col => {
                 if(col === 'IsLocked') return;
-                let inputEl = form.querySelector(`[name="${col}"]`);
+                let inputEl = formElements.find(el => el.name === col || el.getAttribute('name') === col);
                 if(inputEl) payload[col] = inputEl.value;
+            });
+
+            formElements.forEach(el => {
+                if (el.name && el.name !== 'IsLocked') {
+                    payload[el.name] = el.value;
+                }
             });
 
             if (currentMenu !== 'Users') {
@@ -2394,6 +2513,7 @@
             payload['IsLocked'] = 'FALSE';
             let firstColKey = currentHeaders[0];
 
+            lastMutationTime = Date.now();
             if (!appData[currentMenu]) appData[currentMenu] = [];
             if (isNew) {
                 appData[currentMenu].push(payload);
@@ -2421,14 +2541,8 @@
                 position: 'top-end'
             });
 
-            fetch(GOOGLE_APPS_SCRIPT_URL, { 
-                method: 'POST', 
-                body: JSON.stringify({ 
-                    sheetName: currentMenu, 
-                    data: payload, 
-                    isNew: isNew 
-                }) 
-            }).catch(err => console.warn('Background sync queued', err));
+            let actionName = isNew ? 'insert' : 'update';
+            syncToGoogleSheets(actionName, currentMenu, payload, isNew);
         }
 
         function performLogin() {
@@ -2442,7 +2556,6 @@
 
             document.getElementById('loginAlert').style.display = 'none';
 
-            // ตรวจสอบความยาวอย่างน้อย 6 ตัวอักษร
             if (user.length < 6 || pass.length < 6) {
                 return Swal.fire({
                     icon: 'error',
@@ -2451,7 +2564,6 @@
                 });
             }
 
-            // ตรวจสอบความถูกต้องแบบ Strict Case-Sensitive (ตรงตามพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข และอักขระพิเศษ)
             const foundUser = appData['Users'].find(u => 
                 String(u.Username || u['ชื่อผู้ใช้'] || '').trim() === user && 
                 String(u.Password || u['รหัสผ่าน'] || '').trim() === pass && 
@@ -2527,15 +2639,7 @@
                     if (userObj['รหัสผ่าน'] !== undefined) userObj['รหัสผ่าน'] = newPassword;
 
                     completeLogin(userObj);
-
-                    fetch(GOOGLE_APPS_SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            sheetName: 'Users',
-                            data: userObj,
-                            isNew: false
-                        })
-                    }).catch(err => console.warn('Background pass update', err));
+                    syncToGoogleSheets('update', 'Users', userObj, false);
                 }
             });
         }
@@ -2571,14 +2675,7 @@
                         position: 'top-end'
                     });
 
-                    fetch(GOOGLE_APPS_SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            sheetName: 'Users',
-                            data: row,
-                            isNew: false
-                        })
-                    }).catch(err => consolewarn('Background reset pass', err));
+                    syncToGoogleSheets('update', 'Users', row, false);
                 }
             });
         }
@@ -2712,7 +2809,7 @@
 
             const getEl = (names) => {
                 for (let n of names) {
-                    let el = form.querySelector(`[name="${n}"]`);
+                    let el = Array.from(form.elements).find(e => e.name === n);
                     if (el) return el;
                 }
                 return null;
@@ -2821,6 +2918,7 @@
         }
 
         function openFormModal(rowData = null) {
+            editingRowData = rowData;
             const form = document.getElementById('dynamicForm');
             form.innerHTML = '';
             
@@ -2899,6 +2997,43 @@
                 else if (isAutoCalcField) {
                     form.innerHTML += `<div><label class="form-label fw-bold text-success">${col} <i class="fas fa-robot text-success ms-1" title="คำนวณอัตโนมัติ"></i></label>
                         <input type="text" class="form-control readonly-field bg-white text-dark fw-semibold" name="${col}" value="${val}" readonly></div>`;
+                }
+                else if ((col.includes('ตำแหน่งปัจจุบัน') || col.includes('ตำแหน่งที่ขอประเมิน')) && currentMenu !== 'Users') {
+                    let listId = 'dl_' + index + '_' + col.replace(/[^a-zA-Z0-9\u0E00-\u0E7F]/g, '_');
+                    let options = getFieldOptions(col);
+                    let optionsHtml = options.map(opt => `<option value="${String(opt).replace(/"/g, '&quot;')}"></option>`).join('');
+                    form.innerHTML += `<div><label class="form-label fw-bold">${col}</label>
+                        <input type="text" class="form-control" name="${col}" value="${val}" list="${listId}" placeholder="พิมพ์เพื่อค้นหาหรือระบุตำแหน่ง..." autocomplete="off">
+                        <datalist id="${listId}">${optionsHtml}</datalist></div>`;
+                }
+                else if ((col === 'ฝ่าย/กลุ่มงาน' || col === 'ฝ่าย' || col === 'กลุ่มภารกิจ' || col === 'สังกัด') && currentMenu !== 'Users') {
+                    let fieldId = 'f_' + col.replace(/[^a-zA-Z0-9\u0E00-\u0E7F]/g, '_') + '_' + index;
+                    formDropdownStores[fieldId] = getFieldOptions(col);
+
+                    form.innerHTML += `
+                        <div>
+                            <label class="form-label fw-bold">${col}</label>
+                            <div class="dropdown custom-search-select">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="${col}" id="input_${fieldId}" value="${val}" placeholder="เลือกจากรายการหรือพิมพ์ระบุ..." autocomplete="off">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                    <div class="dropdown-menu dropdown-menu-end p-2 shadow-lg w-100" style="min-width: 220px; max-height: 280px; overflow-y: auto; border-radius: 12px; z-index: 1060;">
+                                        <div class="p-1 mb-2 border-bottom" onclick="event.stopPropagation()">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                                                <input type="text" class="form-control border-start-0 shadow-none py-1" id="search_${fieldId}" placeholder="พิมพ์ค้นหา..." oninput="filterFormDropdownOptions('${fieldId}')" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()" style="font-size: 0.8rem;">
+                                            </div>
+                                        </div>
+                                        <div class="options-list" id="list_${fieldId}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    setTimeout(() => {
+                        renderFormDropdownList(fieldId, '');
+                    }, 50);
                 }
                 else if (col.includes('วัน') || col.includes('รับผลงาน') || col.includes('รับเรื่อง')) {
                     let fmtVal = formatInputDate(val);
