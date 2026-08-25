@@ -1072,20 +1072,42 @@
         function extractYearBE(dateVal) {
             if (!dateVal) return null;
             let str = String(dateVal).trim();
-            if (!str || str === '-') return null;
+            if (!str || str === '-' || str === 'null' || str === 'undefined') return null;
 
-            let matchBE = str.match(/\b(25\d{2})\b/);
-            if (matchBE) return parseInt(matchBE[1]);
+            // 1. Check for Excel Serial Date Number (e.g. 44977)
+            let num = Number(str);
+            if (!isNaN(num) && num >= 10000 && num <= 60000) {
+                let utcDays = num - 25569;
+                let dateObj = new Date(utcDays * 86400 * 1000);
+                if (!isNaN(dateObj.getTime())) {
+                    let yAD = dateObj.getUTCFullYear();
+                    let yBE = yAD + 543;
+                    if (yBE >= 2450 && yBE <= 2650) return yBE;
+                }
+            }
 
+            // 2. Check for explicit 4-digit BE Year (e.g. 2563 - 2575)
+            let matchBE = str.match(/\b(25\d{2}|24\d{2}|26\d{2})\b/);
+            if (matchBE) {
+                let y = parseInt(matchBE[1], 10);
+                if (y >= 2450 && y <= 2650) return y;
+            }
+
+            // 3. Check for explicit 4-digit AD Year (e.g. 2020 - 2030)
             let matchAD = str.match(/\b(19\d{2}|20\d{2})\b/);
-            if (matchAD) return parseInt(matchAD[1]) + 543;
+            if (matchAD) {
+                let y = parseInt(matchAD[1], 10) + 543;
+                if (y >= 2450 && y <= 2650) return y;
+            }
 
+            // 4. Standard Date parsing fallback
             let d = new Date(str);
             if (!isNaN(d.getTime())) {
                 let y = d.getFullYear();
                 if (y < 2200) y += 543;
-                return y;
+                if (y >= 2450 && y <= 2650) return y;
             }
+
             return null;
         }
 
@@ -1210,6 +1232,7 @@
 
                 rowObj["ระยะเวลาตั้งแต่บรรจุถึงส่งเล่ม"] = "5 ปี";
                 rowObj["ผลการประเมิน"] = status;
+                rowObj["หมายเหตุเพิ่มเติม"] = "";
                 rowObj["IsLocked"] = "FALSE";
 
                 return rowObj;
@@ -1372,9 +1395,8 @@
             let optionsSet = new Set();
             let hasMasterSheet = false;
             
-            // Map field names to possible master sheet names
             const sheetAliases = {
-                'สังกัด': ['สังกัด', 'ส่วนราชการ', 'โรงพยาบาล', 'ส่วนราชการ/โรงพยาบาล'],
+                'สังกัด': ['ส่วนราชการ', 'สังกัด', 'ส่วนราชการ/โรงพยาบาล', 'โรงพยาบาล'],
                 'ฝ่าย/กลุ่มงาน': ['ฝ่าย/กลุ่มงาน', 'ฝ่าย', 'กลุ่มงาน'],
                 'กลุ่มภารกิจ': ['กลุ่มภารกิจ'],
                 'หมายเหตุ': ['หมายเหตุ']
@@ -1390,7 +1412,7 @@
                 }
             }
 
-            // 1. Check sheet with exact or alias name
+            // 1. Check sheet with exact or similar name
             for (let sheetKey in appData) {
                 let normSheet = sheetKey.replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
                 let isMatch = targetSheetNames.some(target => {
@@ -2973,7 +2995,12 @@
                 nextSeq = maxSeq + 1;
             }
 
-            currentHeaders.forEach((col, index) => {
+            let formHeaders = [...currentHeaders];
+            if (currentMenu !== 'Users' && !formHeaders.includes('หมายเหตุเพิ่มเติม')) {
+                formHeaders.push('หมายเหตุเพิ่มเติม');
+            }
+
+            formHeaders.forEach((col, index) => {
                 if(col === 'IsLocked') return; 
                 let val = rowData ? getRowValue(rowData, col) : '';
                 
@@ -3028,11 +3055,15 @@
                         <input type="text" class="form-control" name="${col}" value="${val}" list="${listId}" placeholder="พิมพ์เพื่อค้นหาหรือระบุตำแหน่ง..." autocomplete="off">
                         <datalist id="${listId}">${optionsHtml}</datalist></div>`;
                 }
-                else if ((col === 'ฝ่าย/กลุ่มงาน' || col === 'ฝ่าย' || col === 'กลุ่มภารกิจ' || col === 'สังกัด' || col.includes('หมายเหตุ')) && currentMenu !== 'Users') {
+                else if (col === 'หมายเหตุเพิ่มเติม' && currentMenu !== 'Users') {
+                    form.innerHTML += `<div><label class="form-label fw-bold">${col}</label>
+                        <input type="text" class="form-control" name="${col}" value="${val}" placeholder="ระบุหมายเหตุเพิ่มเติม (ถ้ามี)"></div>`;
+                }
+                else if ((col === 'ฝ่าย/กลุ่มงาน' || col === 'ฝ่าย' || col === 'กลุ่มภารกิจ' || col === 'สังกัด' || col === 'หมายเหตุ' || col.includes('หมายเหตุ')) && currentMenu !== 'Users') {
                     let fieldId = 'f_' + col.replace(/[^a-zA-Z0-9\u0E00-\u0E7F]/g, '_') + '_' + index;
                     formDropdownStores[fieldId] = getFieldOptions(col.includes('หมายเหตุ') ? 'หมายเหตุ' : col);
 
-                    let isRemark = col.includes('หมายเหตุ');
+                    let isRemark = col === 'หมายเหตุ' || col.includes('หมายเหตุ');
                     let inputId = isRemark ? 'remarkInputField' : `input_${fieldId}`;
                     let labelId = isRemark ? 'remarkLabel' : '';
                     let labelAttr = labelId ? ` id="${labelId}"` : '';
@@ -3195,7 +3226,7 @@
                 'ตำแหน่งปัจจุบัน', 'ตำแหน่งที่ขอประเมิน', 'ตำแหน่งทางบริหาร', 'สังกัด', 'ฝ่าย/กลุ่มงาน', 'ฝ่าย', 'กลุ่มภารกิจ',
                 'วันบรรจุ', 'วันที่ส่งเล่ม 1', 'ระยะเวลาตั้งแต่บรรจุถึงส่งเล่ม', 'ระยะเวลาบรรจุถึงส่งเล่ม', 'เจ้าหน้าที่ 1', 'เจ้าหน้าที่1', 'เจ้าหน้าที่ 2', 'เจ้าหน้าที่2',
                 'เจ้าหน้าที่', 'ผลการประเมิน', 'คำสั่งเลื่อน', 'ประกาศลงวันที่', 'ประกาศครบ 30 วัน', 'วันที่ผ่านประเมิน',
-                'วันที่ครบกำหนด 6 เดือน', 'ครบกำหนด 6 เดือน', 'วันที่ส่งเล่ม 2', 'สนพ. รับผลงาน', 'สนพ.รับผลงาน', 'สนพ. รับเรื่อง', 'ระยะเวลาส่งเล่ม 2', 'ระยะเวลาเล่ม 2', 'หมายเหตุ', 'IsLocked'
+                'วันที่ครบกำหนด 6 เดือน', 'ครบกำหนด 6 เดือน', 'วันที่ส่งเล่ม 2', 'สนพ. รับผลงาน', 'สนพ.รับผลงาน', 'สนพ. รับเรื่อง', 'ระยะเวลาส่งเล่ม 2', 'ระยะเวลาเล่ม 2', 'หมายเหตุ', 'หมายเหตุเพิ่มเติม', 'IsLocked'
             ];
 
             let extraGrid = '';
