@@ -1372,13 +1372,35 @@
             let optionsSet = new Set();
             let hasMasterSheet = false;
             
-            // 1. Check sheet with exact or similar name
+            // Map field names to possible master sheet names
+            const sheetAliases = {
+                'สังกัด': ['สังกัด', 'ส่วนราชการ', 'โรงพยาบาล', 'ส่วนราชการ/โรงพยาบาล'],
+                'ฝ่าย/กลุ่มงาน': ['ฝ่าย/กลุ่มงาน', 'ฝ่าย', 'กลุ่มงาน'],
+                'กลุ่มภารกิจ': ['กลุ่มภารกิจ'],
+                'หมายเหตุ': ['หมายเหตุ']
+            };
+
+            let targetSheetNames = [fieldName];
+            let normField = fieldName.replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
+
+            for (let aliasKey in sheetAliases) {
+                if (aliasKey.replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase() === normField) {
+                    targetSheetNames = sheetAliases[aliasKey];
+                    break;
+                }
+            }
+
+            // 1. Check sheet with exact or alias name
             for (let sheetKey in appData) {
                 let normSheet = sheetKey.replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
-                let normField = fieldName.replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
-                if (normSheet === normField && Array.isArray(appData[sheetKey]) && appData[sheetKey].length > 0) {
+                let isMatch = targetSheetNames.some(target => {
+                    let normTarget = target.replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
+                    return normSheet === normTarget;
+                });
+
+                if (isMatch && Array.isArray(appData[sheetKey]) && appData[sheetKey].length > 0) {
                     appData[sheetKey].forEach(row => {
-                        let v = getRowValue(row, fieldName) || getRowValue(row, 'ชื่อ') || getRowValue(row, 'รายการ') || getRowValue(row, 'ชื่อกลุ่มงาน') || getRowValue(row, 'ชื่อกลุ่มภารกิจ') || getRowValue(row, 'ชื่อสังกัด') || getRowValue(row, 'โรงพยาบาล') || Object.values(row)[0];
+                        let v = getRowValue(row, fieldName) || getRowValue(row, 'ส่วนราชการ') || getRowValue(row, 'ชื่อส่วนราชการ') || getRowValue(row, 'ชื่อ') || getRowValue(row, 'รายการ') || getRowValue(row, 'ชื่อกลุ่มงาน') || getRowValue(row, 'ชื่อกลุ่มภารกิจ') || getRowValue(row, 'ชื่อสังกัด') || getRowValue(row, 'โรงพยาบาล') || Object.values(row)[0];
                         if (v && String(v).trim() !== '' && String(v).trim() !== '-') {
                             let cleanV = String(v).replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s*-\s*/g, '-').replace(/\s+/g, ' ').trim();
                             if (cleanV) {
@@ -1438,7 +1460,7 @@
         }
 
         function selectFormOption(fieldId, val) {
-            const inputEl = document.getElementById(`input_${fieldId}`);
+            const inputEl = document.getElementById(`input_${fieldId}`) || document.getElementById('remarkInputField');
             if (!inputEl) return;
 
             if (val === '__OTHER__') {
@@ -1450,7 +1472,7 @@
 
             const btnEl = inputEl.nextElementSibling;
             if (btnEl) {
-                const bsDropdown = bootstrap.Dropdown.getInstance(btnEl);
+                const bsDropdown = bootstrap.Dropdown.getInstance(btnEl) || bootstrap.Dropdown.getOrCreateInstance(btnEl);
                 if (bsDropdown) bsDropdown.hide();
             }
         }
@@ -3006,16 +3028,22 @@
                         <input type="text" class="form-control" name="${col}" value="${val}" list="${listId}" placeholder="พิมพ์เพื่อค้นหาหรือระบุตำแหน่ง..." autocomplete="off">
                         <datalist id="${listId}">${optionsHtml}</datalist></div>`;
                 }
-                else if ((col === 'ฝ่าย/กลุ่มงาน' || col === 'ฝ่าย' || col === 'กลุ่มภารกิจ' || col === 'สังกัด') && currentMenu !== 'Users') {
+                else if ((col === 'ฝ่าย/กลุ่มงาน' || col === 'ฝ่าย' || col === 'กลุ่มภารกิจ' || col === 'สังกัด' || col.includes('หมายเหตุ')) && currentMenu !== 'Users') {
                     let fieldId = 'f_' + col.replace(/[^a-zA-Z0-9\u0E00-\u0E7F]/g, '_') + '_' + index;
-                    formDropdownStores[fieldId] = getFieldOptions(col);
+                    formDropdownStores[fieldId] = getFieldOptions(col.includes('หมายเหตุ') ? 'หมายเหตุ' : col);
+
+                    let isRemark = col.includes('หมายเหตุ');
+                    let inputId = isRemark ? 'remarkInputField' : `input_${fieldId}`;
+                    let labelId = isRemark ? 'remarkLabel' : '';
+                    let labelAttr = labelId ? ` id="${labelId}"` : '';
+                    let placeholderText = isRemark ? 'ระบุหมายเหตุ (ถ้ามี) หรือเลือกจากรายการ...' : 'เลือกจากรายการหรือพิมพ์ระบุ...';
 
                     form.innerHTML += `
                         <div>
-                            <label class="form-label fw-bold">${col}</label>
+                            <label class="form-label fw-bold"${labelAttr}>${col}</label>
                             <div class="dropdown custom-search-select">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="${col}" id="input_${fieldId}" value="${val}" placeholder="เลือกจากรายการหรือพิมพ์ระบุ..." autocomplete="off">
+                                    <input type="text" class="form-control" name="${col}" id="${inputId}" value="${val}" placeholder="${placeholderText}" autocomplete="off">
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
                                     <div class="dropdown-menu dropdown-menu-end p-2 shadow-lg w-100" style="min-width: 220px; max-height: 280px; overflow-y: auto; border-radius: 12px; z-index: 1060;">
                                         <div class="p-1 mb-2 border-bottom" onclick="event.stopPropagation()">
@@ -3039,10 +3067,6 @@
                     let fmtVal = formatInputDate(val);
                     form.innerHTML += `<div><label class="form-label fw-bold">${col}</label>
                         <input type="date" class="form-control" name="${col}" value="${fmtVal}" onchange="runAutoCalculations()"></div>`;
-                }
-                else if (col.includes('หมายเหตุ')) {
-                    form.innerHTML += `<div><label class="form-label fw-bold" id="remarkLabel">${col}</label>
-                        <input type="text" class="form-control" name="${col}" id="remarkInputField" value="${val}" placeholder="ระบุหมายเหตุ (ถ้ามี)"></div>`;
                 }
                 else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่')) {
                     form.innerHTML += `<div><label class="form-label fw-bold">${col}</label>
