@@ -314,8 +314,8 @@
         .print-modal { font-family: 'Prompt', 'Sarabun', sans-serif !important; padding: 16px 20px; background: #ffffff; color: #1e293b; }
         .report-header { text-align: center; position: relative; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 2px solid #059669; }
         .report-logo-badge {
-            display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px;
-            background: #059669; color: white; font-weight: 800; font-size: 1.1rem; border-radius: 8px; margin-bottom: 4px;
+            display: inline-flex; align-items: center; justify-content: center; min-width: 42px; width: auto; padding: 0 10px; height: 42px;
+            background: #059669; color: white; font-weight: 800; font-size: 0.95rem; border-radius: 8px; margin-bottom: 4px;
             box-shadow: 0 4px 10px rgba(5,150,105,0.3);
         }
         .report-title { font-weight: 800; font-size: 1.25rem; color: #064e3b; margin-bottom: 1px; letter-spacing: -0.3px; }
@@ -368,7 +368,7 @@
             .modal-footer, .btn-close { display: none !important; }
             .print-modal { padding: 0 !important; margin: 0 !important; background: #ffffff !important; }
             .report-header { padding-bottom: 4px !important; margin-bottom: 6px !important; border-bottom: 2px solid #059669 !important; }
-            .report-logo-badge { width: 36px !important; height: 36px !important; font-size: 0.95rem !important; margin-bottom: 2px !important; }
+            .report-logo-badge { min-width: 36px !important; width: auto !important; padding: 0 8px !important; height: 36px !important; font-size: 0.85rem !important; margin-bottom: 2px !important; }
             .report-title { font-size: 1.15rem !important; margin-bottom: 0 !important; }
             .report-subtitle { font-size: 0.88rem !important; margin-bottom: 4px !important; }
             .report-level-pill { padding: 1px 14px !important; font-size: 0.78rem !important; }
@@ -389,7 +389,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-brand">
-            <img src="https://placehold.co/150x150/064e3b/34d399?text=BMA" alt="โลโก้สำนักการแพทย์" onerror="this.src='https://placehold.co/150x150/064e3b/ffffff?text=Logo'">
+            <img src="https://placehold.co/150x150/064e3b/34d399?text=MSD+BMA" alt="โลโก้สำนักการแพทย์" onerror="this.src='https://placehold.co/150x150/064e3b/ffffff?text=MSD+BMA'">
             <div style="letter-spacing: 0.5px; font-weight: 700; font-size: 1rem;">ระบบติดตามการประเมินผลงานทางวิชาการ <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;">Ver.2</span></div>
             <div class="mt-1 text-info" style="font-size: 0.78rem; font-weight: 500; opacity: 0.85;">สำนักการแพทย์ กรุงเทพมหานคร</div>
         </div>
@@ -608,6 +608,18 @@
                 </div>
             </div>
 
+            <!-- Top 10 Positions Chart Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-12">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title"><i class="fas fa-award"></i> 10 อันดับแรกของตำแหน่งที่ส่งเล่มประเมินผลงานสูงที่สุด <span class="badge bg-info-subtle text-info border border-info-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกแถบเพื่อกรองข้อมูล</span></div>
+                        </div>
+                        <div id="topPositionsChartWrapper" style="position: relative; min-height: 320px;"><canvas id="topPositionsChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row g-4">
                 <div class="col-12">
                     <div class="chart-container">
@@ -725,7 +737,7 @@
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content" style="border-radius: 24px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
                 <div class="modal-header bg-white text-center d-block border-0 pt-4 pb-2">
-                    <img src="https://placehold.co/100x100/059669/ffffff?text=BMA" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid #059669; box-shadow: 0 4px 10px rgba(5,150,105,0.2);">
+                    <img src="https://placehold.co/100x100/059669/ffffff?text=MSD+BMA" alt="Logo" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 2px solid #059669; box-shadow: 0 4px 10px rgba(5,150,105,0.2);">
                     <h5 class="modal-title fw-bold text-dark" style="font-size: 1.25rem;">STAFF LOGIN</h5>
                     <p class="text-muted small mb-0">เข้าสู่ระบบติดตามการประเมินผลงาน</p>
                 </div>
@@ -777,7 +789,7 @@
             <div class="modal-content" style="border-radius: 20px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
                 <div class="modal-body print-modal" id="printArea">
                     <div class="report-header">
-                        <div class="report-logo-badge">BMA</div>
+                        <div class="report-logo-badge">MSD BMA</div>
                         <div class="report-title">สำนักการแพทย์ กรุงเทพมหานคร</div>
                         <div class="report-subtitle">แบบสรุปข้อมูลการประเมินผลงานทางวิชาการ</div>
                         <div><span class="report-level-pill" id="printLevel">ระดับการประเมิน: -</span></div>
@@ -1474,11 +1486,32 @@
             
             let data = filteredData;
             if (!data) {
+                let searchVal = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
                 let rawData = appData[menu] || [];
-                data = rawData.filter(isValidRow);
-            } else {
-                let rawData = appData[menu] || [];
-                data = rawData.filter(isValidRow);
+                data = rawData.filter(row => {
+                    if (!isValidRow(row)) return false;
+                    if (!searchVal) return true;
+                    let seq = String(getRowValue(row, 'ลำดับ')).toLowerCase();
+                    let posNo = String(getRowValue(row, 'ตำแหน่งเลขที่')).toLowerCase();
+                    let prefix = String(getRowValue(row, 'คำนำหน้า') || getRowValue(row, 'คำนำหน้านาม')).toLowerCase();
+                    let fname = String(getRowValue(row, 'ชื่อ -') || getRowValue(row, 'ชื่อ-') || getRowValue(row, 'ชื่อ')).toLowerCase();
+                    let lname = String(getRowValue(row, 'สกุล') || getRowValue(row, 'นามสกุล')).toLowerCase();
+                    let fullName = `${prefix}${fname} ${lname}`.trim().toLowerCase();
+                    let curPos = String(getRowValue(row, 'ตำแหน่งปัจจุบัน')).toLowerCase();
+                    let reqPos = String(getRowValue(row, 'ตำแหน่งที่ขอประเมิน')).toLowerCase();
+                    let hosp = String(getRowValue(row, 'สังกัด')).toLowerCase();
+                    let staff1 = String(getRowValue(row, 'เจ้าหน้าที่ 1')).toLowerCase();
+                    let staff2 = String(getRowValue(row, 'เจ้าหน้าที่ 2')).toLowerCase();
+
+                    return seq.includes(searchVal) ||
+                           posNo.includes(searchVal) ||
+                           fullName.includes(searchVal) ||
+                           curPos.includes(searchVal) ||
+                           reqPos.includes(searchVal) ||
+                           hosp.includes(searchVal) ||
+                           staff1.includes(searchVal) ||
+                           staff2.includes(searchVal);
+                });
             }
 
             let total = data.length;
@@ -1572,6 +1605,7 @@
             let levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
             let levelCounts = [0,0,0,0,0];
             let hospCounts = {};
+            let positionCounts = {};
             let staffBreakdown = {};
             let statusByLevel = {};
             let yearBreakdown = {};
@@ -1673,6 +1707,10 @@
                     let hosp = getRowValue(row, 'สังกัด') || 'ไม่ระบุโรงพยาบาล';
                     if(hosp && hosp !== '-') hospCounts[hosp] = (hospCounts[hosp] || 0) + 1;
 
+                    let rawPos = getRowValue(row, 'ตำแหน่งปัจจุบัน') || getRowValue(row, 'ตำแหน่งที่ขอประเมิน') || getRowValue(row, 'ตำแหน่ง');
+                    let basePos = extractBasePosition(rawPos);
+                    if(basePos && basePos !== '-') positionCounts[basePos] = (positionCounts[basePos] || 0) + 1;
+
                     let dateStr = getRowValue(row, 'วันที่ส่งเล่ม 1');
                     let yVal = extractYearBE(dateStr);
                     if(yVal) {
@@ -1695,7 +1733,7 @@
             document.getElementById('kpiFail').innerText = fail.toLocaleString();
             document.getElementById('kpiWait').innerText = (total - pass - fail).toLocaleString();
 
-            ['level', 'hosp', 'stacked', 'staff', 'year'].forEach(c => { if(charts[c]) charts[c].destroy(); });
+            ['level', 'hosp', 'stacked', 'staff', 'year', 'topPos'].forEach(c => { if(charts[c]) charts[c].destroy(); });
 
             charts.level = new Chart(document.getElementById('levelChart'), { 
                 type: 'doughnut', 
@@ -1928,6 +1966,76 @@
                     scales: { 
                         x: { stacked: true, beginAtZero: true, grace: '12%' }, 
                         y: { stacked: true, ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } } 
+                    } 
+                }
+            });
+
+            // Top 10 Positions Chart Rendering
+            let sortedPosKeys = Object.keys(positionCounts).sort((a,b) => positionCounts[b] - positionCounts[a]).slice(0, 10);
+            let topPosWrapper = document.getElementById('topPositionsChartWrapper');
+            if (topPosWrapper) {
+                topPosWrapper.style.height = Math.max(320, sortedPosKeys.length * 32 + 60) + 'px';
+            }
+
+            charts.topPos = new Chart(document.getElementById('topPositionsChart'), {
+                type: 'bar',
+                data: { 
+                    labels: sortedPosKeys, 
+                    datasets: [{ 
+                        label: 'จำนวนรายการ', 
+                        data: sortedPosKeys.map(p => positionCounts[p]), 
+                        backgroundColor: function(context) {
+                            const { ctx, chartArea } = context.chart;
+                            if (!chartArea) return '#059669';
+                            return createGradientH(ctx, chartArea, '#6ee7b7', '#064e3b');
+                        }, 
+                        borderRadius: 6 
+                    }] 
+                },
+                options: { 
+                    indexAxis: 'y', 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    layout: { padding: { right: 45 } },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = Number(context.raw) || 0;
+                                    const grandTotal = context.dataset.data.reduce((a, b) => a + (Number(b) || 0), 0);
+                                    const pct = grandTotal > 0 ? ((val / grandTotal) * 100).toFixed(1) : '0.0';
+                                    return ` จำนวนรายการ: ${val.toLocaleString()} รายการ (${pct}%)`;
+                                }
+                            }
+                        }
+                    },
+                    onHover: (event, chartElement) => {
+                        if (event.native && event.native.target) {
+                            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements && elements.length > 0) {
+                            const index = elements[0].index;
+                            const clickedPos = sortedPosKeys[index];
+                            const posInput = document.getElementById('filterPosition');
+                            const posLabel = document.getElementById('labelPosition');
+                            if (posInput) {
+                                if (posInput.value === clickedPos) {
+                                    posInput.value = '';
+                                    if (posLabel) posLabel.innerText = '-- ทุกตำแหน่ง --';
+                                } else {
+                                    posInput.value = clickedPos;
+                                    if (posLabel) posLabel.innerText = clickedPos;
+                                }
+                                renderSearchDropdownOptions('Position', '-- ทุกตำแหน่ง --');
+                                updateDashboard();
+                            }
+                        }
+                    },
+                    scales: { 
+                        x: { beginAtZero: true, grace: '12%' },
+                        y: { ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } }
                     } 
                 }
             });
@@ -2470,7 +2578,7 @@
                             data: row,
                             isNew: false
                         })
-                    }).catch(err => console.warn('Background reset pass', err));
+                    }).catch(err => consolewarn('Background reset pass', err));
                 }
             });
         }
