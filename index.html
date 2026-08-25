@@ -637,6 +637,26 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Charts Row 4: Meeting Staff & Pending Reason Report -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title"><i class="fas fa-users"></i> เจ้าหน้าที่จัดประชุม (ชำนาญการ & พยาบาลวิชาชีพ) <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบเพื่อตรวจสอบ</span></div>
+                        </div>
+                        <div id="meetingStaffChartWrapper" style="position: relative; min-height: 320px;"><canvas id="meetingStaffChart"></canvas></div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title"><i class="fas fa-exclamation-circle"></i> รายงานเหตุผลรายการที่อยู่ระหว่างดำเนินการ <span class="badge bg-warning-subtle text-warning border border-warning-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกเพื่อกรอง</span></div>
+                        </div>
+                        <div id="pendingReasonChartWrapper" style="position: relative; min-height: 320px;"><canvas id="pendingReasonChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="tableView" style="display: none;">
@@ -832,6 +852,7 @@
 
         let activeKpiFilter = 'all';
         let activeSubKpiFilter = 'all';
+        let activePendingReasonFilter = '';
 
         let dropdownDataStore = {
             Year: [],
@@ -1139,17 +1160,23 @@
             return s.trim();
         }
 
+        function getRemarkReason(row) {
+            if (!row || typeof row !== 'object') return 'ไม่ระบุเหตุผล';
+            let val = getRowValue(row, 'หมายเหตุ');
+            if (val !== undefined && val !== null) {
+                let strVal = String(val).replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\s+/g, ' ').trim();
+                if (strVal && strVal !== '-' && strVal !== 'null' && strVal !== 'undefined') {
+                    return strVal;
+                }
+            }
+            return 'ไม่ระบุเหตุผล';
+        }
+
         function getStaffFromRow(row, sheetLvl, activeStaffMap = {}, disabledStaffMap = {}) {
             if (!row || typeof row !== 'object') return null;
 
-            let staffVal = '';
-            let isSenior = (sheetLvl === 'เชี่ยวชาญ' || sheetLvl === 'ทรงคุณวุฒิ');
-
-            if (isSenior) {
-                staffVal = getRowValue(row, 'เจ้าหน้าที่ 2') || getRowValue(row, 'เจ้าหน้าที่2') || getRowValue(row, 'เจ้าหน้าที่_2');
-            } else {
-                staffVal = getRowValue(row, 'เจ้าหน้าที่ 1') || getRowValue(row, 'เจ้าหน้าที่1') || getRowValue(row, 'เจ้าหน้าที่_1');
-            }
+            // Fetch strictly from 'เจ้าหน้าที่ 1' (or aliases: 'เจ้าหน้าที่1', 'เจ้าหน้าที่_1')
+            let staffVal = getRowValue(row, 'เจ้าหน้าที่ 1') || getRowValue(row, 'เจ้าหน้าที่1') || getRowValue(row, 'เจ้าหน้าที่_1');
 
             if (!staffVal || staffVal === '-') {
                 staffVal = getRowValue(row, 'เจ้าหน้าที่') || getRowValue(row, 'ผู้รับผิดชอบ');
@@ -1220,20 +1247,13 @@
                     "กลุ่มภารกิจ": "กลุ่มภารกิจด้านบริการตติยภูมิ",
                     "สังกัด": hosp,
                     "วันบรรจุ": `${year - 5}-05-16`,
+                    "เจ้าหน้าที่ 1": staffName,
+                    "วันที่ส่งเล่ม 1": `${year}-03-15`,
+                    "ระยะเวลาตั้งแต่บรรจุถึงส่งเล่ม": "5 ปี",
+                    "ผลการประเมิน": status,
+                    "หมายเหตุเพิ่มเติม": "",
+                    "IsLocked": "FALSE"
                 };
-
-                if (isSenior) {
-                    rowObj["วันที่ส่งเล่ม 1"] = `${year}-03-15`;
-                    rowObj["เจ้าหน้าที่ 2"] = staffName;
-                } else {
-                    rowObj["เจ้าหน้าที่ 1"] = staffName;
-                    rowObj["วันที่ส่งเล่ม 1"] = `${year}-03-15`;
-                }
-
-                rowObj["ระยะเวลาตั้งแต่บรรจุถึงส่งเล่ม"] = "5 ปี";
-                rowObj["ผลการประเมิน"] = status;
-                rowObj["หมายเหตุเพิ่มเติม"] = "";
-                rowObj["IsLocked"] = "FALSE";
 
                 return rowObj;
             };
@@ -1412,7 +1432,6 @@
                 }
             }
 
-            // 1. Check sheet with exact or similar name
             for (let sheetKey in appData) {
                 let normSheet = sheetKey.replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
                 let isMatch = targetSheetNames.some(target => {
@@ -1434,7 +1453,6 @@
                 }
             }
 
-            // 2. Extract from evaluation level sheets ONLY if no master sheet found
             if (!hasMasterSheet || optionsSet.size === 0) {
                 const levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
                 levels.forEach(lvl => {
@@ -1751,6 +1769,7 @@
             });
 
             activeKpiFilter = 'all';
+            activePendingReasonFilter = '';
             
             ['Total', 'Pass', 'Wait', 'Fail'].forEach(k => {
                 const el = document.getElementById(`kpiCard${k}`);
@@ -1777,6 +1796,8 @@
             let statusByLevel = {};
             let yearBreakdown = {};
             let positionCounts = {};
+            let pendingReasonCounts = {};
+            let pendingReasonTotal = 0;
 
             levels.forEach(l => statusByLevel[l] = { pass: 0, wait: 0, fail: 0 });
 
@@ -1849,6 +1870,22 @@
                         if (!y || String(y) !== String(fYear)) return false;
                     }
 
+                    if (activePendingReasonFilter) {
+                        let statusStr = String(getRowValue(row, 'ผลการประเมิน')).trim();
+                        let cat = 'wait';
+                        if (statusStr.includes('ผ่านการประเมิน') && !statusStr.includes('ไม่')) {
+                            cat = 'pass';
+                        } else if (statusStr.includes('ไม่ผ่าน') || statusStr.includes('ยกเลิก') || statusStr.includes('ถอน')) {
+                            cat = 'fail';
+                        } else {
+                            cat = 'wait';
+                        }
+                        if (cat !== 'wait') return false;
+
+                        let rowReason = getRemarkReason(row);
+                        if (rowReason !== activePendingReasonFilter) return false;
+                    }
+
                     return true;
                 });
 
@@ -1863,6 +1900,12 @@
                         fail++; cat = 'fail';
                     } else {
                         cat = 'wait'; 
+                    }
+
+                    if (cat === 'wait') {
+                        let reasonVal = getRemarkReason(row);
+                        pendingReasonCounts[reasonVal] = (pendingReasonCounts[reasonVal] || 0) + 1;
+                        pendingReasonTotal++;
                     }
 
                     if (activeKpiFilter === 'pass' && cat !== 'pass') return;
@@ -1890,8 +1933,12 @@
                         yearBreakdown[yStr].total++;
                     }
 
+                    // Process Staff Workload exclusively using 'เจ้าหน้าที่ 1' column for all sheets
                     let matchedStaff = getStaffFromRow(row, lvl, activeStaffMap, disabledStaffMap);
-                    if(matchedStaff && staffBreakdown[matchedStaff]) {
+                    if(matchedStaff) {
+                        if (!staffBreakdown[matchedStaff]) {
+                            staffBreakdown[matchedStaff] = { pass: 0, wait: 0, fail: 0, total: 0 };
+                        }
                         staffBreakdown[matchedStaff][cat]++;
                         staffBreakdown[matchedStaff].total++;
                     }
@@ -1903,7 +1950,7 @@
             document.getElementById('kpiFail').innerText = fail.toLocaleString();
             document.getElementById('kpiWait').innerText = (total - pass - fail).toLocaleString();
 
-            ['level', 'hosp', 'stacked', 'staff', 'year', 'topPos'].forEach(c => { if(charts[c]) charts[c].destroy(); });
+            ['level', 'hosp', 'stacked', 'staff', 'year', 'topPos', 'meetingStaff', 'pendingReason'].forEach(c => { if(charts[c]) charts[c].destroy(); });
 
             // 1. Level Chart (Doughnut)
             charts.level = new Chart(document.getElementById('levelChart'), { 
@@ -2150,7 +2197,7 @@
                 }
             });
 
-            // 5. Staff Chart
+            // 5. Staff Chart (ภาระงานแยกตามเจ้าหน้าที่ - จากคอลัมน์ เจ้าหน้าที่ 1 และ Active Staff เท่านั้น)
             let sortedStaff = Object.keys(staffBreakdown).filter(s => staffBreakdown[s].total > 0).sort((a,b) => staffBreakdown[b].total - staffBreakdown[a].total);
             let staffWrapper = document.getElementById('staffChartWrapper');
             if (staffWrapper) {
@@ -2277,6 +2324,219 @@
                         x: { beginAtZero: true, grace: '12%' },
                         y: { ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } }
                     } 
+                }
+            });
+
+            // 7. Meeting Staff Chart (เจ้าหน้าที่จัดประชุม - ชำนาญการ & ชำนาญการ พยาบาลวิชาชีพ)
+            let meetingStaffBreakdown = {};
+            let meetingStaffLevels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)'];
+
+            meetingStaffLevels.forEach(lvl => {
+                if (fLevel && fLevel !== lvl) return;
+                let rawData = appData[lvl] || [];
+                let data = rawData.filter(row => {
+                    if (!isValidRow(row)) return false;
+                    if (fHosp && String(getRowValue(row, 'สังกัด')).trim() !== fHosp) return false;
+                    if (fPos) {
+                        let rawPos = getRowValue(row, 'ตำแหน่งปัจจุบัน') || getRowValue(row, 'ตำแหน่งที่ขอประเมิน') || getRowValue(row, 'ตำแหน่ง');
+                        let basePos = extractBasePosition(rawPos);
+                        if (basePos !== fPos) return false;
+                    }
+                    let dateStr = getRowValue(row, 'วันที่ส่งเล่ม 1');
+                    if (fYear) {
+                        let y = extractYearBE(dateStr);
+                        if (!y || String(y) !== String(fYear)) return false;
+                    }
+                    return true;
+                });
+
+                data.forEach(row => {
+                    let statusStr = String(getRowValue(row, 'ผลการประเมิน')).trim();
+                    let cat = 'wait';
+                    if (statusStr.includes('ผ่านการประเมิน') && !statusStr.includes('ไม่')) {
+                        cat = 'pass';
+                    } else if (statusStr.includes('ไม่ผ่าน') || statusStr.includes('ยกเลิก') || statusStr.includes('ถอน')) {
+                        cat = 'fail';
+                    } else {
+                        cat = 'wait';
+                    }
+
+                    if (activeKpiFilter === 'pass' && cat !== 'pass') return;
+                    if (activeKpiFilter === 'fail' && cat !== 'fail') return;
+                    if (activeKpiFilter === 'wait' && cat !== 'wait') return;
+
+                    let msVal = getRowValue(row, 'เจ้าหน้าที่จัดประชุม');
+                    if (!msVal || msVal === '-') {
+                        msVal = getRowValue(row, 'เจ้าหน้าที่จัดประชุม1') || getRowValue(row, 'เจ้าหน้าที่ประชุม');
+                    }
+
+                    if (msVal && msVal !== '-') {
+                        msVal = String(msVal).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+                        let normMs = normalizeThaiName(msVal);
+
+                        if (!disabledStaffMap[msVal] && !disabledStaffMap[normMs]) {
+                            let canonicalStaff = activeStaffMap[msVal] || activeStaffMap[normMs] || msVal;
+                            if (activeStaffMap[canonicalStaff] || Object.values(activeStaffMap).includes(canonicalStaff) || Object.keys(activeStaffMap).length === 0) {
+                                if (!meetingStaffBreakdown[canonicalStaff]) {
+                                    meetingStaffBreakdown[canonicalStaff] = { pass: 0, wait: 0, fail: 0, total: 0 };
+                                }
+                                meetingStaffBreakdown[canonicalStaff][cat]++;
+                                meetingStaffBreakdown[canonicalStaff].total++;
+                            }
+                        }
+                    }
+                });
+            });
+
+            let sortedMeetingStaff = Object.keys(meetingStaffBreakdown).filter(s => meetingStaffBreakdown[s].total > 0).sort((a,b) => meetingStaffBreakdown[b].total - meetingStaffBreakdown[a].total);
+            let msWrapper = document.getElementById('meetingStaffChartWrapper');
+            if (msWrapper) {
+                msWrapper.style.height = Math.max(320, sortedMeetingStaff.length * 32 + 60) + 'px';
+            }
+
+            charts.meetingStaff = new Chart(document.getElementById('meetingStaffChart'), {
+                type: 'bar',
+                data: {
+                    labels: sortedMeetingStaff,
+                    datasets: [
+                        { label: 'ผ่านประเมิน', data: sortedMeetingStaff.map(s => meetingStaffBreakdown[s].pass), backgroundColor: (context) => createGradientH(context.chart.ctx, context.chart.chartArea, baseColors.greenStart, baseColors.greenEnd), stack: 'Stack 0', borderRadius: 4 },
+                        { label: 'อยู่ระหว่างดำเนินการ', data: sortedMeetingStaff.map(s => meetingStaffBreakdown[s].wait), backgroundColor: (context) => createGradientH(context.chart.ctx, context.chart.chartArea, baseColors.amberStart, baseColors.amberEnd), stack: 'Stack 0', borderRadius: 4 },
+                        { label: 'ไม่ผ่าน/ยกเลิก', data: sortedMeetingStaff.map(s => meetingStaffBreakdown[s].fail), backgroundColor: (context) => createGradientH(context.chart.ctx, context.chart.chartArea, baseColors.roseStart, baseColors.roseEnd), stack: 'Stack 0', borderRadius: 4 }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { right: 50 } },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = Number(context.raw) || 0;
+                                    const i = context.dataIndex;
+                                    let rowTotal = 0;
+                                    let grandTotal = 0;
+                                    context.chart.data.datasets.forEach(ds => {
+                                        rowTotal += (Number(ds.data[i]) || 0);
+                                        ds.data.forEach(v => grandTotal += (Number(v) || 0));
+                                    });
+                                    const rowPct = rowTotal > 0 ? ((val / rowTotal) * 100).toFixed(1) : '0.0';
+                                    const grandPct = grandTotal > 0 ? ((val / grandTotal) * 100).toFixed(1) : '0.0';
+                                    return ` ${context.dataset.label}: ${val.toLocaleString()} รายการ (${rowPct}% ของคนนี้, ${grandPct}% ของทั้งหมด)`;
+                                }
+                            }
+                        }
+                    },
+                    onHover: (event, chartElement) => {
+                        if (event.native && event.native.target) {
+                            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements && elements.length > 0) {
+                            const index = elements[0].index;
+                            const staffName = sortedMeetingStaff[index];
+                            openStaffInspectionModal(staffName);
+                        }
+                    },
+                    scales: {
+                        x: { stacked: true, beginAtZero: true, grace: '12%' },
+                        y: { stacked: true, ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } }
+                    }
+                }
+            });
+
+            // 8. Pending Reason Chart (รายงานเหตุผลรายการที่อยู่ระหว่างดำเนินการ - ใช้คอลัมน์ "หมายเหตุ" เท่านั้น)
+            let sortedReasons = Object.keys(pendingReasonCounts).sort((a, b) => pendingReasonCounts[b] - pendingReasonCounts[a]);
+            let prWrapper = document.getElementById('pendingReasonChartWrapper');
+            if (prWrapper) {
+                prWrapper.style.height = Math.max(320, sortedReasons.length * 32 + 60) + 'px';
+            }
+
+            charts.pendingReason = new Chart(document.getElementById('pendingReasonChart'), {
+                type: 'bar',
+                data: {
+                    labels: sortedReasons,
+                    datasets: [{
+                        label: 'จำนวนรายการที่อยู่ระหว่างดำเนินการ',
+                        data: sortedReasons.map(r => pendingReasonCounts[r]),
+                        backgroundColor: function(context) {
+                            const { ctx, chartArea } = context.chart;
+                            if (!chartArea) return baseColors.amberStart;
+                            
+                            const reasonName = sortedReasons[context.dataIndex];
+                            if (activePendingReasonFilter && reasonName === activePendingReasonFilter) {
+                                return createGradientH(ctx, chartArea, '#d97706', '#b45309');
+                            }
+                            return createGradientH(ctx, chartArea, baseColors.amberEnd, baseColors.amberStart);
+                        },
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { right: 45 } },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = Number(context.raw) || 0;
+                                    const grandTotal = pendingReasonTotal;
+                                    const pct = grandTotal > 0 ? ((val / grandTotal) * 100).toFixed(1) : '0.0';
+                                    return ` จำนวน: ${val.toLocaleString()} รายการ (${pct}% ของที่อยู่ระหว่างดำเนินการ)`;
+                                }
+                            }
+                        }
+                    },
+                    onHover: (event, chartElement) => {
+                        if (event.native && event.native.target) {
+                            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                        }
+                    },
+                    onClick: (event, elements) => {
+                        if (elements && elements.length > 0) {
+                            const index = elements[0].index;
+                            const clickedReason = sortedReasons[index];
+                            
+                            if (activePendingReasonFilter === clickedReason) {
+                                // Toggle OFF when clicking the same bar
+                                activePendingReasonFilter = '';
+                                if (activeKpiFilter === 'wait') {
+                                    activeKpiFilter = 'all';
+                                    ['Total', 'Pass', 'Wait', 'Fail'].forEach(k => {
+                                        const el = document.getElementById(`kpiCard${k}`);
+                                        if (el) el.classList.remove('active-filter');
+                                    });
+                                    document.getElementById('kpiCardTotal')?.classList.add('active-filter');
+                                }
+                                const searchInput = document.getElementById('searchInput');
+                                if (searchInput) searchInput.value = '';
+                            } else {
+                                // Toggle ON
+                                activePendingReasonFilter = clickedReason;
+                                if (activeKpiFilter !== 'wait') {
+                                    activeKpiFilter = 'wait';
+                                    ['Total', 'Pass', 'Wait', 'Fail'].forEach(k => {
+                                        const el = document.getElementById(`kpiCard${k}`);
+                                        if (el) el.classList.remove('active-filter');
+                                    });
+                                    document.getElementById('kpiCardWait')?.classList.add('active-filter');
+                                }
+                                const searchInput = document.getElementById('searchInput');
+                                if (searchInput && clickedReason !== 'ไม่ระบุเหตุผล') {
+                                    searchInput.value = clickedReason;
+                                }
+                            }
+                            updateDashboard();
+                        }
+                    },
+                    scales: {
+                        x: { beginAtZero: true, grace: '12%' },
+                        y: { ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } }
+                    }
                 }
             });
         }
