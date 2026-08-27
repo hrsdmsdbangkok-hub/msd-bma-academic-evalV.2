@@ -38,7 +38,7 @@
             color: #1e293b;
             overflow-x: hidden;
             background-image: radial-gradient(circle at 10% 20%, rgba(13, 148, 136, 0.04) 0%, transparent 40%),
-                              radial-gradient(circle at 90% 80%, rgba(5, 150, 105, 0.04) 0%, transparent 40%);
+                            radial-gradient(circle at 90% 80%, rgba(5, 150, 105, 0.04) 0%, transparent 40%);
         }
 
         .sidebar { 
@@ -249,7 +249,7 @@
             background: #f8fafc !important; 
             color: #475569 !important; 
             font-weight: 700; 
-            padding: 14px 16px; 
+            padding: 12px 16px; 
             border-bottom: 2px solid #e2e8f0; 
             white-space: nowrap; 
             position: sticky; top: 0; z-index: 10;
@@ -1175,8 +1175,14 @@
         function getStaffFromRow(row, sheetLvl, activeStaffMap = {}, disabledStaffMap = {}) {
             if (!row || typeof row !== 'object') return null;
 
-            // Fetch strictly from 'เจ้าหน้าที่ 1' (or aliases: 'เจ้าหน้าที่1', 'เจ้าหน้าที่_1')
-            let staffVal = getRowValue(row, 'เจ้าหน้าที่ 1') || getRowValue(row, 'เจ้าหน้าที่1') || getRowValue(row, 'เจ้าหน้าที่_1');
+            let staffVal = '';
+            let isSenior = (sheetLvl === 'เชี่ยวชาญ' || sheetLvl === 'ทรงคุณวุฒิ');
+
+            if (isSenior) {
+                staffVal = getRowValue(row, 'เจ้าหน้าที่ 2') || getRowValue(row, 'เจ้าหน้าที่2') || getRowValue(row, 'เจ้าหน้าที่_2');
+            } else {
+                staffVal = getRowValue(row, 'เจ้าหน้าที่ 1') || getRowValue(row, 'เจ้าหน้าที่1') || getRowValue(row, 'เจ้าหน้าที่_1');
+            }
 
             if (!staffVal || staffVal === '-') {
                 staffVal = getRowValue(row, 'เจ้าหน้าที่') || getRowValue(row, 'ผู้รับผิดชอบ');
@@ -1247,13 +1253,20 @@
                     "กลุ่มภารกิจ": "กลุ่มภารกิจด้านบริการตติยภูมิ",
                     "สังกัด": hosp,
                     "วันบรรจุ": `${year - 5}-05-16`,
-                    "เจ้าหน้าที่ 1": staffName,
-                    "วันที่ส่งเล่ม 1": `${year}-03-15`,
-                    "ระยะเวลาตั้งแต่บรรจุถึงส่งเล่ม": "5 ปี",
-                    "ผลการประเมิน": status,
-                    "หมายเหตุเพิ่มเติม": "",
-                    "IsLocked": "FALSE"
                 };
+
+                if (isSenior) {
+                    rowObj["วันที่ส่งเล่ม 1"] = `${year}-03-15`;
+                    rowObj["เจ้าหน้าที่ 2"] = staffName;
+                } else {
+                    rowObj["เจ้าหน้าที่ 1"] = staffName;
+                    rowObj["วันที่ส่งเล่ม 1"] = `${year}-03-15`;
+                }
+
+                rowObj["ระยะเวลาตั้งแต่บรรจุถึงส่งเล่ม"] = "5 ปี";
+                rowObj["ผลการประเมิน"] = status;
+                rowObj["หมายเหตุเพิ่มเติม"] = "";
+                rowObj["IsLocked"] = "FALSE";
 
                 return rowObj;
             };
@@ -1432,6 +1445,7 @@
                 }
             }
 
+            // 1. Check sheet with exact or similar name
             for (let sheetKey in appData) {
                 let normSheet = sheetKey.replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
                 let isMatch = targetSheetNames.some(target => {
@@ -1453,6 +1467,7 @@
                 }
             }
 
+            // 2. Extract from evaluation level sheets ONLY if no master sheet found
             if (!hasMasterSheet || optionsSet.size === 0) {
                 const levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
                 levels.forEach(lvl => {
@@ -1632,6 +1647,7 @@
             event?.currentTarget?.classList?.add('active');
 
             activeSubKpiFilter = 'all';
+            if (window.activeColumnFilters) window.activeColumnFilters = {};
 
             if(menu === 'dashboard') {
                 document.getElementById('pageTitle').innerText = 'Analytics Dashboard';
@@ -1742,10 +1758,56 @@
 
         function resetPageFilter() {
             activeSubKpiFilter = 'all';
+            if (window.activeColumnFilters) window.activeColumnFilters = {};
             const searchInput = document.getElementById('searchInput');
             if (searchInput) searchInput.value = '';
             highlightSubKpiCards();
             renderTable();
+        }
+
+        function setColumnFilter(colName, val) {
+            if (!window.activeColumnFilters) window.activeColumnFilters = {};
+            if (val === '') {
+                delete window.activeColumnFilters[colName];
+            } else {
+                window.activeColumnFilters[colName] = val;
+            }
+            renderTable();
+        }
+
+        function filterColumnOptions(colName, query) {
+            let colSafeId = colName.replace(/[^a-zA-Z0-9\u0E00-\u0E7F]/g, '_');
+            const container = document.getElementById(`colOpts_${colSafeId}`);
+            if (!container) return;
+
+            const rawData = appData[currentMenu] || [];
+            let uniqueVals = new Set();
+            rawData.forEach(r => {
+                let v = getRowValue(r, colName);
+                if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
+                    uniqueVals.add(String(v).trim());
+                }
+            });
+            let sortedVals = Array.from(uniqueVals).sort((a, b) => a.localeCompare(b, 'th'));
+            let currentFilterVal = (window.activeColumnFilters && window.activeColumnFilters[colName]) || '';
+            let q = query.trim().toLowerCase();
+
+            let html = `<a class="dropdown-item rounded-2 py-1 px-2 ${!currentFilterVal ? 'active bg-success text-white' : ''}" style="cursor:pointer;" onclick="setColumnFilter('${colName.replace(/'/g, "\\'")}', '')">-- ทั้งหมด --</a>`;
+            html += `<div class="dropdown-divider my-1"></div>`;
+
+            let filtered = sortedVals.filter(opt => !q || opt.toLowerCase().includes(q));
+
+            if (filtered.length === 0) {
+                html += `<div class="text-muted small text-center py-2"><i class="fas fa-search me-1"></i> ไม่พบข้อมูล</div>`;
+            } else {
+                filtered.forEach(opt => {
+                    let isSel = (currentFilterVal === opt);
+                    let optSafe = opt.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    html += `<a class="dropdown-item rounded-2 py-1 px-2 text-truncate ${isSel ? 'active bg-success text-white' : ''}" style="cursor:pointer;" onclick="setColumnFilter('${colName.replace(/'/g, "\\'")}', '${optSafe}')">${opt}</a>`;
+                });
+            }
+
+            container.innerHTML = html;
         }
 
         function resetDashboardFilters() {
@@ -1933,12 +1995,8 @@
                         yearBreakdown[yStr].total++;
                     }
 
-                    // Process Staff Workload exclusively using 'เจ้าหน้าที่ 1' column for all sheets
                     let matchedStaff = getStaffFromRow(row, lvl, activeStaffMap, disabledStaffMap);
-                    if(matchedStaff) {
-                        if (!staffBreakdown[matchedStaff]) {
-                            staffBreakdown[matchedStaff] = { pass: 0, wait: 0, fail: 0, total: 0 };
-                        }
+                    if(matchedStaff && staffBreakdown[matchedStaff]) {
                         staffBreakdown[matchedStaff][cat]++;
                         staffBreakdown[matchedStaff].total++;
                     }
@@ -2197,7 +2255,7 @@
                 }
             });
 
-            // 5. Staff Chart (ภาระงานแยกตามเจ้าหน้าที่ - จากคอลัมน์ เจ้าหน้าที่ 1 และ Active Staff เท่านั้น)
+            // 5. Staff Chart
             let sortedStaff = Object.keys(staffBreakdown).filter(s => staffBreakdown[s].total > 0).sort((a,b) => staffBreakdown[b].total - staffBreakdown[a].total);
             let staffWrapper = document.getElementById('staffChartWrapper');
             if (staffWrapper) {
@@ -2327,7 +2385,7 @@
                 }
             });
 
-            // 7. Meeting Staff Chart (เจ้าหน้าที่จัดประชุม - ชำนาญการ & ชำนาญการ พยาบาลวิชาชีพ)
+            // 7. Meeting Staff Chart
             let meetingStaffBreakdown = {};
             let meetingStaffLevels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)'];
 
@@ -2447,7 +2505,7 @@
                 }
             });
 
-            // 8. Pending Reason Chart (รายงานเหตุผลรายการที่อยู่ระหว่างดำเนินการ - ใช้คอลัมน์ "หมายเหตุ" เท่านั้น)
+            // 8. Pending Reason Chart
             let sortedReasons = Object.keys(pendingReasonCounts).sort((a, b) => pendingReasonCounts[b] - pendingReasonCounts[a]);
             let prWrapper = document.getElementById('pendingReasonChartWrapper');
             if (prWrapper) {
@@ -2502,7 +2560,6 @@
                             const clickedReason = sortedReasons[index];
                             
                             if (activePendingReasonFilter === clickedReason) {
-                                // Toggle OFF when clicking the same bar
                                 activePendingReasonFilter = '';
                                 if (activeKpiFilter === 'wait') {
                                     activeKpiFilter = 'all';
@@ -2515,7 +2572,6 @@
                                 const searchInput = document.getElementById('searchInput');
                                 if (searchInput) searchInput.value = '';
                             } else {
-                                // Toggle ON
                                 activePendingReasonFilter = clickedReason;
                                 if (activeKpiFilter !== 'wait') {
                                     activeKpiFilter = 'wait';
@@ -2578,6 +2634,19 @@
                 });
             }
 
+            if (window.activeColumnFilters && Object.keys(window.activeColumnFilters).length > 0) {
+                data = data.filter(row => {
+                    for (let col in window.activeColumnFilters) {
+                        let filterVal = window.activeColumnFilters[col];
+                        if (filterVal) {
+                            let cellVal = String(getRowValue(row, col) || '').trim();
+                            if (cellVal !== filterVal) return false;
+                        }
+                    }
+                    return true;
+                });
+            }
+
             if (currentMenu !== 'Users') {
                 updateSubKpi(currentMenu, data);
             }
@@ -2607,10 +2676,53 @@
 
             currentHeaders = Object.keys(data[0]); 
             let trHead = document.createElement('tr');
-            if(currentUser) trHead.innerHTML = '<th style="min-width: 220px;" class="text-center">จัดการ</th>';
+            if(currentUser) trHead.innerHTML = '<th style="min-width: 220px;" class="text-center align-middle">จัดการ</th>';
+            
+            if (!window.activeColumnFilters) window.activeColumnFilters = {};
+
             currentHeaders.forEach(col => {
                 if(col === 'IsLocked') return;
-                trHead.innerHTML += `<th>${col}</th>`; 
+                
+                let uniqueVals = new Set();
+                rawData.forEach(r => {
+                    let v = getRowValue(r, col);
+                    if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
+                        uniqueVals.add(String(v).trim());
+                    }
+                });
+                let sortedVals = Array.from(uniqueVals).sort((a, b) => a.localeCompare(b, 'th'));
+                let currentFilterVal = window.activeColumnFilters[col] || '';
+                let colSafeId = String(col).replace(/[^a-zA-Z0-9\u0E00-\u0E7F]/g, '_');
+
+                let th = document.createElement('th');
+                th.style.position = 'relative';
+                th.style.whiteSpace = 'nowrap';
+                
+                let dropdownHtml = `
+                    <div class="dropdown d-inline-block ms-1 custom-search-select">
+                        <span class="dropdown-toggle text-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor:pointer;" title="กรองคอลัมน์นี้">
+                            <i class="fas fa-filter ${currentFilterVal ? 'text-success' : 'text-muted'}" style="font-size:0.75rem;"></i>
+                        </span>
+                        <div class="dropdown-menu p-2 shadow-lg" style="min-width: 200px; max-height: 280px; overflow-y: auto; border-radius: 12px; font-size: 0.85rem;" id="colDrop_${colSafeId}">
+                            <div class="p-1 mb-2 border-bottom" onclick="event.stopPropagation()">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control border-start-0 shadow-none py-1" id="colSearch_${colSafeId}" placeholder="พิมพ์ค้นหา..." oninput="filterColumnOptions('${col.replace(/'/g, "\\'")}', this.value)" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()" style="font-size: 0.8rem;">
+                                </div>
+                            </div>
+                            <div id="colOpts_${colSafeId}">
+                                <a class="dropdown-item rounded-2 py-1 px-2 ${!currentFilterVal ? 'active bg-success text-white' : ''}" style="cursor:pointer;" onclick="setColumnFilter('${col.replace(/'/g, "\\'")}', '')">-- ทั้งหมด --</a>
+                                <div class="dropdown-divider my-1"></div>
+                `;
+                sortedVals.forEach(opt => {
+                    let isSel = (currentFilterVal === opt);
+                    let optSafe = String(opt).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    dropdownHtml += `<a class="dropdown-item rounded-2 py-1 px-2 text-truncate ${isSel ? 'active bg-success text-white' : ''}" style="cursor:pointer;" onclick="setColumnFilter('${col.replace(/'/g, "\\'")}', '${optSafe}')">${opt}</a>`;
+                });
+                dropdownHtml += `</div></div></div>`;
+
+                th.innerHTML = `${col} ${dropdownHtml}`;
+                trHead.appendChild(th);
             });
             thead.appendChild(trHead);
 
