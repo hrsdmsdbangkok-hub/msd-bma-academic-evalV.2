@@ -455,6 +455,64 @@
         .report-item-value { font-size: 0.85rem; font-weight: 600; color: #0f172a; word-break: break-word; }
         .report-status-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-weight: 700; font-size: 0.78rem; }
 
+        /* Modern Floating Hover Tooltip for Academic Work Titles */
+        .global-work-tooltip {
+            position: fixed;
+            display: none;
+            z-index: 99999;
+            max-width: 520px;
+            min-width: 260px;
+            background: linear-gradient(145deg, #0f172a, #1e293b);
+            color: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 14px;
+            box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.12);
+            font-size: 0.92rem;
+            line-height: 1.6;
+            pointer-events: none;
+            transition: opacity 0.12s cubic-bezier(0.4, 0, 0.2, 1), transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(6px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-left: 4px solid #10b981;
+        }
+        .global-work-tooltip.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .global-work-tooltip .tooltip-header {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #34d399;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding-bottom: 5px;
+        }
+        .global-work-tooltip .tooltip-body {
+            font-size: 0.9rem;
+            color: #f8fafc;
+            font-weight: 500;
+            word-break: break-word;
+            white-space: normal;
+        }
+
+        .work-title-cell {
+            cursor: pointer;
+            transition: color 0.15s ease;
+        }
+        .work-title-cell:hover {
+            color: #047857 !important;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
         /* Mobile Drawer Backdrop Overlay */
         #mobileSidebarOverlay {
             display: none;
@@ -573,6 +631,12 @@
 
     <!-- Mobile Drawer Overlay Backdrop -->
     <div id="mobileSidebarOverlay" onclick="closeMobileSidebar()"></div>
+
+    <!-- Floating Hover Card for Academic Work Titles -->
+    <div id="globalWorkTooltip" class="global-work-tooltip">
+        <div class="tooltip-header"><i class="fas fa-book-open"></i> <span id="workTooltipColName">ชื่อผลงาน</span></div>
+        <div class="tooltip-body" id="workTooltipText"></div>
+    </div>
 
     <div class="sidebar">
         <div class="sidebar-brand">
@@ -1118,6 +1182,50 @@
 
         let formDropdownStores = {};
         let cachedNotificationList = [];
+
+        function showWorkTooltip(e, colName, fullText) {
+            const tooltip = document.getElementById('globalWorkTooltip');
+            const colHeader = document.getElementById('workTooltipColName');
+            const body = document.getElementById('workTooltipText');
+            if (!tooltip || !body) return;
+
+            colHeader.innerText = colName || 'ชื่อผลงาน';
+            body.innerText = fullText || '';
+            tooltip.classList.add('show');
+            moveWorkTooltip(e);
+        }
+
+        function moveWorkTooltip(e) {
+            const tooltip = document.getElementById('globalWorkTooltip');
+            if (!tooltip || !tooltip.classList.contains('show')) return;
+
+            const offset = 14;
+            let left = e.clientX + offset;
+            let top = e.clientY + offset;
+
+            const rect = tooltip.getBoundingClientRect();
+            const width = rect.width || 320;
+            const height = rect.height || 100;
+
+            if (left + width > window.innerWidth - 12) {
+                left = e.clientX - width - 10;
+            }
+            if (top + height > window.innerHeight - 12) {
+                top = e.clientY - height - 10;
+            }
+            if (left < 10) left = 10;
+            if (top < 10) top = 10;
+
+            tooltip.style.left = `${left}px`;
+            tooltip.style.top = `${top}px`;
+        }
+
+        function hideWorkTooltip() {
+            const tooltip = document.getElementById('globalWorkTooltip');
+            if (tooltip) {
+                tooltip.classList.remove('show');
+            }
+        }
 
         const baseColors = {
             greenStart: '#047857', greenEnd: '#34d399',
@@ -3361,8 +3469,13 @@
                         td.style.whiteSpace = 'nowrap';
                         td.style.overflow = 'hidden';
                         td.style.textOverflow = 'ellipsis';
-                        td.setAttribute('title', String(displayVal));
+                        td.className += " work-title-cell";
                         td.innerText = displayVal;
+                        if (displayVal && displayVal !== '-') {
+                            td.onmouseenter = (e) => showWorkTooltip(e, col, displayVal);
+                            td.onmousemove = (e) => moveWorkTooltip(e);
+                            td.onmouseleave = () => hideWorkTooltip();
+                        }
                     } else {
                         td.innerText = displayVal;
                     }
