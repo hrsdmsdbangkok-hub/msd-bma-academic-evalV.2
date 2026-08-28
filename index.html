@@ -1418,9 +1418,9 @@
                     const vol2DateStr = getRowValue(row, 'วันที่ส่งเล่ม 2') || getRowValue(row, 'สนพ. รับผลงาน') || getRowValue(row, 'สนพ. รับเรื่อง');
                     if (vol2DateStr && vol2DateStr !== '-' && String(vol2DateStr).trim() !== '') return;
 
-                    // Check status - if cancelled or failed, no deadline alert needed
+                    // Check status - ONLY alert for cases with status "อยู่ระหว่างดำเนินการ"
                     const statusStr = String(getRowValue(row, 'ผลการประเมิน')).trim();
-                    if (statusStr.includes('ไม่ผ่าน') || statusStr.includes('ยกเลิก') || statusStr.includes('ถอน')) return;
+                    if (!statusStr.includes('อยู่ระหว่างดำเนินการ')) return;
 
                     const deadlineVal = getRowValue(row, 'วันที่ครบกำหนด 6 เดือน') || getRowValue(row, 'ครบกำหนด 6 เดือน');
                     const deadlineDate = parseDateStrict(deadlineVal);
@@ -3202,13 +3202,14 @@
                         else if(val.includes('ประชุม') || val.includes('ระหว่าง')) badgeClass = 'bg-warning text-dark';
                         td.innerHTML = `<span class="badge ${badgeClass} badge-status">${val}</span>`;
                     } else if (col.includes('ครบกำหนด 6 เดือน') || col.includes('วันที่ครบกำหนด 6 เดือน')) {
+                        let statusVal = String(getRowValue(row, 'ผลการประเมิน')).trim();
                         let vol2Date = getRowValue(row, 'วันที่ส่งเล่ม 2') || getRowValue(row, 'สนพ. รับผลงาน') || getRowValue(row, 'สนพ. รับเรื่อง');
                         let isVol2Sent = vol2Date && vol2Date !== '-' && String(vol2Date).trim() !== '';
                         let dObj = parseDateStrict(val);
 
                         if (isVol2Sent) {
                             td.innerHTML = `<span>${displayVal}</span> <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-check-circle me-1"></i>ส่งเล่ม 2 แล้ว</span>`;
-                        } else if (dObj) {
+                        } else if (dObj && statusVal.includes('อยู่ระหว่างดำเนินการ')) {
                             let diffTime = dObj.getTime() - today.getTime();
                             let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                             let badgeHtml = '';
