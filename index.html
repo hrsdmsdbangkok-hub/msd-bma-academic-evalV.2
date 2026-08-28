@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Google Fonts: Prompt & Sarabun -->
+    <!-- Google Fonts: Prompt & Sarabun & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
@@ -24,12 +24,14 @@
             --bma-primary-dark: #065f46;
             --bma-secondary: #0d9488;
             --bma-accent: #f59e0b;
-            --bma-bg: #f3f4f6;
+            --bma-bg: #f8fafc;
             --bma-dark: #0f172a;
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --shadow-subtle: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            --glass-bg: rgba(255, 255, 255, 0.92);
+            --shadow-subtle: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --shadow-card: 0 12px 30px -4px rgba(15, 23, 42, 0.06), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
             --shadow-hover: 0 20px 35px -10px rgba(13, 148, 136, 0.15), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-            --sidebar-width: 320px;
+            --sidebar-width: 240px;
+            --sidebar-collapsed-width: 72px;
         }
         
         body { 
@@ -37,42 +39,43 @@
             background-color: var(--bma-bg); 
             color: #1e293b;
             overflow-x: hidden;
-            background-image: radial-gradient(circle at 10% 20%, rgba(13, 148, 136, 0.04) 0%, transparent 40%),
-                            radial-gradient(circle at 90% 80%, rgba(5, 150, 105, 0.04) 0%, transparent 40%);
+            background-image: radial-gradient(circle at 10% 20%, rgba(13, 148, 136, 0.03) 0%, transparent 40%),
+                              radial-gradient(circle at 90% 80%, rgba(5, 150, 105, 0.03) 0%, transparent 40%);
         }
 
         .sidebar { 
             height: 100vh; 
-            background: linear-gradient(160deg, #022c22 0%, #064e3b 50%, #022c22 100%);
+            background: linear-gradient(165deg, #022c22 0%, #064e3b 50%, #022c22 100%);
             color: white; 
             position: fixed; 
             width: var(--sidebar-width); 
             z-index: 1000; 
             overflow-y: auto; 
             box-shadow: 8px 0 30px rgba(0,0,0,0.12); 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-right: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
         }
         .sidebar-brand { 
-            padding: 24px 20px 18px; 
+            padding: 20px 14px 16px; 
             text-align: center; 
             border-bottom: 1px solid rgba(255,255,255,0.08); 
             background: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
+            transition: all 0.3s;
         }
         .sidebar-brand .brand-logo-badge {
             width: auto;
-            min-width: 75px;
-            padding: 0 12px;
-            height: 48px;
-            margin: 0 auto 10px;
-            border-radius: 12px;
+            min-width: 65px;
+            padding: 0 10px;
+            height: 42px;
+            margin: 0 auto 8px;
+            border-radius: 10px;
             background: #059669;
             color: #ffffff;
             font-weight: 800;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -81,60 +84,92 @@
             transition: transform 0.3s ease;
         }
         .sidebar-brand .brand-logo-badge:hover { transform: scale(1.05); }
-        .sidebar .nav-item { margin: 4px 14px; }
+        .sidebar .nav-item { margin: 3px 10px; }
         .sidebar .nav-link { 
             color: #99f6e4; 
-            padding: 11px 16px; 
-            font-size: 0.88rem; 
+            padding: 10px 14px; 
+            font-size: 0.85rem; 
             font-weight: 500;
-            border-radius: 12px;
-            transition: all 0.3s ease;
+            border-radius: 10px;
+            transition: all 0.25s ease;
             cursor: pointer;
             display: flex;
             align-items: center;
             white-space: nowrap;
         }
-        .sidebar .nav-link i { width: 26px; text-align: center; margin-right: 10px; font-size: 1.1rem; flex-shrink: 0; transition: transform 0.3s; }
-        .sidebar .nav-link:hover i { transform: scale(1.15); }
+        .sidebar .nav-link i { width: 24px; text-align: center; margin-right: 8px; font-size: 1.05rem; flex-shrink: 0; transition: transform 0.3s; }
+        .sidebar .nav-link:hover i { transform: scale(1.12); }
         .sidebar .nav-link.active, .sidebar .nav-link:hover { 
             color: white; 
             background: rgba(255, 255, 255, 0.12); 
-            transform: translateX(4px);
+            transform: translateX(3px);
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(8px);
         }
         .sidebar .nav-link.active { 
             background: linear-gradient(135deg, #0d9488, #059669); 
-            box-shadow: 0 8px 20px rgba(13, 148, 136, 0.4);
+            box-shadow: 0 6px 16px rgba(13, 148, 136, 0.4);
         }
         .sidebar .nav-link.active i { color: #fde047; }
 
         .sidebar-footer {
             margin-top: auto;
-            padding: 18px 15px;
+            padding: 14px 10px;
             text-align: center;
             color: rgba(255, 255, 255, 0.5);
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             background: rgba(0, 0, 0, 0.15);
         }
 
-        .main-content { margin-left: var(--sidebar-width); padding: 25px 35px; min-height: 100vh; }
+        /* Collapsed Sidebar Styles */
+        body.sidebar-collapsed .sidebar { width: var(--sidebar-collapsed-width); }
+        body.sidebar-collapsed .main-content { margin-left: var(--sidebar-collapsed-width); }
+        body.sidebar-collapsed .sidebar-brand-text,
+        body.sidebar-collapsed .sidebar-section-title,
+        body.sidebar-collapsed .sidebar-footer,
+        body.sidebar-collapsed .nav-link span { display: none !important; }
+        body.sidebar-collapsed .sidebar .nav-link { justify-content: center; padding: 11px 0; margin: 4px 6px; }
+        body.sidebar-collapsed .sidebar .nav-link i { margin-right: 0; font-size: 1.2rem; }
+        body.sidebar-collapsed .sidebar-brand { padding: 16px 6px 12px; }
+        body.sidebar-collapsed .brand-logo-badge { min-width: 44px; width: 44px; padding: 0; font-size: 0.75rem; margin-bottom: 0; }
+
+        .main-content { 
+            margin-left: var(--sidebar-width); 
+            padding: 22px 28px; 
+            min-height: 100vh; 
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
         .topbar { 
             background: var(--glass-bg); 
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            padding: 10px 24px; 
-            border-radius: 18px; 
-            margin-bottom: 20px; 
+            padding: 10px 20px; 
+            border-radius: 16px; 
+            margin-bottom: 18px; 
             box-shadow: var(--shadow-subtle); 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 12px;
             border: 1px solid rgba(255, 255, 255, 0.8);
         }
+
+        .btn-sidebar-toggle {
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .btn-sidebar-toggle:hover { background: #f1f5f9; color: #0d9488; border-color: #cbd5e1; }
 
         .sync-badge {
             background: #f0fdf4;
@@ -161,10 +196,7 @@
             animation: pulse-green 2s infinite;
             flex-shrink: 0;
         }
-        .sync-dot.demo-dot {
-            background-color: #f59e0b;
-            animation: pulse-amber 2s infinite;
-        }
+        .sync-dot.demo-dot { background-color: #f59e0b; animation: pulse-amber 2s infinite; }
         @keyframes pulse-green {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
             70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
@@ -188,10 +220,7 @@
             cursor: pointer;
             user-select: none;
         }
-        .kpi-card:hover { 
-            transform: translateY(-3px) scale(1.005); 
-            box-shadow: var(--shadow-hover); 
-        }
+        .kpi-card:hover { transform: translateY(-3px) scale(1.005); box-shadow: var(--shadow-hover); }
         .kpi-card.active-filter { 
             border-color: var(--bma-secondary) !important; 
             background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
@@ -208,187 +237,199 @@
 
         .chart-container { 
             background: white; 
-            border-radius: 24px; 
-            padding: 22px; 
+            border-radius: 22px; 
+            padding: 20px; 
             box-shadow: var(--shadow-subtle); 
             height: 100%;
-            border: 1px solid rgba(226, 232, 240, 0.8);
+            border: 1px solid rgba(226, 232, 240, 0.8); 
             transition: box-shadow 0.3s;
         }
         .chart-container:hover { box-shadow: var(--shadow-hover); }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .chart-title { font-size: 1.05rem; font-weight: 700; color: var(--bma-dark); display: flex; align-items: center; gap: 10px;}
-        .chart-title i { color: var(--bma-secondary); font-size: 1.15rem; }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .chart-title { font-size: 1rem; font-weight: 700; color: var(--bma-dark); display: flex; align-items: center; gap: 8px;}
+        .chart-title i { color: var(--bma-secondary); font-size: 1.1rem; }
 
         .table-wrapper { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 20px; 
-            box-shadow: var(--shadow-subtle); 
-            border: 1px solid rgba(226, 232, 240, 0.8); 
+            background: #ffffff; 
+            padding: 22px; 
+            border-radius: 22px; 
+            box-shadow: var(--shadow-card); 
+            border: 1px solid rgba(226, 232, 240, 0.9); 
             display: flex;
             flex-direction: column;
         }
 
         .table-scroll-container {
             max-height: calc(100vh - 270px);
-            min-height: 380px;
+            min-height: 390px;
             overflow: auto;
             border-radius: 14px;
             border: 1px solid #e2e8f0;
-            background: white;
+            background: #ffffff;
+            position: relative;
         }
 
-        .table-scroll-container::-webkit-scrollbar { width: 10px; height: 10px; }
-        .table-scroll-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
-        .table-scroll-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; border: 2px solid #f1f5f9; }
+        .table-scroll-container::-webkit-scrollbar { width: 8px; height: 8px; }
+        .table-scroll-container::-webkit-scrollbar-track { background: #f8fafc; border-radius: 6px; }
+        .table-scroll-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px; border: 2px solid #f8fafc; }
         .table-scroll-container::-webkit-scrollbar-thumb:hover { background: #0d9488; }
 
         .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; }
+        
+        /* Modern Sticky Header */
         .table-custom th { 
             background: #f8fafc !important; 
-            color: #475569 !important; 
+            color: #334155 !important; 
             font-weight: 700; 
-            padding: 12px 16px; 
+            font-size: 0.84rem;
+            padding: 13px 15px; 
             border-bottom: 2px solid #e2e8f0; 
             white-space: nowrap; 
-            position: sticky; top: 0; z-index: 10;
+            position: sticky; 
+            top: 0; 
+            z-index: 10;
+            letter-spacing: 0.2px;
         }
-        .table-custom td { padding: 12px 16px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; color: #334155; font-size: 0.92rem; white-space: nowrap; }
-        .table-custom tbody tr { transition: all 0.2s ease; cursor: pointer; }
-        .table-custom tbody tr:hover { background-color: #f0fdf4; transform: scale(1.001); box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+
+        /* Modern Filter Button on Header */
+        .th-filter-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            padding: 2px 6px;
+            font-size: 0.72rem;
+            transition: all 0.2s ease;
+            color: #94a3b8;
+        }
+        .th-filter-btn:hover { background: #e2e8f0; color: #0f172a; }
+        .th-filter-btn.active-col-filter {
+            background: #ecfdf5;
+            color: #059669;
+            border-color: rgba(5, 150, 105, 0.3);
+            font-weight: 700;
+        }
+
+        /* Sticky Left Columns (up to Surname) */
+        .table-custom th.sticky-col {
+            position: sticky;
+            top: 0;
+            background: #f1f5f9 !important;
+            z-index: 25 !important;
+            box-shadow: inset -1px 0 0 #cbd5e1;
+        }
+        .table-custom td.sticky-col {
+            position: sticky;
+            background: #ffffff;
+            z-index: 6;
+            box-shadow: inset -1px 0 0 #f1f5f9;
+        }
+        .table-custom tr:hover td.sticky-col { background-color: #f0fdf4 !important; }
+
+        /* Right shadow elevation for the last frozen column */
+        .sticky-col-last {
+            border-right: 2px solid #cbd5e1 !important;
+            box-shadow: 6px 0 12px -3px rgba(15, 23, 42, 0.08) !important;
+        }
+
+        .table-custom td { 
+            padding: 11px 15px; 
+            vertical-align: middle; 
+            border-bottom: 1px solid #f1f5f9; 
+            color: #334155; 
+            font-size: 0.88rem; 
+            white-space: nowrap; 
+        }
+        .table-custom tbody tr { transition: all 0.15s ease; cursor: pointer; }
+        .table-custom tbody tr:hover { background-color: #f0fdf4; }
 
         /* Action Buttons */
         .btn-action-edit {
-            background-color: #fef3c7; color: #b45309; font-weight: 600; font-size: 0.8rem; padding: 5px 11px;
-            border-radius: 10px; border: 1px solid rgba(245, 158, 11, 0.3); transition: all 0.2s ease;
-            display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+            background-color: #fef3c7; color: #b45309; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
+            border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.3); transition: all 0.2s ease;
+            display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
-        .btn-action-edit:hover { background-color: #fde68a; color: #78350f; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2); }
+        .btn-action-edit:hover { background-color: #fde68a; color: #78350f; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(245, 158, 11, 0.15); }
 
         .btn-action-delete {
-            background-color: #fee2e2; color: #dc2626; font-weight: 600; font-size: 0.8rem; padding: 5px 11px;
-            border-radius: 10px; border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s ease;
-            display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+            background-color: #fee2e2; color: #dc2626; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
+            border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s ease;
+            display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
-        .btn-action-delete:hover { background-color: #fca5a5; color: #991b1b; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2); }
+        .btn-action-delete:hover { background-color: #fca5a5; color: #991b1b; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(239, 68, 68, 0.15); }
 
-        /* Lock / Unlock Buttons */
         .btn-action-lock {
-            background-color: #d1fae5; color: #047857; font-weight: 600; font-size: 0.8rem; padding: 5px 11px;
-            border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.3); transition: all 0.2s ease;
-            display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+            background-color: #d1fae5; color: #047857; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
+            border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3); transition: all 0.2s ease;
+            display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
-        .btn-action-lock:hover { background-color: #a7f3d0; color: #065f46; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); }
+        .btn-action-lock:hover { background-color: #a7f3d0; color: #065f46; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(16, 185, 129, 0.15); }
 
         .btn-action-unlock {
-            background-color: #fee2e2; color: #dc2626; font-weight: 600; font-size: 0.8rem; padding: 5px 11px;
-            border-radius: 10px; border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s ease;
-            display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+            background-color: #fee2e2; color: #dc2626; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
+            border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s ease;
+            display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
-        .btn-action-unlock:hover { background-color: #fca5a5; color: #991b1b; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2); }
+        .btn-action-unlock:hover { background-color: #fca5a5; color: #991b1b; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(239, 68, 68, 0.15); }
 
         .btn-action-resetpass {
-            background-color: #e0f2fe; color: #0284c7; font-weight: 600; font-size: 0.8rem; padding: 5px 11px;
-            border-radius: 10px; border: 1px solid rgba(2, 132, 199, 0.3); transition: all 0.2s ease;
-            display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+            background-color: #e0f2fe; color: #0284c7; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
+            border-radius: 8px; border: 1px solid rgba(2, 132, 199, 0.3); transition: all 0.2s ease;
+            display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
-        .btn-action-resetpass:hover { background-color: #bae6fd; color: #0369a1; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(2, 132, 199, 0.2); }
+        .btn-action-resetpass:hover { background-color: #bae6fd; color: #0369a1; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(2, 132, 199, 0.15); }
 
-        .badge-status { padding: 6px 12px; border-radius: 30px; font-weight: 600; font-size: 0.8rem; letter-spacing: 0.3px; }
-        .btn-modern { border-radius: 14px; padding: 10px 22px; font-weight: 600; transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .btn-modern:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+        .badge-status { padding: 5px 12px; border-radius: 30px; font-weight: 600; font-size: 0.78rem; letter-spacing: 0.3px; }
+        .btn-modern { border-radius: 12px; padding: 8px 18px; font-weight: 600; transition: all 0.25s; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
+        .btn-modern:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
 
-        .dynamic-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .form-control, .form-select { border-radius: 12px; padding: 12px 16px; border-color: #cbd5e1; font-size: 0.95rem; box-shadow: 0 2px 4px rgba(0,0,0,0.01); }
-        .form-control:focus, .form-select:focus { border-color: var(--bma-secondary); box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.12); }
+        .dynamic-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-control, .form-select { border-radius: 10px; padding: 10px 14px; border-color: #cbd5e1; font-size: 0.92rem; }
+        .form-control:focus, .form-select:focus { border-color: var(--bma-secondary); box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12); }
         .readonly-field { background-color: #f1f5f9; border-style: dashed; color: #64748b; font-weight: 500;}
 
         /* Custom Searchable Select Dropdown */
-        .custom-search-select .dropdown-menu {
-            border: 1px solid #cbd5e1;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
-        }
-        .custom-search-select .dropdown-item {
-            font-size: 0.85rem;
-            padding: 6px 12px;
-            transition: all 0.15s ease;
-        }
-        .custom-search-select .dropdown-item:hover {
-            background-color: #f0fdf4;
-            color: #047857;
-        }
+        .custom-search-select .dropdown-menu { border: 1px solid #cbd5e1; box-shadow: 0 15px 30px rgba(0,0,0,0.12); }
+        .custom-search-select .dropdown-item { font-size: 0.82rem; padding: 5px 10px; transition: all 0.15s ease; }
+        .custom-search-select .dropdown-item:hover { background-color: #f0fdf4; color: #047857; }
 
         .print-modal { font-family: 'Prompt', 'Sarabun', sans-serif !important; padding: 16px 20px; background: #ffffff; color: #1e293b; }
         .report-header { text-align: center; position: relative; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 2px solid #059669; }
         .report-logo-badge {
-            display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 80px; padding: 0 12px; height: 38px;
-            background: #059669; color: white; font-weight: 800; font-size: 0.9rem; border-radius: 8px; margin-bottom: 4px;
-            box-shadow: 0 4px 10px rgba(5,150,105,0.3);
+            display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 80px; padding: 0 12px; height: 36px;
+            background: #059669; color: white; font-weight: 800; font-size: 0.88rem; border-radius: 8px; margin-bottom: 4px;
         }
-        .report-title { font-weight: 800; font-size: 1.25rem; color: #064e3b; margin-bottom: 1px; letter-spacing: -0.3px; }
-        .report-subtitle { font-weight: 600; font-size: 0.95rem; color: #334155; margin-bottom: 6px; }
+        .report-title { font-weight: 800; font-size: 1.2rem; color: #064e3b; margin-bottom: 1px; }
+        .report-subtitle { font-weight: 600; font-size: 0.92rem; color: #334155; margin-bottom: 4px; }
         .report-level-pill {
             display: inline-block; background: linear-gradient(135deg, #059669, #0d9488); color: #ffffff;
-            padding: 3px 18px; border-radius: 30px; font-size: 0.82rem; font-weight: 700; box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2);
+            padding: 2px 16px; border-radius: 30px; font-size: 0.8rem; font-weight: 700;
         }
 
         .report-section {
-            background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #059669; border-radius: 12px;
-            padding: 10px 14px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+            background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #059669; border-radius: 10px;
+            padding: 10px 14px; margin-bottom: 10px;
         }
         .report-section-title {
-            font-size: 0.88rem; font-weight: 700; color: #0f172a; letter-spacing: 0.2px; margin-bottom: 8px;
-            display: flex; align-items: center; gap: 8px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 4px;
+            font-size: 0.85rem; font-weight: 700; color: #0f172a; margin-bottom: 6px;
+            display: flex; align-items: center; gap: 6px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 4px;
         }
-        .report-section-title i { color: #0d9488; font-size: 0.95rem; }
-
-        .report-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 14px; }
+        .report-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px; }
         .report-item { display: flex; flex-direction: column; }
         .report-item.full-width { grid-column: span 3; }
         .report-item.span-2 { grid-column: span 2; }
-        .report-item-label { font-size: 0.75rem; font-weight: 700; color: #64748b; letter-spacing: 0.2px; margin-bottom: 1px; }
-        .report-item-value { font-size: 0.88rem; font-weight: 600; color: #0f172a; word-break: break-word; line-height: 1.25; }
-        .report-status-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.2px; }
+        .report-item-label { font-size: 0.72rem; font-weight: 700; color: #64748b; margin-bottom: 1px; }
+        .report-item-value { font-size: 0.85rem; font-weight: 600; color: #0f172a; word-break: break-word; }
+        .report-status-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-weight: 700; font-size: 0.78rem; }
 
         @page { size: A4 portrait; margin: 5mm 8mm; }
-
         @media print {
-            html, body {
-                height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important;
-                overflow: visible !important; background: #ffffff !important;
-                -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
-            }
+            html, body { height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; background: #ffffff !important; }
             body > *:not(#printModal) { display: none !important; }
             .modal-backdrop { display: none !important; }
-
-            #printModal {
-                position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important;
-                height: auto !important; margin: 0 !important; padding: 0 !important; display: block !important;
-                overflow: visible !important; opacity: 1 !important; visibility: visible !important; background: #ffffff !important;
-            }
-
-            #printModal .modal-dialog, #printModal .modal-content, #printModal .modal-body {
-                position: static !important; width: 100% !important; max-width: 100% !important; margin: 0 !important;
-                padding: 0 !important; border: none !important; box-shadow: none !important; background: #ffffff !important; overflow: visible !important;
-            }
-
+            #printModal { position: absolute !important; left: 0 !important; top: 0 !important; width: 100% !important; display: block !important; overflow: visible !important; background: #ffffff !important; }
+            #printModal .modal-dialog, #printModal .modal-content, #printModal .modal-body { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; box-shadow: none !important; background: #ffffff !important; }
             .modal-footer, .btn-close { display: none !important; }
-            .print-modal { padding: 0 !important; margin: 0 !important; background: #ffffff !important; }
-            .report-header { padding-bottom: 4px !important; margin-bottom: 6px !important; border-bottom: 2px solid #059669 !important; }
-            .report-logo-badge { height: 32px !important; font-size: 0.85rem !important; margin-bottom: 2px !important; }
-            .report-title { font-size: 1.15rem !important; margin-bottom: 0 !important; }
-            .report-subtitle { font-size: 0.88rem !important; margin-bottom: 4px !important; }
-            .report-level-pill { padding: 1px 14px !important; font-size: 0.78rem !important; }
-            .report-section {
-                border: 1px solid #cbd5e1 !important; border-left: 4px solid #059669 !important; background: #f8fafc !important;
-                page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 6px !important; padding: 6px 10px !important;
-            }
-            .report-section-title { font-size: 0.8rem !important; margin-bottom: 5px !important; padding-bottom: 3px !important; }
-            .report-grid { gap: 5px 12px !important; }
-            .report-item-label { font-size: 0.72rem !important; }
-            .report-item-value { font-size: 0.82rem !important; }
-            .report-status-badge { padding: 1px 10px !important; font-size: 0.75rem !important; }
+            .report-section { page-break-inside: avoid !important; break-inside: avoid !important; margin-bottom: 6px !important; }
         }
     </style>
 </head>
@@ -397,41 +438,48 @@
     <div class="sidebar">
         <div class="sidebar-brand">
             <div class="brand-logo-badge">MSD BMA</div>
-            <div style="letter-spacing: 0.5px; font-weight: 700; font-size: 1rem;">ระบบติดตามการประเมินผลงานทางวิชาการ <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;">Ver.2</span></div>
-            <div class="mt-1 text-info" style="font-size: 0.78rem; font-weight: 500; opacity: 0.85;">สำนักการแพทย์ กรุงเทพมหานคร</div>
-        </div>
-        <div class="nav flex-column mt-3" id="menuContainer">
-            <div class="nav-item">
-                <a class="nav-link active" onclick="changeMenu('dashboard')"><i class="fas fa-chart-line"></i> Analytics Dashboard</a>
+            <div class="sidebar-brand-text">
+                <div style="letter-spacing: 0.3px; font-weight: 700; font-size: 0.88rem;">ระบบติดตามการประเมินผลงาน <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.65rem;">Ver.2</span></div>
+                <div class="mt-1 text-info" style="font-size: 0.74rem; font-weight: 500; opacity: 0.85;">สำนักการแพทย์ กทม.</div>
             </div>
-            <div class="px-4 mt-3 mb-1 text-uppercase text-light" style="font-size: 0.7rem; opacity: 0.5; font-weight: 700; letter-spacing: 1px;">ระดับการประเมิน</div>
-            <div class="nav-item"><a class="nav-link" onclick="changeMenu('ชำนาญการ')"><i class="fas fa-user-tie"></i> ชำนาญการ</a></div>
-            <div class="nav-item"><a class="nav-link" onclick="changeMenu('ชำนาญการ (พยาบาลวิชาชีพ)')"><i class="fas fa-user-nurse"></i> ชำนาญการ (พยาบาลวิชาชีพ)</a></div>
-            <div class="nav-item"><a class="nav-link" onclick="changeMenu('ชำนาญการพิเศษ')"><i class="fas fa-award"></i> ชำนาญการพิเศษ</a></div>
-            <div class="nav-item"><a class="nav-link" onclick="changeMenu('เชี่ยวชาญ')"><i class="fas fa-star"></i> เชี่ยวชาญ</a></div>
-            <div class="nav-item"><a class="nav-link" onclick="changeMenu('ทรงคุณวุฒิ')"><i class="fas fa-crown"></i> ทรงคุณวุฒิ</a></div>
+        </div>
+        <div class="nav flex-column mt-2" id="menuContainer">
+            <div class="nav-item">
+                <a class="nav-link active" onclick="changeMenu('dashboard')"><i class="fas fa-chart-line"></i> <span>Analytics Dashboard</span></a>
+            </div>
+            <div class="px-3 mt-3 mb-1 text-uppercase text-light sidebar-section-title" style="font-size: 0.68rem; opacity: 0.5; font-weight: 700; letter-spacing: 0.8px;">ระดับการประเมิน</div>
+            <div class="nav-item"><a class="nav-link" onclick="changeMenu('ชำนาญการ')"><i class="fas fa-user-tie"></i> <span>ชำนาญการ</span></a></div>
+            <div class="nav-item"><a class="nav-link" onclick="changeMenu('ชำนาญการ (พยาบาลวิชาชีพ)')"><i class="fas fa-user-nurse"></i> <span>ชำนาญการ (พยาบาลฯ)</span></a></div>
+            <div class="nav-item"><a class="nav-link" onclick="changeMenu('ชำนาญการพิเศษ')"><i class="fas fa-award"></i> <span>ชำนาญการพิเศษ</span></a></div>
+            <div class="nav-item"><a class="nav-link" onclick="changeMenu('เชี่ยวชาญ')"><i class="fas fa-star"></i> <span>เชี่ยวชาญ</span></a></div>
+            <div class="nav-item"><a class="nav-link" onclick="changeMenu('ทรงคุณวุฒิ')"><i class="fas fa-crown"></i> <span>ทรงคุณวุฒิ</span></a></div>
             
             <!-- Admin Menu Section -->
             <div id="adminMenuSection" style="display: none;">
-                <div class="px-4 mt-4 mb-1 text-uppercase text-warning" style="font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;">ส่วนผู้ดูแลระบบ</div>
-                <div class="nav-item"><a class="nav-link text-warning fw-semibold" onclick="changeMenu('Users')"><i class="fas fa-users-cog"></i> จัดการผู้ใช้งาน</a></div>
+                <div class="px-3 mt-3 mb-1 text-uppercase text-warning sidebar-section-title" style="font-size: 0.68rem; font-weight: 700; letter-spacing: 0.8px;">ผู้ดูแลระบบ</div>
+                <div class="nav-item"><a class="nav-link text-warning fw-semibold" onclick="changeMenu('Users')"><i class="fas fa-users-cog"></i> <span>จัดการผู้ใช้งาน</span></a></div>
             </div>
         </div>
         
         <div class="sidebar-footer">
-            <i class="fas fa-code-branch me-1"></i> จัดทำโดย กลุ่มงานการเจ้าหน้าที่<br>สำนักงานเลขานุการ สำนักการแพทย์
+            <i class="fas fa-code-branch me-1"></i> กลุ่มงานการเจ้าหน้าที่<br>สำนักงานเลขานุการ สำนักการแพทย์
         </div>
     </div>
 
     <div class="main-content">
         <!-- Topbar -->
         <div class="topbar">
-            <div>
-                <h3 class="mb-0 fw-bold" style="color: var(--bma-dark); letter-spacing: -0.5px;" id="pageTitle">Analytics Dashboard</h3>
-                <small class="text-muted fw-medium" id="pageSubtitle">ภาพรวมและสถิติการประเมินผลงานทางวิชาการ</small>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-sidebar-toggle me-3" onclick="toggleSidebar()" title="ย่อ/ขยายแถบเมนูด้านซ้าย">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h4 class="mb-0 fw-bold" style="color: var(--bma-dark); letter-spacing: -0.4px;" id="pageTitle">Analytics Dashboard</h4>
+                    <small class="text-muted fw-medium" id="pageSubtitle">ภาพรวมและสถิติการประเมินผลงานทางวิชาการ</small>
+                </div>
             </div>
             
-            <div class="d-flex align-items-center gap-3 flex-wrap">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
                 <div class="sync-badge shadow-sm" id="autoSyncBadge" onclick="fetchData(false)" title="คลิกเพื่อรีเฟรชข้อมูลจากระบบทันที">
                     <span class="sync-dot" id="syncDotEl"></span>
                     <span style="opacity: 0.85;" id="syncLabelEl">Auto-Sync:</span>
@@ -439,16 +487,16 @@
                 </div>
                 
                 <!-- User Profile Badge -->
-                <div id="userDisplay" style="display: none;" class="d-flex align-items-center bg-white px-3 py-2 rounded-pill shadow-sm border border-light">
-                    <div class="bg-success text-white rounded-circle d-flex justify-content-center align-items-center me-2 shadow-sm" style="width: 36px; height: 36px; font-weight: bold;" id="userInitial">U</div>
+                <div id="userDisplay" style="display: none;" class="d-flex align-items-center bg-white px-3 py-1 rounded-pill shadow-sm border border-light">
+                    <div class="bg-success text-white rounded-circle d-flex justify-content-center align-items-center me-2 shadow-sm" style="width: 32px; height: 32px; font-weight: bold; font-size: 0.85rem;" id="userInitial">U</div>
                     <div class="lh-1 me-2">
-                        <div class="fw-bold text-dark" id="userFullName" style="font-size: 0.88rem; white-space: nowrap;"></div>
-                        <div class="text-success fw-semibold" id="userRoleBadge" style="font-size: 0.72rem;"></div>
+                        <div class="fw-bold text-dark" id="userFullName" style="font-size: 0.84rem; white-space: nowrap;"></div>
+                        <div class="text-success fw-semibold" id="userRoleBadge" style="font-size: 0.68rem;"></div>
                     </div>
-                    <button class="btn btn-sm text-danger ms-2 rounded-circle border-0" style="background: #fee2e2;" onclick="logout()" title="ออกจากระบบ"><i class="fas fa-power-off"></i></button>
+                    <button class="btn btn-sm text-danger ms-1 rounded-circle border-0" style="background: #fee2e2; width: 26px; height: 26px; padding: 0;" onclick="logout()" title="ออกจากระบบ"><i class="fas fa-power-off" style="font-size: 0.75rem;"></i></button>
                 </div>
                 
-                <button class="btn btn-success btn-modern py-2 px-4 shadow-sm" id="loginBtn" data-bs-toggle="modal" data-bs-target="#loginModal" style="background: linear-gradient(135deg, #059669, #0d9488); border: none; white-space: nowrap;">
+                <button class="btn btn-success btn-modern py-2 px-3 shadow-sm" id="loginBtn" data-bs-toggle="modal" data-bs-target="#loginModal" style="background: linear-gradient(135deg, #059669, #0d9488); border: none; white-space: nowrap;">
                     <i class="fas fa-user-lock me-1"></i> เข้าสู่ระบบ
                 </button>
             </div>
@@ -546,8 +594,7 @@
                 </div>
             </div>
 
-            <!-- KPI Cards Row -->
-            <div class="row g-4 mb-4">
+            <div class="row g-3 mb-4">
                 <div class="col-xl-3 col-md-6">
                     <div class="kpi-card" id="kpiCardTotal" onclick="filterByKpi('all')" style="border-bottom: 4px solid #3b82f6;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
                         <i class="fas fa-folder-open kpi-icon text-primary"></i>
@@ -579,13 +626,13 @@
             </div>
 
             <!-- Charts Row 1 -->
-            <div class="row g-4 mb-4">
+            <div class="row g-3 mb-4">
                 <div class="col-lg-8">
                     <div class="chart-container">
                         <div class="chart-header">
                             <div class="chart-title"><i class="fas fa-layer-group"></i> สถานะการประเมินแยกตามระดับ</div>
                         </div>
-                        <div style="height: 300px;"><canvas id="stackedStatusChart"></canvas></div>
+                        <div style="height: 290px;"><canvas id="stackedStatusChart"></canvas></div>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -593,19 +640,19 @@
                         <div class="chart-header">
                             <div class="chart-title"><i class="fas fa-chart-pie"></i> สัดส่วนแยกระดับวิชาการ (ร้อยละ)</div>
                         </div>
-                        <div style="height: 300px; position: relative;"><canvas id="levelChart"></canvas></div>
+                        <div style="height: 290px; position: relative;"><canvas id="levelChart"></canvas></div>
                     </div>
                 </div>
             </div>
 
             <!-- Charts Row 2: Top 10 Positions & Year Comparison -->
-            <div class="row g-4 mb-4">
+            <div class="row g-3 mb-4">
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
                             <div class="chart-title"><i class="fas fa-list-ol"></i> 10 อันดับแรกของตำแหน่งที่ส่งเล่มประเมินผลงานสูงที่สุด <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบเพื่อกรอง</span></div>
                         </div>
-                        <div id="topPositionsChartWrapper" style="position: relative; min-height: 300px;"><canvas id="topPositionsChart"></canvas></div>
+                        <div id="topPositionsChartWrapper" style="position: relative; min-height: 290px;"><canvas id="topPositionsChart"></canvas></div>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -613,39 +660,39 @@
                         <div class="chart-header">
                             <div class="chart-title"><i class="fas fa-calendar-alt"></i> สถิติการยื่นส่งผลงานเปรียบเทียบระหว่างปี พ.ศ. (ส่งเล่ม 1)</div>
                         </div>
-                        <div style="height: 300px; position: relative;"><canvas id="yearChart"></canvas></div>
+                        <div style="height: 290px; position: relative;"><canvas id="yearChart"></canvas></div>
                     </div>
                 </div>
             </div>
 
             <!-- Charts Row 3: Staff & Hospital Workload -->
-            <div class="row g-4 mb-4">
+            <div class="row g-3 mb-4">
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
                             <div class="chart-title"><i class="fas fa-tasks"></i> ภาระงานแยกตามเจ้าหน้าที่ <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบเพื่อตรวจสอบ</span></div>
                         </div>
-                        <div id="staffChartWrapper" style="position: relative; min-height: 320px;"><canvas id="staffChart"></canvas></div>
+                        <div id="staffChartWrapper" style="position: relative; min-height: 310px;"><canvas id="staffChart"></canvas></div>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-hospital"></i> จำนวนรายการประเมินแยกตามส่วนราชการ / โรงพยาบาล <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกแถบเพื่อกรองข้อมูล</span></div>
+                            <div class="chart-title"><i class="fas fa-hospital"></i> จำนวนรายการประเมินแยกตามส่วนราชการ / โรงพยาบาล <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกแถบเพื่อกรอง</span></div>
                         </div>
-                        <div id="hospitalChartWrapper" style="position: relative; min-height: 320px;"><canvas id="hospitalChart"></canvas></div>
+                        <div id="hospitalChartWrapper" style="position: relative; min-height: 310px;"><canvas id="hospitalChart"></canvas></div>
                     </div>
                 </div>
             </div>
 
             <!-- Charts Row 4: Meeting Staff & Pending Reason Report -->
-            <div class="row g-4 mb-4">
+            <div class="row g-3 mb-4">
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
                             <div class="chart-title"><i class="fas fa-users"></i> เจ้าหน้าที่จัดประชุม (ชำนาญการ & พยาบาลวิชาชีพ) <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบเพื่อตรวจสอบ</span></div>
                         </div>
-                        <div id="meetingStaffChartWrapper" style="position: relative; min-height: 320px;"><canvas id="meetingStaffChart"></canvas></div>
+                        <div id="meetingStaffChartWrapper" style="position: relative; min-height: 310px;"><canvas id="meetingStaffChart"></canvas></div>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -653,14 +700,14 @@
                         <div class="chart-header">
                             <div class="chart-title"><i class="fas fa-exclamation-circle"></i> รายงานเหตุผลรายการที่อยู่ระหว่างดำเนินการ <span class="badge bg-warning-subtle text-warning border border-warning-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกเพื่อกรอง</span></div>
                         </div>
-                        <div id="pendingReasonChartWrapper" style="position: relative; min-height: 320px;"><canvas id="pendingReasonChart"></canvas></div>
+                        <div id="pendingReasonChartWrapper" style="position: relative; min-height: 310px;"><canvas id="pendingReasonChart"></canvas></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="tableView" style="display: none;">
-            <div class="row g-4 mb-4" id="levelKpiContainer">
+            <div class="row g-3 mb-4" id="levelKpiContainer">
                 <div class="col-xl-3 col-md-6">
                     <div class="kpi-card" id="subKpiCardTotal" onclick="filterSubKpi('all')" style="border-bottom: 4px solid #3b82f6;" title="คลิกเพื่อดูรายการทั้งหมดในระดับนี้">
                         <i class="fas fa-folder-open kpi-icon text-primary"></i>
@@ -692,8 +739,8 @@
             </div>
 
             <div class="table-wrapper">
-                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-                    <div class="input-group w-50 shadow-sm rounded-pill overflow-hidden border" style="min-width: 280px;">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <div class="input-group w-50 shadow-sm rounded-pill overflow-hidden border" style="min-width: 260px;">
                         <span class="input-group-text bg-white border-0 text-muted"><i class="fas fa-search"></i></span>
                         <input type="text" class="form-control border-0 py-2" id="searchInput" placeholder="ค้นหาข้อมูล (ลำดับ, ตำแหน่งเลขที่, ชื่อ-สกุล, ตำแหน่ง, เจ้าหน้าที่)..." oninput="filterTable()" onkeyup="filterTable()" style="box-shadow: none;">
                     </div>
@@ -735,7 +782,7 @@
                         <i class="fas fa-filter me-1"></i> <strong>หมายเหตุ:</strong> ตารางนี้แสดงผลตามตัวกรองที่เลือกอยู่บนหน้าแดชบอร์ด
                     </div>
                     <div class="table-responsive bg-white rounded-3 shadow-sm border p-2">
-                        <table class="table table-hover align-middle mb-0" style="font-size:0.9rem;">
+                        <table class="table table-hover align-middle mb-0" style="font-size:0.88rem;">
                             <thead class="table-light">
                                 <tr>
                                     <th>#</th>
@@ -764,8 +811,8 @@
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content" style="border-radius: 24px; overflow: hidden; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
                 <div class="modal-header bg-white text-center d-block border-0 pt-4 pb-2">
-                    <div style="width: 60px; height: 60px; border-radius: 50%; background: #059669; color: white; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 2px solid #059669; box-shadow: 0 4px 10px rgba(5,150,105,0.2);">MSD BMA</div>
-                    <h5 class="modal-title fw-bold text-dark" style="font-size: 1.25rem;">STAFF LOGIN</h5>
+                    <div style="width: 54px; height: 54px; border-radius: 50%; background: #059669; color: white; font-weight: 800; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 2px solid #059669; box-shadow: 0 4px 10px rgba(5,150,105,0.2);">MSD BMA</div>
+                    <h5 class="modal-title fw-bold text-dark" style="font-size: 1.15rem;">STAFF LOGIN</h5>
                     <p class="text-muted small mb-0">เข้าสู่ระบบติดตามการประเมินผลงาน</p>
                 </div>
                 <div class="modal-body p-4 bg-white">
@@ -853,6 +900,7 @@
         let activeKpiFilter = 'all';
         let activeSubKpiFilter = 'all';
         let activePendingReasonFilter = '';
+        let tableColumnFilters = {};
 
         let dropdownDataStore = {
             Year: [],
@@ -869,6 +917,17 @@
             roseStart: '#e11d48', roseEnd: '#fb7185',
             palette: ['#0d9488', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#10b981', '#f43f5e', '#06b6d4', '#84cc16', '#6366f1']
         };
+
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-collapsed');
+            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+            try { localStorage.setItem('bma_sidebar_collapsed', isCollapsed ? 'true' : 'false'); } catch(e){}
+            if (currentMenu === 'dashboard') {
+                setTimeout(() => {
+                    Object.values(charts).forEach(c => { if (c && typeof c.resize === 'function') c.resize(); });
+                }, 310);
+            }
+        }
 
         function syncToGoogleSheets(action, sheetName, data, isNew = false) {
             lastMutationTime = Date.now();
@@ -1095,7 +1154,6 @@
             let str = String(dateVal).trim();
             if (!str || str === '-' || str === 'null' || str === 'undefined') return null;
 
-            // 1. Check for Excel Serial Date Number (e.g. 44977)
             let num = Number(str);
             if (!isNaN(num) && num >= 10000 && num <= 60000) {
                 let utcDays = num - 25569;
@@ -1107,21 +1165,18 @@
                 }
             }
 
-            // 2. Check for explicit 4-digit BE Year (e.g. 2563 - 2575)
             let matchBE = str.match(/\b(25\d{2}|24\d{2}|26\d{2})\b/);
             if (matchBE) {
                 let y = parseInt(matchBE[1], 10);
                 if (y >= 2450 && y <= 2650) return y;
             }
 
-            // 3. Check for explicit 4-digit AD Year (e.g. 2020 - 2030)
             let matchAD = str.match(/\b(19\d{2}|20\d{2})\b/);
             if (matchAD) {
                 let y = parseInt(matchAD[1], 10) + 543;
                 if (y >= 2450 && y <= 2650) return y;
             }
 
-            // 4. Standard Date parsing fallback
             let d = new Date(str);
             if (!isNaN(d.getTime())) {
                 let y = d.getFullYear();
@@ -1175,14 +1230,7 @@
         function getStaffFromRow(row, sheetLvl, activeStaffMap = {}, disabledStaffMap = {}) {
             if (!row || typeof row !== 'object') return null;
 
-            let staffVal = '';
-            let isSenior = (sheetLvl === 'เชี่ยวชาญ' || sheetLvl === 'ทรงคุณวุฒิ');
-
-            if (isSenior) {
-                staffVal = getRowValue(row, 'เจ้าหน้าที่ 2') || getRowValue(row, 'เจ้าหน้าที่2') || getRowValue(row, 'เจ้าหน้าที่_2');
-            } else {
-                staffVal = getRowValue(row, 'เจ้าหน้าที่ 1') || getRowValue(row, 'เจ้าหน้าที่1') || getRowValue(row, 'เจ้าหน้าที่_1');
-            }
+            let staffVal = getRowValue(row, 'เจ้าหน้าที่ 1') || getRowValue(row, 'เจ้าหน้าที่1') || getRowValue(row, 'เจ้าหน้าที่_1');
 
             if (!staffVal || staffVal === '-') {
                 staffVal = getRowValue(row, 'เจ้าหน้าที่') || getRowValue(row, 'ผู้รับผิดชอบ');
@@ -1246,6 +1294,8 @@
                     "คำนำหน้า": title,
                     "ชื่อ -": fname,
                     "สกุล": lname,
+                    "ชื่อผลงาน (เรื่องที่ 1)": `ผลงานวิชาการเรื่องที่ 1 ของ ${fname} ${lname} กรณีศึกษาและพัฒนางานในสังกัดโรงพยาบาล`,
+                    "ชื่อผลงาน (เรื่องที่ 2)": `ผลงานวิชาการเรื่องที่ 2 ของ ${fname} ${lname} การประเมินและแนวทางการพัฒนา`,
                     "ตำแหน่งปัจจุบัน": curPos,
                     "ตำแหน่งที่ขอประเมิน": reqPos,
                     "ตำแหน่งทางบริหาร": "-",
@@ -1258,6 +1308,7 @@
                 if (isSenior) {
                     rowObj["วันที่ส่งเล่ม 1"] = `${year}-03-15`;
                     rowObj["เจ้าหน้าที่ 2"] = staffName;
+                    rowObj["เจ้าหน้าที่ 1"] = staffName;
                 } else {
                     rowObj["เจ้าหน้าที่ 1"] = staffName;
                     rowObj["วันที่ส่งเล่ม 1"] = `${year}-03-15`;
@@ -1382,6 +1433,9 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('bma_sidebar_collapsed') === 'true') {
+                document.body.classList.add('sidebar-collapsed');
+            }
             fetchData(false);
             startAutoRefresh();
         });
@@ -1445,7 +1499,6 @@
                 }
             }
 
-            // 1. Check sheet with exact or similar name
             for (let sheetKey in appData) {
                 let normSheet = sheetKey.replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
                 let isMatch = targetSheetNames.some(target => {
@@ -1467,7 +1520,6 @@
                 }
             }
 
-            // 2. Extract from evaluation level sheets ONLY if no master sheet found
             if (!hasMasterSheet || optionsSet.size === 0) {
                 const levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
                 levels.forEach(lvl => {
@@ -1621,7 +1673,6 @@
 
             if (inputEl) inputEl.value = val;
             if (labelEl) labelEl.innerText = val ? label : label;
-
             if (searchInput) searchInput.value = '';
 
             const defaultLabels = {
@@ -1647,7 +1698,7 @@
             event?.currentTarget?.classList?.add('active');
 
             activeSubKpiFilter = 'all';
-            if (window.activeColumnFilters) window.activeColumnFilters = {};
+            tableColumnFilters = {};
 
             if(menu === 'dashboard') {
                 document.getElementById('pageTitle').innerText = 'Analytics Dashboard';
@@ -1758,56 +1809,11 @@
 
         function resetPageFilter() {
             activeSubKpiFilter = 'all';
-            if (window.activeColumnFilters) window.activeColumnFilters = {};
+            tableColumnFilters = {};
             const searchInput = document.getElementById('searchInput');
             if (searchInput) searchInput.value = '';
             highlightSubKpiCards();
             renderTable();
-        }
-
-        function setColumnFilter(colName, val) {
-            if (!window.activeColumnFilters) window.activeColumnFilters = {};
-            if (val === '') {
-                delete window.activeColumnFilters[colName];
-            } else {
-                window.activeColumnFilters[colName] = val;
-            }
-            renderTable();
-        }
-
-        function filterColumnOptions(colName, query) {
-            let colSafeId = colName.replace(/[^a-zA-Z0-9\u0E00-\u0E7F]/g, '_');
-            const container = document.getElementById(`colOpts_${colSafeId}`);
-            if (!container) return;
-
-            const rawData = appData[currentMenu] || [];
-            let uniqueVals = new Set();
-            rawData.forEach(r => {
-                let v = getRowValue(r, colName);
-                if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
-                    uniqueVals.add(String(v).trim());
-                }
-            });
-            let sortedVals = Array.from(uniqueVals).sort((a, b) => a.localeCompare(b, 'th'));
-            let currentFilterVal = (window.activeColumnFilters && window.activeColumnFilters[colName]) || '';
-            let q = query.trim().toLowerCase();
-
-            let html = `<a class="dropdown-item rounded-2 py-1 px-2 ${!currentFilterVal ? 'active bg-success text-white' : ''}" style="cursor:pointer;" onclick="setColumnFilter('${colName.replace(/'/g, "\\'")}', '')">-- ทั้งหมด --</a>`;
-            html += `<div class="dropdown-divider my-1"></div>`;
-
-            let filtered = sortedVals.filter(opt => !q || opt.toLowerCase().includes(q));
-
-            if (filtered.length === 0) {
-                html += `<div class="text-muted small text-center py-2"><i class="fas fa-search me-1"></i> ไม่พบข้อมูล</div>`;
-            } else {
-                filtered.forEach(opt => {
-                    let isSel = (currentFilterVal === opt);
-                    let optSafe = opt.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                    html += `<a class="dropdown-item rounded-2 py-1 px-2 text-truncate ${isSel ? 'active bg-success text-white' : ''}" style="cursor:pointer;" onclick="setColumnFilter('${colName.replace(/'/g, "\\'")}', '${optSafe}')">${opt}</a>`;
-                });
-            }
-
-            container.innerHTML = html;
         }
 
         function resetDashboardFilters() {
@@ -2135,7 +2141,7 @@
             let sortedPositions = Object.keys(positionCounts).sort((a, b) => positionCounts[b] - positionCounts[a]).slice(0, 10);
             let topPosWrapper = document.getElementById('topPositionsChartWrapper');
             if (topPosWrapper) {
-                topPosWrapper.style.height = Math.max(300, sortedPositions.length * 28 + 50) + 'px';
+                topPosWrapper.style.height = Math.max(290, sortedPositions.length * 28 + 50) + 'px';
             }
 
             charts.topPos = new Chart(document.getElementById('topPositionsChart'), {
@@ -2259,7 +2265,7 @@
             let sortedStaff = Object.keys(staffBreakdown).filter(s => staffBreakdown[s].total > 0).sort((a,b) => staffBreakdown[b].total - staffBreakdown[a].total);
             let staffWrapper = document.getElementById('staffChartWrapper');
             if (staffWrapper) {
-                staffWrapper.style.height = Math.max(320, sortedStaff.length * 32 + 60) + 'px';
+                staffWrapper.style.height = Math.max(310, sortedStaff.length * 32 + 60) + 'px';
             }
 
             charts.staff = new Chart(document.getElementById('staffChart'), {
@@ -2319,7 +2325,7 @@
             let sortedHospKeys = Object.keys(hospCounts).sort((a,b) => hospCounts[b] - hospCounts[a]);
             let hospWrapper = document.getElementById('hospitalChartWrapper');
             if (hospWrapper) {
-                hospWrapper.style.height = Math.max(320, sortedHospKeys.length * 32 + 60) + 'px';
+                hospWrapper.style.height = Math.max(310, sortedHospKeys.length * 32 + 60) + 'px';
             }
 
             charts.hosp = new Chart(document.getElementById('hospitalChart'), {
@@ -2379,8 +2385,8 @@
                         }
                     },
                     scales: { 
-                        x: { beginAtZero: true, grace: '12%' },
-                        y: { ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } }
+                        x: { beginAtZero: true, grace: '12%' }, 
+                        y: { ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } } 
                     } 
                 }
             });
@@ -2449,7 +2455,7 @@
             let sortedMeetingStaff = Object.keys(meetingStaffBreakdown).filter(s => meetingStaffBreakdown[s].total > 0).sort((a,b) => meetingStaffBreakdown[b].total - meetingStaffBreakdown[a].total);
             let msWrapper = document.getElementById('meetingStaffChartWrapper');
             if (msWrapper) {
-                msWrapper.style.height = Math.max(320, sortedMeetingStaff.length * 32 + 60) + 'px';
+                msWrapper.style.height = Math.max(310, sortedMeetingStaff.length * 32 + 60) + 'px';
             }
 
             charts.meetingStaff = new Chart(document.getElementById('meetingStaffChart'), {
@@ -2509,7 +2515,7 @@
             let sortedReasons = Object.keys(pendingReasonCounts).sort((a, b) => pendingReasonCounts[b] - pendingReasonCounts[a]);
             let prWrapper = document.getElementById('pendingReasonChartWrapper');
             if (prWrapper) {
-                prWrapper.style.height = Math.max(320, sortedReasons.length * 32 + 60) + 'px';
+                prWrapper.style.height = Math.max(310, sortedReasons.length * 32 + 60) + 'px';
             }
 
             charts.pendingReason = new Chart(document.getElementById('pendingReasonChart'), {
@@ -2597,6 +2603,32 @@
             });
         }
 
+        function isStickyCol(colName) {
+            if (colName === 'จัดการ') return true;
+            let norm = String(colName).replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
+            return (
+                norm === 'ลำดับ' ||
+                norm === 'ตำแหน่งเลขที่' ||
+                norm === 'คำนำหน้า' ||
+                norm === 'คำนำหน้านาม' ||
+                norm === 'ชื่อ-' ||
+                norm === 'ชื่อ' ||
+                norm === 'สกุล' ||
+                norm === 'นามสกุล'
+            );
+        }
+
+        function getStickyColWidth(colName) {
+            if (colName === 'จัดการ') return 160;
+            let norm = String(colName).replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
+            if (norm === 'ลำดับ') return 65;
+            if (norm === 'ตำแหน่งเลขที่') return 110;
+            if (norm === 'คำนำหน้า' || norm === 'คำนำหน้านาม') return 75;
+            if (norm === 'ชื่อ-' || norm === 'ชื่อ') return 130;
+            if (norm === 'สกุล' || norm === 'นามสกุล') return 130;
+            return 120;
+        }
+
         function renderTable() {
             const rawData = appData[currentMenu] || [];
             let data = rawData.filter(isValidRow);
@@ -2634,18 +2666,16 @@
                 });
             }
 
-            if (window.activeColumnFilters && Object.keys(window.activeColumnFilters).length > 0) {
-                data = data.filter(row => {
-                    for (let col in window.activeColumnFilters) {
-                        let filterVal = window.activeColumnFilters[col];
-                        if (filterVal) {
-                            let cellVal = String(getRowValue(row, col) || '').trim();
-                            if (cellVal !== filterVal) return false;
-                        }
-                    }
-                    return true;
-                });
-            }
+            // Apply column header filters
+            Object.keys(tableColumnFilters).forEach(col => {
+                let filterVal = tableColumnFilters[col];
+                if (filterVal) {
+                    data = data.filter(row => {
+                        let val = String(getRowValue(row, col)).trim();
+                        return val === filterVal;
+                    });
+                }
+            });
 
             if (currentMenu !== 'Users') {
                 updateSubKpi(currentMenu, data);
@@ -2675,53 +2705,118 @@
             }
 
             currentHeaders = Object.keys(data[0]); 
-            let trHead = document.createElement('tr');
-            if(currentUser) trHead.innerHTML = '<th style="min-width: 220px;" class="text-center align-middle">จัดการ</th>';
-            
-            if (!window.activeColumnFilters) window.activeColumnFilters = {};
+
+            // Calculate sticky left offsets
+            let stickyOffsets = {};
+            let currentLeft = 0;
+            let lastStickyCol = '';
+
+            if (currentUser) {
+                stickyOffsets['จัดการ'] = currentLeft;
+                currentLeft += getStickyColWidth('จัดการ');
+                lastStickyCol = 'จัดการ';
+            }
 
             currentHeaders.forEach(col => {
+                if (col === 'IsLocked') return;
+                if (isStickyCol(col)) {
+                    stickyOffsets[col] = currentLeft;
+                    currentLeft += getStickyColWidth(col);
+                    lastStickyCol = col;
+                }
+            });
+
+            let trHead = document.createElement('tr');
+            if(currentUser) {
+                let isLast = (lastStickyCol === 'จัดการ');
+                let shadowClass = isLast ? 'sticky-col-last' : '';
+                trHead.innerHTML = `<th class="sticky-col ${shadowClass}" style="left: ${stickyOffsets['จัดการ']}px; min-width: 160px; max-width: 160px; width: 160px; z-index: 25; text-align: center;">จัดการ</th>`;
+            }
+
+            currentHeaders.forEach((col, colIdx) => {
                 if(col === 'IsLocked') return;
                 
-                let uniqueVals = new Set();
-                rawData.forEach(r => {
-                    let v = getRowValue(r, col);
-                    if (v !== undefined && v !== null && String(v).trim() !== '' && String(v).trim() !== '-') {
-                        uniqueVals.add(String(v).trim());
-                    }
-                });
-                let sortedVals = Array.from(uniqueVals).sort((a, b) => a.localeCompare(b, 'th'));
-                let currentFilterVal = window.activeColumnFilters[col] || '';
-                let colSafeId = String(col).replace(/[^a-zA-Z0-9\u0E00-\u0E7F]/g, '_');
-
                 let th = document.createElement('th');
-                th.style.position = 'relative';
-                th.style.whiteSpace = 'nowrap';
-                
-                let dropdownHtml = `
-                    <div class="dropdown d-inline-block ms-1 custom-search-select">
-                        <span class="dropdown-toggle text-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="cursor:pointer;" title="กรองคอลัมน์นี้">
-                            <i class="fas fa-filter ${currentFilterVal ? 'text-success' : 'text-muted'}" style="font-size:0.75rem;"></i>
-                        </span>
-                        <div class="dropdown-menu p-2 shadow-lg" style="min-width: 200px; max-height: 280px; overflow-y: auto; border-radius: 12px; font-size: 0.85rem;" id="colDrop_${colSafeId}">
-                            <div class="p-1 mb-2 border-bottom" onclick="event.stopPropagation()">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                                    <input type="text" class="form-control border-start-0 shadow-none py-1" id="colSearch_${colSafeId}" placeholder="พิมพ์ค้นหา..." oninput="filterColumnOptions('${col.replace(/'/g, "\\'")}', this.value)" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()" style="font-size: 0.8rem;">
-                                </div>
-                            </div>
-                            <div id="colOpts_${colSafeId}">
-                                <a class="dropdown-item rounded-2 py-1 px-2 ${!currentFilterVal ? 'active bg-success text-white' : ''}" style="cursor:pointer;" onclick="setColumnFilter('${col.replace(/'/g, "\\'")}', '')">-- ทั้งหมด --</a>
-                                <div class="dropdown-divider my-1"></div>
-                `;
-                sortedVals.forEach(opt => {
-                    let isSel = (currentFilterVal === opt);
-                    let optSafe = String(opt).replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                    dropdownHtml += `<a class="dropdown-item rounded-2 py-1 px-2 text-truncate ${isSel ? 'active bg-success text-white' : ''}" style="cursor:pointer;" onclick="setColumnFilter('${col.replace(/'/g, "\\'")}', '${optSafe}')">${opt}</a>`;
-                });
-                dropdownHtml += `</div></div></div>`;
+                let isSticky = stickyOffsets[col] !== undefined;
+                let isLast = (lastStickyCol === col);
 
-                th.innerHTML = `${col} ${dropdownHtml}`;
+                if (isSticky) {
+                    let leftPx = stickyOffsets[col];
+                    let w = getStickyColWidth(col);
+                    th.className = `sticky-col ${isLast ? 'sticky-col-last' : ''}`;
+                    th.style.cssText = `left: ${leftPx}px; min-width: ${w}px; max-width: ${w}px; width: ${w}px; z-index: 25;`;
+                } else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่')) {
+                    th.style.minWidth = '260px';
+                    th.style.maxWidth = '260px';
+                }
+
+                // Collect unique values for column filter
+                let uniqueVals = Array.from(new Set(rawData.map(r => String(getRowValue(r, col)).trim()).filter(v => v !== '' && v !== '-'))).sort((a,b) => a.localeCompare(b, 'th'));
+                let currentColFilter = tableColumnFilters[col] || '';
+                let filterActive = currentColFilter !== '';
+
+                let colId = `th_filter_${colIdx}`;
+                
+                let thContent = document.createElement('div');
+                thContent.className = "d-flex align-items-center justify-content-between gap-2";
+                
+                let titleSpan = document.createElement('span');
+                titleSpan.className = "text-truncate";
+                titleSpan.innerText = col;
+                thContent.appendChild(titleSpan);
+
+                let dropdownDiv = document.createElement('div');
+                dropdownDiv.className = "dropdown custom-search-select d-inline-block";
+                
+                let btnFilter = document.createElement('button');
+                btnFilter.className = `btn btn-sm th-filter-btn shadow-none ${filterActive ? 'active-col-filter' : ''}`;
+                btnFilter.type = "button";
+                btnFilter.setAttribute('data-bs-toggle', 'dropdown');
+                btnFilter.setAttribute('aria-expanded', 'false');
+                btnFilter.innerHTML = `<i class="fas fa-filter"></i>`;
+                dropdownDiv.appendChild(btnFilter);
+
+                let dropdownMenu = document.createElement('div');
+                dropdownMenu.className = "dropdown-menu p-2 shadow-lg";
+                dropdownMenu.style.cssText = "min-width: 200px; max-height: 280px; overflow-y: auto; border-radius: 12px; z-index: 1050;";
+
+                // Search box inside column filter
+                let searchBox = document.createElement('div');
+                searchBox.className = "p-1 mb-2 border-bottom";
+                searchBox.onclick = (e) => e.stopPropagation();
+                searchBox.innerHTML = `
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control border-start-0 shadow-none py-1" placeholder="ค้นหา..." oninput="filterThDropdown('${colId}', this.value)" onclick="event.stopPropagation()" onkeydown="event.stopPropagation()" style="font-size: 0.8rem;">
+                    </div>
+                `;
+                dropdownMenu.appendChild(searchBox);
+
+                let optionsContainer = document.createElement('div');
+                optionsContainer.id = `opt_${colId}`;
+
+                let allOption = document.createElement('a');
+                allOption.className = `dropdown-item rounded-2 py-1 px-2 small text-truncate ${!filterActive ? 'active bg-success text-white' : ''}`;
+                allOption.style.cursor = 'pointer';
+                allOption.innerText = '-- ทั้งหมด --';
+                allOption.onclick = () => setTableColumnFilter(col, '');
+                optionsContainer.appendChild(allOption);
+
+                uniqueVals.forEach(val => {
+                    let optA = document.createElement('a');
+                    let isSel = (currentColFilter === val);
+                    optA.className = `dropdown-item rounded-2 py-1 px-2 small text-truncate ${isSel ? 'active bg-success text-white' : 'text-dark'}`;
+                    optA.style.cursor = 'pointer';
+                    optA.innerText = val;
+                    optA.onclick = () => setTableColumnFilter(col, val);
+                    optionsContainer.appendChild(optA);
+                });
+
+                dropdownMenu.appendChild(optionsContainer);
+                dropdownDiv.appendChild(dropdownMenu);
+                thContent.appendChild(dropdownDiv);
+                th.appendChild(thContent);
+
                 trHead.appendChild(th);
             });
             thead.appendChild(trHead);
@@ -2732,7 +2827,9 @@
                 
                 if(currentUser) {
                     let tdBtn = document.createElement('td');
-                    tdBtn.className = "text-center align-middle";
+                    let isLast = (lastStickyCol === 'จัดการ');
+                    tdBtn.className = `text-center align-middle sticky-col ${isLast ? 'sticky-col-last' : ''}`;
+                    tdBtn.style.cssText = `left: ${stickyOffsets['จัดการ']}px; min-width: 160px; max-width: 160px; width: 160px; z-index: 7;`;
                     
                     let btnGroup = document.createElement('div');
                     btnGroup.className = "d-inline-flex align-items-center justify-content-center gap-1 text-nowrap";
@@ -2806,18 +2903,37 @@
                 currentHeaders.forEach(col => {
                     if(col === 'IsLocked') return; 
                     let td = document.createElement('td');
+                    let isSticky = stickyOffsets[col] !== undefined;
+                    let isLast = (lastStickyCol === col);
+
+                    if (isSticky) {
+                        let leftPx = stickyOffsets[col];
+                        let w = getStickyColWidth(col);
+                        td.className = `sticky-col ${isLast ? 'sticky-col-last' : ''}`;
+                        td.style.cssText = `left: ${leftPx}px; min-width: ${w}px; max-width: ${w}px; width: ${w}px; z-index: 6;`;
+                    }
+
                     let val = getRowValue(row, col);
+                    let displayVal = val !== undefined && val !== null && String(val).trim() !== '' ? val : '-';
+                    if (typeof displayVal === 'string' && displayVal.includes('T') && displayVal.endsWith('Z')) {
+                        displayVal = cleanDateStr(displayVal);
+                    }
+
                     if(col.includes('ผลการประเมิน') && val) {
                         let badgeClass = 'bg-secondary';
                         if(val.includes('ผ่าน') && !val.includes('ไม่')) badgeClass = 'bg-success';
                         else if(val.includes('ไม่ผ่าน') || val.includes('ยกเลิก')) badgeClass = 'bg-danger';
                         else if(val.includes('ประชุม') || val.includes('ระหว่าง')) badgeClass = 'bg-warning text-dark';
                         td.innerHTML = `<span class="badge ${badgeClass} badge-status">${val}</span>`;
+                    } else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่')) {
+                        td.style.minWidth = '260px';
+                        td.style.maxWidth = '260px';
+                        td.style.whiteSpace = 'nowrap';
+                        td.style.overflow = 'hidden';
+                        td.style.textOverflow = 'ellipsis';
+                        td.setAttribute('title', String(displayVal));
+                        td.innerText = displayVal;
                     } else {
-                        let displayVal = val !== undefined && val !== null && String(val).trim() !== '' ? val : '-';
-                        if (typeof displayVal === 'string' && displayVal.includes('T') && displayVal.endsWith('Z')) {
-                            displayVal = cleanDateStr(displayVal);
-                        }
                         td.innerText = displayVal;
                     }
                     tr.appendChild(td);
@@ -2826,6 +2942,29 @@
                 tr.onclick = () => showPrintModal(row);
                 tbody.appendChild(tr);
             });
+        }
+
+        function filterThDropdown(colId, query) {
+            const container = document.getElementById(`opt_${colId}`);
+            if (!container) return;
+            const items = container.querySelectorAll('.dropdown-item');
+            const q = query.trim().toLowerCase();
+            items.forEach(item => {
+                if (item.innerText === '-- ทั้งหมด --') {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = item.innerText.toLowerCase().includes(q) ? 'block' : 'none';
+                }
+            });
+        }
+
+        function setTableColumnFilter(col, val) {
+            if (!val) {
+                delete tableColumnFilters[col];
+            } else {
+                tableColumnFilters[col] = val;
+            }
+            renderTable();
         }
 
         function toggleLockRecord(row, shouldLock) {
