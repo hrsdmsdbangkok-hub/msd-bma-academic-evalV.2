@@ -171,6 +171,36 @@
         }
         .btn-sidebar-toggle:hover { background: #f1f5f9; color: #0d9488; border-color: #cbd5e1; }
 
+        .btn-notif-bell {
+            background: #ffffff;
+            border: 1.5px solid #fde68a;
+            color: #d97706;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.08);
+            cursor: pointer;
+        }
+        .btn-notif-bell i {
+            font-size: 1.35rem;
+            transition: transform 0.25s ease;
+        }
+        .btn-notif-bell:hover { 
+            background: #fffbeb; 
+            color: #b45309; 
+            border-color: #f59e0b;
+            transform: scale(1.06);
+            box-shadow: 0 6px 15px rgba(217, 119, 6, 0.16);
+        }
+        .btn-notif-bell:hover i {
+            transform: rotate(15deg);
+        }
+
         .sync-badge {
             background: #f0fdf4;
             border: 1px solid rgba(16, 185, 129, 0.25);
@@ -480,6 +510,14 @@
             </div>
             
             <div class="d-flex align-items-center gap-2 flex-wrap">
+                <!-- 6-Month Notification Bell -->
+                <button class="btn btn-notif-bell me-2" id="notifBellBtn" onclick="openNotificationModal()" title="การแจ้งเตือนใกล้ครบกำหนด 6 เดือน">
+                    <i class="fas fa-bell"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-2 border-white shadow-sm" id="notifCountBadge" style="display: none; font-size: 0.72rem; padding: 4px 7px; font-weight: 700; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.4);">
+                        0
+                    </span>
+                </button>
+
                 <div class="sync-badge shadow-sm" id="autoSyncBadge" onclick="fetchData(false)" title="คลิกเพื่อรีเฟรชข้อมูลจากระบบทันที">
                     <span class="sync-dot" id="syncDotEl"></span>
                     <span style="opacity: 0.85;" id="syncLabelEl">Auto-Sync:</span>
@@ -594,6 +632,7 @@
                 </div>
             </div>
 
+            <!-- KPI Cards Row -->
             <div class="row g-3 mb-4">
                 <div class="col-xl-3 col-md-6">
                     <div class="kpi-card" id="kpiCardTotal" onclick="filterByKpi('all')" style="border-bottom: 4px solid #3b82f6;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
@@ -766,6 +805,65 @@
         </div>
     </div>
 
+    <!-- 6-Month Notification Modal -->
+    <div class="modal fade" id="notificationModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #d97706, #b45309); border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                    <div>
+                        <h5 class="modal-title fw-bold" id="notificationModalTitle"><i class="fas fa-bell me-2"></i> ศูนย์แจ้งเตือนกำหนดส่งผลงาน (ครบกำหนด 6 เดือน)</h5>
+                        <small class="opacity-75">รายการที่ต้องติดตามและประสานงานผู้ขอประเมิน</small>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <!-- Notification Summary Tabs -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-4">
+                            <div class="p-3 bg-white rounded-3 border-start border-4 border-danger shadow-sm">
+                                <div class="text-muted small fw-bold">⚠️ วิกฤต (เหลือ &le; 15 วัน)</div>
+                                <div class="h4 fw-bold text-danger mb-0" id="notifCriticalCount">0 รายการ</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 bg-white rounded-3 border-start border-4 border-warning shadow-sm">
+                                <div class="text-muted small fw-bold">⏳ เตือนล่วงหน้า (16 - 30 วัน)</div>
+                                <div class="h4 fw-bold text-warning mb-0" id="notifWarningCount">0 รายการ</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 bg-white rounded-3 border-start border-4 border-dark shadow-sm">
+                                <div class="text-muted small fw-bold">❌ เกินกำหนด (ยังไม่ส่งเล่ม 2)</div>
+                                <div class="h4 fw-bold text-dark mb-0" id="notifOverdueCount">0 รายการ</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive bg-white rounded-3 shadow-sm border p-2">
+                        <table class="table table-hover align-middle mb-0" style="font-size:0.86rem;">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>ระดับการประเมิน</th>
+                                    <th>ตำแหน่งเลขที่</th>
+                                    <th>ผู้เสนอขอประเมิน</th>
+                                    <th>สังกัด / โรงพยาบาล</th>
+                                    <th>วันครบกำหนด 6 เดือน</th>
+                                    <th>สถานะการแจ้งเตือน</th>
+                                    <th>เจ้าหน้าที่รับผิดชอบ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="notificationTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-0">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">ปิดหน้าต่าง</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Staff Drilldown Inspection Modal -->
     <div class="modal fade" id="staffInspectionModal" tabindex="-1">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -910,6 +1008,7 @@
         };
 
         let formDropdownStores = {};
+        let cachedNotificationList = [];
 
         const baseColors = {
             greenStart: '#047857', greenEnd: '#34d399',
@@ -1101,7 +1200,8 @@
                 'วันที่ส่งเล่ม 1': ['วันที่ส่งเล่ม1', 'วันที่ส่งเล่ม 1', 'วันที่ส่งเล่ม'],
                 'วันที่ส่งเล่ม 2': ['วันที่ส่งเล่ม2', 'วันที่ส่งเล่ม 2', 'สนพ. รับผลงาน', 'สนพ.รับผลงาน', 'สนพ รับผลงาน', 'วันส่งเล่ม 2', 'สนพ. รับเรื่อง', 'สนพ.รับเรื่อง'],
                 'วันบรรจุ': ['วันที่บรรจุ', 'วันบรรจุ'],
-                'ผลการประเมิน': ['ผ่ลการประเมิน', 'ผลการประเมิน', 'ผลประเมิน']
+                'ผลการประเมิน': ['ผ่ลการประเมิน', 'ผลการประเมิน', 'ผลประเมิน'],
+                'วันที่ครบกำหนด 6 เดือน': ['วันที่ครบกำหนด 6 เดือน', 'ครบกำหนด 6 เดือน', 'ครบกำหนด6เดือน', 'วันที่ครบกำหนด6เดือน']
             };
 
             for (let mainKey in aliases) {
@@ -1147,6 +1247,38 @@
                 return `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
             }
             return s;
+        }
+
+        function parseDateStrict(val) {
+            if (!val) return null;
+            let s = String(val).trim();
+            if (!s || s === '-' || s === 'null' || s === 'undefined') return null;
+
+            if (s.includes('T')) s = s.split('T')[0];
+
+            let isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (isoMatch) {
+                let y = parseInt(isoMatch[1]);
+                if (y > 2400) y -= 543;
+                return new Date(y, parseInt(isoMatch[2]) - 1, parseInt(isoMatch[3]));
+            }
+
+            let slashMatch = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+            if (slashMatch) {
+                let d = parseInt(slashMatch[1]);
+                let m = parseInt(slashMatch[2]) - 1;
+                let y = parseInt(slashMatch[3]);
+                if (y > 2400) y -= 543;
+                return new Date(y, m, d);
+            }
+
+            let dObj = new Date(s);
+            if (!isNaN(dObj.getTime())) {
+                let y = dObj.getFullYear();
+                if (y > 2400) y -= 543;
+                return new Date(y, dObj.getMonth(), dObj.getDate());
+            }
+            return null;
         }
 
         function extractYearBE(dateVal) {
@@ -1267,6 +1399,145 @@
             return null;
         }
 
+        function updateNotifications() {
+            cachedNotificationList = [];
+            const levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let criticalCount = 0;
+            let warningCount = 0;
+            let overdueCount = 0;
+
+            levels.forEach(lvl => {
+                const rows = appData[lvl] || [];
+                rows.forEach(row => {
+                    if (!isValidRow(row)) return;
+
+                    // Check if Volume 2 has already been submitted (if so, case is completed for 6-month tracking)
+                    const vol2DateStr = getRowValue(row, 'วันที่ส่งเล่ม 2') || getRowValue(row, 'สนพ. รับผลงาน') || getRowValue(row, 'สนพ. รับเรื่อง');
+                    if (vol2DateStr && vol2DateStr !== '-' && String(vol2DateStr).trim() !== '') return;
+
+                    // Check status - if cancelled or failed, no deadline alert needed
+                    const statusStr = String(getRowValue(row, 'ผลการประเมิน')).trim();
+                    if (statusStr.includes('ไม่ผ่าน') || statusStr.includes('ยกเลิก') || statusStr.includes('ถอน')) return;
+
+                    const deadlineVal = getRowValue(row, 'วันที่ครบกำหนด 6 เดือน') || getRowValue(row, 'ครบกำหนด 6 เดือน');
+                    const deadlineDate = parseDateStrict(deadlineVal);
+
+                    if (deadlineDate) {
+                        const diffTime = deadlineDate.getTime() - today.getTime();
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                        // Only alert if within 30 days or overdue
+                        if (diffDays <= 30) {
+                            let alertType = 'warning'; // 16 - 30 days
+                            let alertLabel = `⏳ เหลืออีก ${diffDays} วัน (เตือนล่วงหน้า 1 เดือน)`;
+                            let badgeClass = 'bg-warning text-dark';
+
+                            if (diffDays < 0) {
+                                alertType = 'overdue';
+                                alertLabel = `❌ เกินกำหนด ${Math.abs(diffDays)} วัน`;
+                                badgeClass = 'bg-dark text-white';
+                                overdueCount++;
+                            } else if (diffDays <= 15) {
+                                alertType = 'critical';
+                                alertLabel = `⚠️ เหลืออีก ${diffDays} วัน (เตือนวิกฤต 15 วัน)`;
+                                badgeClass = 'bg-danger text-white';
+                                criticalCount++;
+                            } else {
+                                warningCount++;
+                            }
+
+                            const prefix = getRowValue(row, 'คำนำหน้า') || '';
+                            const fname = getRowValue(row, 'ชื่อ -') || getRowValue(row, 'ชื่อ') || '';
+                            const lname = getRowValue(row, 'สกุล') || getRowValue(row, 'นามสกุล') || '';
+                            const fullName = `${prefix}${fname} ${lname}`.trim() || '-';
+                            const staffName = getStaffFromRow(row, lvl) || '-';
+
+                            cachedNotificationList.push({
+                                level: lvl,
+                                row: row,
+                                posNo: getRowValue(row, 'ตำแหน่งเลขที่') || '-',
+                                fullName: fullName,
+                                hosp: getRowValue(row, 'สังกัด') || '-',
+                                deadlineStr: cleanDateStr(deadlineVal),
+                                diffDays: diffDays,
+                                alertType: alertType,
+                                alertLabel: alertLabel,
+                                badgeClass: badgeClass,
+                                staffName: staffName
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Sort by most urgent (lowest diffDays first)
+            cachedNotificationList.sort((a, b) => a.diffDays - b.diffDays);
+
+            const totalAlerts = cachedNotificationList.length;
+            const badgeEl = document.getElementById('notifCountBadge');
+            if (badgeEl) {
+                if (totalAlerts > 0) {
+                    badgeEl.innerText = totalAlerts.toLocaleString();
+                    badgeEl.style.display = 'inline-block';
+                } else {
+                    badgeEl.style.display = 'none';
+                }
+            }
+
+            const elCrit = document.getElementById('notifCriticalCount');
+            const elWarn = document.getElementById('notifWarningCount');
+            const elOver = document.getElementById('notifOverdueCount');
+
+            if (elCrit) elCrit.innerText = `${criticalCount.toLocaleString()} รายการ`;
+            if (elWarn) elWarn.innerText = `${warningCount.toLocaleString()} รายการ`;
+            if (elOver) elOver.innerText = `${overdueCount.toLocaleString()} รายการ`;
+        }
+
+        function openNotificationModal() {
+            updateNotifications();
+            const tbody = document.getElementById('notificationTableBody');
+            tbody.innerHTML = '';
+
+            if (cachedNotificationList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted"><i class="fas fa-check-circle fa-3x mb-3 text-success opacity-50"></i><br><span class="fw-bold">ไม่มีรายการที่ใกล้ครบกำหนด 6 เดือนในขณะนี้</span><br><small class="text-secondary">ระบบจะแจ้งเตือนอัตโนมัติเมื่อมีเคสที่เหลือเวลา &le; 30 วัน หรือ &le; 15 วัน</small></td></tr>`;
+            } else {
+                cachedNotificationList.forEach((item, i) => {
+                    tbody.innerHTML += `
+                        <tr style="cursor: pointer;" onclick="inspectFromNotification('${item.level}', '${item.posNo}')" title="คลิกเพื่อไปยังหน้าทะเบียนนี้">
+                            <td>${i + 1}</td>
+                            <td><span class="badge bg-light text-dark border">${item.level}</span></td>
+                            <td class="fw-bold text-primary">${item.posNo}</td>
+                            <td class="fw-bold text-dark">${item.fullName}</td>
+                            <td>${item.hosp}</td>
+                            <td class="fw-bold text-secondary">${item.deadlineStr}</td>
+                            <td><span class="badge ${item.badgeClass} px-2 py-1">${item.alertLabel}</span></td>
+                            <td class="fw-bold text-primary">${item.staffName}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            new bootstrap.Modal(document.getElementById('notificationModal')).show();
+        }
+
+        function inspectFromNotification(level, posNo) {
+            const modalEl = document.getElementById('notificationModal');
+            const inst = bootstrap.Modal.getInstance(modalEl);
+            if (inst) inst.hide();
+
+            changeMenu(level);
+            setTimeout(() => {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput && posNo && posNo !== '-') {
+                    searchInput.value = posNo;
+                    renderTable();
+                }
+            }, 150);
+        }
+
         function generateMockData() {
             const users = [
                 { "Username": "admin01", "Password": "password", "Role": "Admin", "Status": "Active", "ชื่อ-สกุลเต็ม": "นายพงษ์วัตร บุญสนองโชคยิ่ง", "Unnamed: 4": "พงษ์วัตร" },
@@ -1371,6 +1642,7 @@
                     if (cachedStr) {
                         appData = JSON.parse(cachedStr);
                         populateFilterDropdowns();
+                        updateNotifications();
                         if (currentMenu === 'dashboard') updateDashboard();
                         else renderTable();
                         updateSyncBadge('success', 'Local Cache');
@@ -1424,6 +1696,7 @@
             } finally {
                 isFetching = false;
                 populateFilterDropdowns();
+                updateNotifications();
                 if (currentMenu === 'dashboard') {
                     updateDashboard();
                 } else {
@@ -2501,7 +2774,7 @@
                         if (elements && elements.length > 0) {
                             const index = elements[0].index;
                             const staffName = sortedMeetingStaff[index];
-                            openStaffInspectionModal(staffName);
+                            openStaffInspectionModal(staffName, true);
                         }
                     },
                     scales: {
@@ -2821,6 +3094,9 @@
             });
             thead.appendChild(trHead);
 
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
             data.forEach(row => {
                 let tr = document.createElement('tr');
                 tr.className = "clickable-row";
@@ -2925,6 +3201,30 @@
                         else if(val.includes('ไม่ผ่าน') || val.includes('ยกเลิก')) badgeClass = 'bg-danger';
                         else if(val.includes('ประชุม') || val.includes('ระหว่าง')) badgeClass = 'bg-warning text-dark';
                         td.innerHTML = `<span class="badge ${badgeClass} badge-status">${val}</span>`;
+                    } else if (col.includes('ครบกำหนด 6 เดือน') || col.includes('วันที่ครบกำหนด 6 เดือน')) {
+                        let vol2Date = getRowValue(row, 'วันที่ส่งเล่ม 2') || getRowValue(row, 'สนพ. รับผลงาน') || getRowValue(row, 'สนพ. รับเรื่อง');
+                        let isVol2Sent = vol2Date && vol2Date !== '-' && String(vol2Date).trim() !== '';
+                        let dObj = parseDateStrict(val);
+
+                        if (isVol2Sent) {
+                            td.innerHTML = `<span>${displayVal}</span> <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-check-circle me-1"></i>ส่งเล่ม 2 แล้ว</span>`;
+                        } else if (dObj) {
+                            let diffTime = dObj.getTime() - today.getTime();
+                            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                            let badgeHtml = '';
+
+                            if (diffDays < 0) {
+                                badgeHtml = `<span class="badge bg-dark text-white ms-1" style="font-size:0.7rem;">❌ เกิน ${Math.abs(diffDays)} วัน</span>`;
+                            } else if (diffDays <= 15) {
+                                badgeHtml = `<span class="badge bg-danger text-white ms-1" style="font-size:0.7rem;">⚠️ เหลือ ${diffDays} วัน</span>`;
+                            } else if (diffDays <= 30) {
+                                badgeHtml = `<span class="badge bg-warning text-dark ms-1" style="font-size:0.7rem;">⏳ เหลือ ${diffDays} วัน</span>`;
+                            }
+
+                            td.innerHTML = `<span>${displayVal}</span> ${badgeHtml}`;
+                        } else {
+                            td.innerText = displayVal;
+                        }
                     } else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่')) {
                         td.style.minWidth = '260px';
                         td.style.maxWidth = '260px';
@@ -3012,6 +3312,7 @@
                         appData[currentMenu] = appData[currentMenu].filter(r => String(getRowValue(r, firstColKey)) !== String(rowId));
                     }
                     try { localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(appData)); } catch(e){}
+                    updateNotifications();
                     renderTable();
 
                     Swal.fire({
@@ -3083,6 +3384,7 @@
             const modalInst = bootstrap.Modal.getInstance(formModalEl);
             if (modalInst) modalInst.hide();
 
+            updateNotifications();
             if (currentMenu === 'dashboard') updateDashboard();
             else renderTable();
 
@@ -3260,13 +3562,30 @@
             else changeMenu(currentMenu);
         }
 
-        function openStaffInspectionModal(staffName) {
+        function inspectFromStaffModal(level, posNo) {
+            const modalEl = document.getElementById('staffInspectionModal');
+            const inst = bootstrap.Modal.getInstance(modalEl);
+            if (inst) inst.hide();
+
+            changeMenu(level);
+            setTimeout(() => {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput && posNo && posNo !== '-') {
+                    searchInput.value = posNo;
+                    renderTable();
+                }
+            }, 150);
+        }
+
+        function openStaffInspectionModal(staffName, isMeetingStaff = false) {
             const modalTitle = document.getElementById('staffInspectionTitle');
             const tbody = document.getElementById('staffInspectionTableBody');
             tbody.innerHTML = '';
 
             let matchedRows = [];
-            let levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
+            let levels = isMeetingStaff 
+                ? ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)'] 
+                : ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
 
             let activeStaffMap = {};
             if (appData['Users'] && Array.isArray(appData['Users'])) {
@@ -3285,14 +3604,28 @@
                 let rawData = appData[lvl] || [];
                 rawData.forEach(row => {
                     if (!isValidRow(row)) return;
-                    let matched = getStaffFromRow(row, lvl, activeStaffMap, {});
-                    if (matched === staffName) {
-                        matchedRows.push({ level: lvl, row: row });
+                    if (isMeetingStaff) {
+                        let msVal = getRowValue(row, 'เจ้าหน้าที่จัดประชุม') || getRowValue(row, 'เจ้าหน้าที่จัดประชุม1') || getRowValue(row, 'เจ้าหน้าที่ประชุม');
+                        if (msVal && msVal !== '-') {
+                            msVal = String(msVal).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+                            let normMs = normalizeThaiName(msVal);
+                            let canonicalMs = activeStaffMap[msVal] || activeStaffMap[normMs] || msVal;
+                            if (canonicalMs === staffName || msVal === staffName) {
+                                matchedRows.push({ level: lvl, row: row });
+                            }
+                        }
+                    } else {
+                        let matched = getStaffFromRow(row, lvl, activeStaffMap, {});
+                        if (matched === staffName) {
+                            matchedRows.push({ level: lvl, row: row });
+                        }
                     }
                 });
             });
 
-            modalTitle.innerHTML = `<i class="fas fa-user-check me-2"></i> รายการภาระงานของ: ${staffName} (${matchedRows.length} รายการ)`;
+            modalTitle.innerHTML = isMeetingStaff 
+                ? `<i class="fas fa-users me-2"></i> รายการจัดประชุมของ: ${staffName} (${matchedRows.length} รายการ)`
+                : `<i class="fas fa-user-check me-2"></i> รายการภาระงานของ: ${staffName} (${matchedRows.length} รายการ)`;
 
             if (matchedRows.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">ไม่พบรายการข้อมูลที่ตรงกับเจ้าหน้าที่ท่านนี้</td></tr>';
@@ -3315,8 +3648,10 @@
                     else if (status.includes('ไม่ผ่าน') || status.includes('ยกเลิก')) statusBadgeClass = 'bg-danger';
                     else statusBadgeClass = 'bg-warning text-dark';
 
+                    let safePosNo = String(posNo).replace(/'/g, "\\'");
+
                     tbody.innerHTML += `
-                        <tr>
+                        <tr style="cursor: pointer;" onclick="inspectFromStaffModal('${item.level}', '${safePosNo}')" title="คลิกเพื่อไปยังหน้าทะเบียนนี้">
                             <td>${i + 1}</td>
                             <td><span class="badge bg-light text-dark border">${item.level}</span></td>
                             <td class="fw-bold text-primary">${posNo} (ลำดับ ${seq})</td>
