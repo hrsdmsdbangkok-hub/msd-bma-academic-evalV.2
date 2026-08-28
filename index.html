@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Google Fonts: Prompt & Sarabun & Plus Jakarta Sans -->
+    <!-- Google Fonts: Prompt & Plus Jakarta Sans & Sarabun -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
@@ -26,7 +26,7 @@
             --bma-accent: #f59e0b;
             --bma-bg: #f8fafc;
             --bma-dark: #0f172a;
-            --glass-bg: rgba(255, 255, 255, 0.92);
+            --glass-bg: rgba(255, 255, 255, 0.94);
             --shadow-subtle: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
             --shadow-card: 0 12px 30px -4px rgba(15, 23, 42, 0.06), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
             --shadow-hover: 0 20px 35px -10px rgba(13, 148, 136, 0.15), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
@@ -140,6 +140,7 @@
             min-height: 100vh; 
             transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .topbar { 
             background: var(--glass-bg); 
             backdrop-filter: blur(16px);
@@ -197,9 +198,7 @@
             transform: scale(1.06);
             box-shadow: 0 6px 15px rgba(217, 119, 6, 0.16);
         }
-        .btn-notif-bell:hover i {
-            transform: rotate(15deg);
-        }
+        .btn-notif-bell:hover i { transform: rotate(15deg); }
 
         .sync-badge {
             background: #f0fdf4;
@@ -339,7 +338,7 @@
             font-weight: 700;
         }
 
-        /* Sticky Left Columns (up to Surname) */
+        /* Sticky Left Columns (Fixed up to Surname) */
         .table-custom th.sticky-col {
             position: sticky;
             top: 0;
@@ -355,7 +354,7 @@
         }
         .table-custom tr:hover td.sticky-col { background-color: #f0fdf4 !important; }
 
-        /* Right shadow elevation for the last frozen column */
+        /* Right shadow elevation for the last frozen column (Surname) */
         .sticky-col-last {
             border-right: 2px solid #cbd5e1 !important;
             box-shadow: 6px 0 12px -3px rgba(15, 23, 42, 0.08) !important;
@@ -812,7 +811,7 @@
                 <div class="modal-header text-white" style="background: linear-gradient(135deg, #d97706, #b45309); border-top-left-radius: 20px; border-top-right-radius: 20px;">
                     <div>
                         <h5 class="modal-title fw-bold" id="notificationModalTitle"><i class="fas fa-bell me-2"></i> ศูนย์แจ้งเตือนกำหนดส่งผลงาน (ครบกำหนด 6 เดือน)</h5>
-                        <small class="opacity-75">รายการที่ต้องติดตามและประสานงานผู้ขอประเมิน</small>
+                        <small class="opacity-75">รายการที่ต้องติดตามและประสานงานผู้ขอประเมิน [เฉพาะสถานะอยู่ระหว่างดำเนินการ]</small>
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -1414,7 +1413,7 @@
                 rows.forEach(row => {
                     if (!isValidRow(row)) return;
 
-                    // Check if Volume 2 has already been submitted (if so, case is completed for 6-month tracking)
+                    // Check if Volume 2 has already been submitted
                     const vol2DateStr = getRowValue(row, 'วันที่ส่งเล่ม 2') || getRowValue(row, 'สนพ. รับผลงาน') || getRowValue(row, 'สนพ. รับเรื่อง');
                     if (vol2DateStr && vol2DateStr !== '-' && String(vol2DateStr).trim() !== '') return;
 
@@ -1502,7 +1501,7 @@
             tbody.innerHTML = '';
 
             if (cachedNotificationList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted"><i class="fas fa-check-circle fa-3x mb-3 text-success opacity-50"></i><br><span class="fw-bold">ไม่มีรายการที่ใกล้ครบกำหนด 6 เดือนในขณะนี้</span><br><small class="text-secondary">ระบบจะแจ้งเตือนอัตโนมัติเมื่อมีเคสที่เหลือเวลา &le; 30 วัน หรือ &le; 15 วัน</small></td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted"><i class="fas fa-check-circle fa-3x mb-3 text-success opacity-50"></i><br><span class="fw-bold">ไม่มีรายการที่ใกล้ครบกำหนด 6 เดือนในขณะนี้</span><br><small class="text-secondary">ระบบจะแจ้งเตือนอัตโนมัติเมื่อมีเคสที่เหลือเวลา &le; 30 วัน หรือ &le; 15 วัน [เฉพาะสถานะอยู่ระหว่างดำเนินการ]</small></td></tr>`;
             } else {
                 cachedNotificationList.forEach((item, i) => {
                     tbody.innerHTML += `
@@ -3403,272 +3402,6 @@
             syncToGoogleSheets(actionName, currentMenu, payload, isNew);
         }
 
-        function performLogin() {
-            const user = document.getElementById('loginUsername').value.trim();
-            const pass = document.getElementById('loginPassword').value.trim();
-            
-            if(!appData['Users'] || appData['Users'].length === 0) {
-                document.getElementById('loginAlert').style.display = 'block';
-                return Swal.fire('ระบบยังไม่พร้อม', 'ระบบกำลังโหลดฐานข้อมูลผู้ใช้งาน กรุณาลองใหม่อีกครั้งครับ', 'warning');
-            }
-
-            document.getElementById('loginAlert').style.display = 'none';
-
-            if (user.length < 6 || pass.length < 6) {
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ปฏิเสธการเข้าถึง',
-                    text: 'Username และ Password ต้องมีความยาวอย่างน้อย 6 ตัวอักษร (ตรงตามตัวพิมพ์เล็ก-ใหญ่ ตัวเลข หรืออักขระพิเศษ)'
-                });
-            }
-
-            const foundUser = appData['Users'].find(u => 
-                String(u.Username || u['ชื่อผู้ใช้'] || '').trim() === user && 
-                String(u.Password || u['รหัสผ่าน'] || '').trim() === pass && 
-                String(u.Status || u['สถานะ'] || '').trim().toLowerCase() !== 'disabled'
-            );
-            
-            if(foundUser) {
-                let loginModalEl = document.getElementById('loginModal');
-                let modalInst = bootstrap.Modal.getInstance(loginModalEl);
-                if (modalInst) modalInst.hide();
-
-                if (String(foundUser.Password).trim() === '123456') {
-                    promptChangePassword(foundUser);
-                } else {
-                    completeLogin(foundUser);
-                }
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'ปฏิเสธการเข้าถึง',
-                    text: 'Username หรือ Password ไม่ถูกต้อง (กรุณาตรวจสอบตัวพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข หรืออักขระพิเศษให้ตรงกัน)'
-                });
-            }
-        }
-
-        function promptChangePassword(userObj) {
-            Swal.fire({
-                title: '<i class="fas fa-key text-warning me-2"></i>กรุณาเปลี่ยนรหัสผ่านใหม่',
-                html: `
-                    <div class="text-start mb-3 small text-muted">
-                        เนื่องจากรหัสผ่านของคุณคือรหัสผ่านเริ่มต้น (<b class="text-dark">123456</b>) หรือเพิ่งได้รับการรีเซ็ตรหัสผ่าน เพื่อความปลอดภัยกรุณาตั้งรหัสผ่านใหม่ก่อนเข้าใช้งานครับ
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="password" id="swalNewPass" class="form-control rounded-4" placeholder="รหัสผ่านใหม่">
-                        <label for="swalNewPass">รหัสผ่านใหม่ (ห้ามเป็น 123456)</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="password" id="swalConfirmPass" class="form-control rounded-4" placeholder="ยืนยันรหัสผ่านใหม่">
-                        <label for="swalConfirmPass">ยืนยันรหัสผ่านใหม่อีกครั้ง</label>
-                    </div>
-                `,
-                focusConfirm: false,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                confirmButtonText: '<i class="fas fa-save me-1"></i> บันทึกรหัสผ่านใหม่',
-                confirmButtonColor: '#059669',
-                preConfirm: () => {
-                    const newPass = document.getElementById('swalNewPass').value.trim();
-                    const confirmPass = document.getElementById('swalConfirmPass').value.trim();
-
-                    if (!newPass) {
-                        Swal.showValidationMessage('กรุณากรอกรหัสผ่านใหม่');
-                        return false;
-                    }
-                    if (newPass === '123456') {
-                        Swal.showValidationMessage('รหัสผ่านใหม่ต้องไม่เป็น 123456');
-                        return false;
-                    }
-                    if (newPass.length < 6) {
-                        Swal.showValidationMessage('รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
-                        return false;
-                    }
-                    if (newPass !== confirmPass) {
-                        Swal.showValidationMessage('รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน');
-                        return false;
-                    }
-                    return newPass;
-                }
-            }).then((result) => {
-                if (result.isConfirmed && result.value) {
-                    const newPassword = result.value;
-                    userObj['Password'] = newPassword;
-                    if (userObj['รหัสผ่าน'] !== undefined) userObj['รหัสผ่าน'] = newPassword;
-
-                    completeLogin(userObj);
-                    syncToGoogleSheets('update', 'Users', userObj, false);
-                }
-            });
-        }
-
-        function resetUserPassword(row) {
-            let uName = getRowValue(row, 'Username') || getRowValue(row, 'ชื่อผู้ใช้') || '';
-            let fullName = getRowValue(row, 'ชื่อ-สกุลเต็ม') || uName;
-
-            Swal.fire({
-                title: 'รีเซ็ตรหัสผ่าน?',
-                html: `คุณต้องการรีเซ็ตรหัสผ่านของผู้ใช้ <b>${fullName} (${uName})</b> เป็น <b class="text-primary">123456</b> หรือไม่?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#0284c7',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: '<i class="fas fa-key me-1"></i> ยืนยันรีเซ็ต 123456',
-                cancelButtonText: 'ยกเลิก'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    row['Password'] = '123456';
-                    if (row['รหัสผ่าน'] !== undefined) row['รหัสผ่าน'] = '123456';
-
-                    try { localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(appData)); } catch(e){}
-                    renderTable();
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'รีเซ็ตรหัสผ่านสำเร็จ!',
-                        text: 'รหัสผ่านถูกเปลี่ยนเป็น 123456 เรียบร้อยแล้ว',
-                        timer: 1200,
-                        showConfirmButton: false,
-                        toast: true,
-                        position: 'top-end'
-                    });
-
-                    syncToGoogleSheets('update', 'Users', row, false);
-                }
-            });
-        }
-
-        function completeLogin(userObj) {
-            currentUser = userObj;
-            let fullName = currentUser['ชื่อ-สกุลเต็ม'] || currentUser.Username;
-            document.getElementById('userFullName').innerText = fullName;
-            document.getElementById('userInitial').innerText = fullName.charAt(0);
-            document.getElementById('userRoleBadge').innerText = currentUser.Role.toUpperCase();
-            
-            document.getElementById('userDisplay').style.display = 'flex';
-            document.getElementById('loginBtn').style.display = 'none';
-            
-            if(currentUser.Role === 'Admin') document.getElementById('adminMenuSection').style.display = 'block';
-
-            Swal.fire({icon: 'success', title: 'เข้าสู่ระบบสำเร็จ', text: `ยินดีต้อนรับ ${fullName}`, timer: 1200, showConfirmButton: false, toast: true, position: 'top-end'});
-            changeMenu(currentMenu);
-        }
-
-        function logout() {
-            currentUser = null;
-            document.getElementById('userDisplay').style.display = 'none';
-            document.getElementById('loginBtn').style.display = 'inline-block';
-            document.getElementById('adminMenuSection').style.display = 'none';
-            if(currentMenu === 'Users') changeMenu('dashboard');
-            else changeMenu(currentMenu);
-        }
-
-        function inspectFromStaffModal(level, posNo) {
-            const modalEl = document.getElementById('staffInspectionModal');
-            const inst = bootstrap.Modal.getInstance(modalEl);
-            if (inst) inst.hide();
-
-            changeMenu(level);
-            setTimeout(() => {
-                const searchInput = document.getElementById('searchInput');
-                if (searchInput && posNo && posNo !== '-') {
-                    searchInput.value = posNo;
-                    renderTable();
-                }
-            }, 150);
-        }
-
-        function openStaffInspectionModal(staffName, isMeetingStaff = false) {
-            const modalTitle = document.getElementById('staffInspectionTitle');
-            const tbody = document.getElementById('staffInspectionTableBody');
-            tbody.innerHTML = '';
-
-            let matchedRows = [];
-            let levels = isMeetingStaff 
-                ? ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)'] 
-                : ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
-
-            let activeStaffMap = {};
-            if (appData['Users'] && Array.isArray(appData['Users'])) {
-                appData['Users'].forEach(u => {
-                    let shortName = (u['Unnamed: 4'] || u['ชื่อย่อ'] || u['ชื่อ-สกุลเต็ม'] || u.Username || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-                    let fullName = (u['ชื่อ-สกุลเต็ม'] || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-                    if (shortName) {
-                        activeStaffMap[shortName] = shortName;
-                        activeStaffMap[normalizeThaiName(shortName)] = shortName;
-                        if (fullName) activeStaffMap[fullName] = shortName;
-                    }
-                });
-            }
-
-            levels.forEach(lvl => {
-                let rawData = appData[lvl] || [];
-                rawData.forEach(row => {
-                    if (!isValidRow(row)) return;
-                    if (isMeetingStaff) {
-                        let msVal = getRowValue(row, 'เจ้าหน้าที่จัดประชุม') || getRowValue(row, 'เจ้าหน้าที่จัดประชุม1') || getRowValue(row, 'เจ้าหน้าที่ประชุม');
-                        if (msVal && msVal !== '-') {
-                            msVal = String(msVal).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-                            let normMs = normalizeThaiName(msVal);
-                            let canonicalMs = activeStaffMap[msVal] || activeStaffMap[normMs] || msVal;
-                            if (canonicalMs === staffName || msVal === staffName) {
-                                matchedRows.push({ level: lvl, row: row });
-                            }
-                        }
-                    } else {
-                        let matched = getStaffFromRow(row, lvl, activeStaffMap, {});
-                        if (matched === staffName) {
-                            matchedRows.push({ level: lvl, row: row });
-                        }
-                    }
-                });
-            });
-
-            modalTitle.innerHTML = isMeetingStaff 
-                ? `<i class="fas fa-users me-2"></i> รายการจัดประชุมของ: ${staffName} (${matchedRows.length} รายการ)`
-                : `<i class="fas fa-user-check me-2"></i> รายการภาระงานของ: ${staffName} (${matchedRows.length} รายการ)`;
-
-            if (matchedRows.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">ไม่พบรายการข้อมูลที่ตรงกับเจ้าหน้าที่ท่านนี้</td></tr>';
-            } else {
-                matchedRows.forEach((item, i) => {
-                    let r = item.row;
-                    let seq = getRowValue(r, 'ลำดับ') || '-';
-                    let posNo = getRowValue(r, 'ตำแหน่งเลขที่') || '-';
-                    let prefix = getRowValue(r, 'คำนำหน้า') || '';
-                    let fname = getRowValue(r, 'ชื่อ -') || getRowValue(r, 'ชื่อ') || '';
-                    let lname = getRowValue(r, 'สกุล') || getRowValue(r, 'นามสกุล') || '';
-                    let fullName = `${prefix}${fname} ${lname}`.trim() || '-';
-                    let pos = getRowValue(r, 'ตำแหน่งปัจจุบัน') || '-';
-                    let hosp = getRowValue(r, 'สังกัด') || '-';
-                    let date1 = cleanDateStr(getRowValue(r, 'วันที่ส่งเล่ม 1'));
-                    let status = getRowValue(r, 'ผลการประเมิน') || '-';
-
-                    let statusBadgeClass = 'bg-secondary';
-                    if (status.includes('ผ่าน') && !status.includes('ไม่')) statusBadgeClass = 'bg-success';
-                    else if (status.includes('ไม่ผ่าน') || status.includes('ยกเลิก')) statusBadgeClass = 'bg-danger';
-                    else statusBadgeClass = 'bg-warning text-dark';
-
-                    let safePosNo = String(posNo).replace(/'/g, "\\'");
-
-                    tbody.innerHTML += `
-                        <tr style="cursor: pointer;" onclick="inspectFromStaffModal('${item.level}', '${safePosNo}')" title="คลิกเพื่อไปยังหน้าทะเบียนนี้">
-                            <td>${i + 1}</td>
-                            <td><span class="badge bg-light text-dark border">${item.level}</span></td>
-                            <td class="fw-bold text-primary">${posNo} (ลำดับ ${seq})</td>
-                            <td class="fw-bold">${fullName}</td>
-                            <td style="max-width: 180px; font-size: 0.82rem;">${pos}</td>
-                            <td>${hosp}</td>
-                            <td>${date1}</td>
-                            <td class="text-center"><span class="badge ${statusBadgeClass}">${status}</span></td>
-                        </tr>
-                    `;
-                });
-            }
-
-            new bootstrap.Modal(document.getElementById('staffInspectionModal')).show();
-        }
-
         function formatInputDate(val) {
             if (!val || val === '-' || val === 'null') return '';
             let s = String(val).trim();
@@ -3983,6 +3716,272 @@
                     if (remarkLabel) remarkLabel.innerHTML = `หมายเหตุ`;
                 }
             }
+        }
+
+        function performLogin() {
+            const user = document.getElementById('loginUsername').value.trim();
+            const pass = document.getElementById('loginPassword').value.trim();
+            
+            if(!appData['Users'] || appData['Users'].length === 0) {
+                document.getElementById('loginAlert').style.display = 'block';
+                return Swal.fire('ระบบยังไม่พร้อม', 'ระบบกำลังโหลดฐานข้อมูลผู้ใช้งาน กรุณาลองใหม่อีกครั้งครับ', 'warning');
+            }
+
+            document.getElementById('loginAlert').style.display = 'none';
+
+            if (user.length < 6 || pass.length < 6) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'ปฏิเสธการเข้าถึง',
+                    text: 'Username และ Password ต้องมีความยาวอย่างน้อย 6 ตัวอักษร (ตรงตามตัวพิมพ์เล็ก-ใหญ่ ตัวเลข หรืออักขระพิเศษ)'
+                });
+            }
+
+            const foundUser = appData['Users'].find(u => 
+                String(u.Username || u['ชื่อผู้ใช้'] || '').trim() === user && 
+                String(u.Password || u['รหัสผ่าน'] || '').trim() === pass && 
+                String(u.Status || u['สถานะ'] || '').trim().toLowerCase() !== 'disabled'
+            );
+            
+            if(foundUser) {
+                let loginModalEl = document.getElementById('loginModal');
+                let modalInst = bootstrap.Modal.getInstance(loginModalEl);
+                if (modalInst) modalInst.hide();
+
+                if (String(foundUser.Password).trim() === '123456') {
+                    promptChangePassword(foundUser);
+                } else {
+                    completeLogin(foundUser);
+                }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ปฏิเสธการเข้าถึง',
+                    text: 'Username หรือ Password ไม่ถูกต้อง (กรุณาตรวจสอบตัวพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข หรืออักขระพิเศษให้ตรงกัน)'
+                });
+            }
+        }
+
+        function promptChangePassword(userObj) {
+            Swal.fire({
+                title: '<i class="fas fa-key text-warning me-2"></i>กรุณาเปลี่ยนรหัสผ่านใหม่',
+                html: `
+                    <div class="text-start mb-3 small text-muted">
+                        เนื่องจากรหัสผ่านของคุณคือรหัสผ่านเริ่มต้น (<b class="text-dark">123456</b>) หรือเพิ่งได้รับการรีเซ็ตรหัสผ่าน เพื่อความปลอดภัยกรุณาตั้งรหัสผ่านใหม่ก่อนเข้าใช้งานครับ
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" id="swalNewPass" class="form-control rounded-4" placeholder="รหัสผ่านใหม่">
+                        <label for="swalNewPass">รหัสผ่านใหม่ (ห้ามเป็น 123456)</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" id="swalConfirmPass" class="form-control rounded-4" placeholder="ยืนยันรหัสผ่านใหม่">
+                        <label for="swalConfirmPass">ยืนยันรหัสผ่านใหม่อีกครั้ง</label>
+                    </div>
+                `,
+                focusConfirm: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: '<i class="fas fa-save me-1"></i> บันทึกรหัสผ่านใหม่',
+                confirmButtonColor: '#059669',
+                preConfirm: () => {
+                    const newPass = document.getElementById('swalNewPass').value.trim();
+                    const confirmPass = document.getElementById('swalConfirmPass').value.trim();
+
+                    if (!newPass) {
+                        Swal.showValidationMessage('กรุณากรอกรหัสผ่านใหม่');
+                        return false;
+                    }
+                    if (newPass === '123456') {
+                        Swal.showValidationMessage('รหัสผ่านใหม่ต้องไม่เป็น 123456');
+                        return false;
+                    }
+                    if (newPass.length < 6) {
+                        Swal.showValidationMessage('รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
+                        return false;
+                    }
+                    if (newPass !== confirmPass) {
+                        Swal.showValidationMessage('รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน');
+                        return false;
+                    }
+                    return newPass;
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    const newPassword = result.value;
+                    userObj['Password'] = newPassword;
+                    if (userObj['รหัสผ่าน'] !== undefined) userObj['รหัสผ่าน'] = newPassword;
+
+                    completeLogin(userObj);
+                    syncToGoogleSheets('update', 'Users', userObj, false);
+                }
+            });
+        }
+
+        function resetUserPassword(row) {
+            let uName = getRowValue(row, 'Username') || getRowValue(row, 'ชื่อผู้ใช้') || '';
+            let fullName = getRowValue(row, 'ชื่อ-สกุลเต็ม') || uName;
+
+            Swal.fire({
+                title: 'รีเซ็ตรหัสผ่าน?',
+                html: `คุณต้องการรีเซ็ตรหัสผ่านของผู้ใช้ <b>${fullName} (${uName})</b> เป็น <b class="text-primary">123456</b> หรือไม่?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0284c7',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: '<i class="fas fa-key me-1"></i> ยืนยันรีเซ็ต 123456',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    row['Password'] = '123456';
+                    if (row['รหัสผ่าน'] !== undefined) row['รหัสผ่าน'] = '123456';
+
+                    try { localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(appData)); } catch(e){}
+                    renderTable();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'รีเซ็ตรหัสผ่านสำเร็จ!',
+                        text: 'รหัสผ่านถูกเปลี่ยนเป็น 123456 เรียบร้อยแล้ว',
+                        timer: 1200,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+
+                    syncToGoogleSheets('update', 'Users', row, false);
+                }
+            });
+        }
+
+        function completeLogin(userObj) {
+            currentUser = userObj;
+            let fullName = currentUser['ชื่อ-สกุลเต็ม'] || currentUser.Username;
+            document.getElementById('userFullName').innerText = fullName;
+            document.getElementById('userInitial').innerText = fullName.charAt(0);
+            document.getElementById('userRoleBadge').innerText = currentUser.Role.toUpperCase();
+            
+            document.getElementById('userDisplay').style.display = 'flex';
+            document.getElementById('loginBtn').style.display = 'none';
+            
+            if(currentUser.Role === 'Admin') document.getElementById('adminMenuSection').style.display = 'block';
+
+            Swal.fire({icon: 'success', title: 'เข้าสู่ระบบสำเร็จ', text: `ยินดีต้อนรับ ${fullName}`, timer: 1200, showConfirmButton: false, toast: true, position: 'top-end'});
+            changeMenu(currentMenu);
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('userDisplay').style.display = 'none';
+            document.getElementById('loginBtn').style.display = 'inline-block';
+            document.getElementById('adminMenuSection').style.display = 'none';
+            if(currentMenu === 'Users') changeMenu('dashboard');
+            else changeMenu(currentMenu);
+        }
+
+        function inspectFromStaffModal(level, posNo) {
+            const modalEl = document.getElementById('staffInspectionModal');
+            const inst = bootstrap.Modal.getInstance(modalEl);
+            if (inst) inst.hide();
+
+            changeMenu(level);
+            setTimeout(() => {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput && posNo && posNo !== '-') {
+                    searchInput.value = posNo;
+                    renderTable();
+                }
+            }, 150);
+        }
+
+        function openStaffInspectionModal(staffName, isMeetingStaff = false) {
+            const modalTitle = document.getElementById('staffInspectionTitle');
+            const tbody = document.getElementById('staffInspectionTableBody');
+            tbody.innerHTML = '';
+
+            let matchedRows = [];
+            let levels = isMeetingStaff 
+                ? ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)'] 
+                : ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
+
+            let activeStaffMap = {};
+            if (appData['Users'] && Array.isArray(appData['Users'])) {
+                appData['Users'].forEach(u => {
+                    let shortName = (u['Unnamed: 4'] || u['ชื่อย่อ'] || u['ชื่อ-สกุลเต็ม'] || u.Username || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+                    let fullName = (u['ชื่อ-สกุลเต็ม'] || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+                    if (shortName) {
+                        activeStaffMap[shortName] = shortName;
+                        activeStaffMap[normalizeThaiName(shortName)] = shortName;
+                        if (fullName) activeStaffMap[fullName] = shortName;
+                    }
+                });
+            }
+
+            levels.forEach(lvl => {
+                let rawData = appData[lvl] || [];
+                rawData.forEach(row => {
+                    if (!isValidRow(row)) return;
+                    if (isMeetingStaff) {
+                        let msVal = getRowValue(row, 'เจ้าหน้าที่จัดประชุม') || getRowValue(row, 'เจ้าหน้าที่จัดประชุม1') || getRowValue(row, 'เจ้าหน้าที่ประชุม');
+                        if (msVal && msVal !== '-') {
+                            msVal = String(msVal).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+                            let normMs = normalizeThaiName(msVal);
+                            let canonicalMs = activeStaffMap[msVal] || activeStaffMap[normMs] || msVal;
+                            if (canonicalMs === staffName || msVal === staffName) {
+                                matchedRows.push({ level: lvl, row: row });
+                            }
+                        }
+                    } else {
+                        let matched = getStaffFromRow(row, lvl, activeStaffMap, {});
+                        if (matched === staffName) {
+                            matchedRows.push({ level: lvl, row: row });
+                        }
+                    }
+                });
+            });
+
+            modalTitle.innerHTML = isMeetingStaff 
+                ? `<i class="fas fa-users me-2"></i> รายการจัดประชุมของ: ${staffName} (${matchedRows.length} รายการ)`
+                : `<i class="fas fa-user-check me-2"></i> รายการภาระงานของ: ${staffName} (${matchedRows.length} รายการ)`;
+
+            if (matchedRows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">ไม่พบรายการข้อมูลที่ตรงกับเจ้าหน้าที่ท่านนี้</td></tr>';
+            } else {
+                matchedRows.forEach((item, i) => {
+                    let r = item.row;
+                    let seq = getRowValue(r, 'ลำดับ') || '-';
+                    let posNo = getRowValue(r, 'ตำแหน่งเลขที่') || '-';
+                    let prefix = getRowValue(r, 'คำนำหน้า') || '';
+                    let fname = getRowValue(r, 'ชื่อ -') || getRowValue(r, 'ชื่อ') || '';
+                    let lname = getRowValue(r, 'สกุล') || getRowValue(r, 'นามสกุล') || '';
+                    let fullName = `${prefix}${fname} ${lname}`.trim() || '-';
+                    let pos = getRowValue(r, 'ตำแหน่งปัจจุบัน') || '-';
+                    let hosp = getRowValue(r, 'สังกัด') || '-';
+                    let date1 = cleanDateStr(getRowValue(r, 'วันที่ส่งเล่ม 1'));
+                    let status = getRowValue(r, 'ผลการประเมิน') || '-';
+
+                    let statusBadgeClass = 'bg-secondary';
+                    if (status.includes('ผ่าน') && !status.includes('ไม่')) statusBadgeClass = 'bg-success';
+                    else if (status.includes('ไม่ผ่าน') || status.includes('ยกเลิก')) statusBadgeClass = 'bg-danger';
+                    else statusBadgeClass = 'bg-warning text-dark';
+
+                    let safePosNo = String(posNo).replace(/'/g, "\\'");
+
+                    tbody.innerHTML += `
+                        <tr style="cursor: pointer;" onclick="inspectFromStaffModal('${item.level}', '${safePosNo}')" title="คลิกเพื่อไปยังหน้าทะเบียนนี้">
+                            <td>${i + 1}</td>
+                            <td><span class="badge bg-light text-dark border">${item.level}</span></td>
+                            <td class="fw-bold text-primary">${posNo} (ลำดับ ${seq})</td>
+                            <td class="fw-bold">${fullName}</td>
+                            <td style="max-width: 180px; font-size: 0.82rem;">${pos}</td>
+                            <td>${hosp}</td>
+                            <td>${date1}</td>
+                            <td class="text-center"><span class="badge ${statusBadgeClass}">${status}</span></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            new bootstrap.Modal(document.getElementById('staffInspectionModal')).show();
         }
 
         function showPrintModal(row) {
