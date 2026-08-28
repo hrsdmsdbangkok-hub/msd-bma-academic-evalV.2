@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ระบบติดตามการประเมินผลงานทางวิชาการ (Ver.2) - MSD BMA</title>
     
     <!-- CSS Libraries -->
@@ -52,10 +52,12 @@
             z-index: 1000; 
             overflow-y: auto; 
             box-shadow: 8px 0 30px rgba(0,0,0,0.12); 
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-right: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
+            top: 0;
+            left: 0;
         }
         .sidebar-brand { 
             padding: 20px 14px 16px; 
@@ -122,7 +124,7 @@
             background: rgba(0, 0, 0, 0.15);
         }
 
-        /* Collapsed Sidebar Styles */
+        /* Collapsed Sidebar Styles (Desktop) */
         body.sidebar-collapsed .sidebar { width: var(--sidebar-collapsed-width); }
         body.sidebar-collapsed .main-content { margin-left: var(--sidebar-collapsed-width); }
         body.sidebar-collapsed .sidebar-brand-text,
@@ -169,6 +171,7 @@
             justify-content: center;
             transition: all 0.2s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            cursor: pointer;
         }
         .btn-sidebar-toggle:hover { background: #f1f5f9; color: #0d9488; border-color: #cbd5e1; }
 
@@ -296,6 +299,7 @@
             border: 1px solid #e2e8f0;
             background: #ffffff;
             position: relative;
+            -webkit-overflow-scrolling: touch;
         }
 
         .table-scroll-container::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -338,7 +342,7 @@
             font-weight: 700;
         }
 
-        /* Sticky Left Columns (Fixed up to Surname) */
+        /* Sticky Left Columns (Fixed up to Surname on Desktop) */
         .table-custom th.sticky-col {
             position: sticky;
             top: 0;
@@ -354,7 +358,7 @@
         }
         .table-custom tr:hover td.sticky-col { background-color: #f0fdf4 !important; }
 
-        /* Right shadow elevation for the last frozen column (Surname) */
+        /* Right shadow elevation for the last frozen column */
         .sticky-col-last {
             border-right: 2px solid #cbd5e1 !important;
             box-shadow: 6px 0 12px -3px rgba(15, 23, 42, 0.08) !important;
@@ -421,6 +425,7 @@
         .custom-search-select .dropdown-item { font-size: 0.82rem; padding: 5px 10px; transition: all 0.15s ease; }
         .custom-search-select .dropdown-item:hover { background-color: #f0fdf4; color: #047857; }
 
+        /* Print Modal Styles */
         .print-modal { font-family: 'Prompt', 'Sarabun', sans-serif !important; padding: 16px 20px; background: #ffffff; color: #1e293b; }
         .report-header { text-align: center; position: relative; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 2px solid #059669; }
         .report-logo-badge {
@@ -450,6 +455,108 @@
         .report-item-value { font-size: 0.85rem; font-weight: 600; color: #0f172a; word-break: break-word; }
         .report-status-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-weight: 700; font-size: 0.78rem; }
 
+        /* Mobile Drawer Backdrop Overlay */
+        #mobileSidebarOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            transition: opacity 0.3s ease;
+        }
+
+        /* ==========================================================
+           📱 MOBILE RESPONSIVE ADAPTATIONS (<= 768px)
+           * โค้ดส่วนนี้จะทำงานเฉพาะบนมือถือ ส่วนจอคอมจะใช้ค่าเดิม 100% *
+           ========================================================== */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: calc(-1 * var(--sidebar-width));
+                width: var(--sidebar-width) !important;
+                box-shadow: 10px 0 30px rgba(0,0,0,0.3);
+            }
+            body.sidebar-open-mobile .sidebar {
+                left: 0 !important;
+            }
+            body.sidebar-open-mobile #mobileSidebarOverlay {
+                display: block;
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 14px 12px;
+                width: 100%;
+            }
+
+            .topbar {
+                padding: 8px 12px;
+                border-radius: 12px;
+                margin-bottom: 14px;
+                gap: 8px;
+            }
+            #pageTitle {
+                font-size: 1.05rem !important;
+            }
+            #pageSubtitle {
+                font-size: 0.75rem !important;
+            }
+
+            .sync-badge {
+                padding: 4px 8px;
+                font-size: 0.72rem;
+            }
+            #syncLabelEl {
+                display: none;
+            }
+
+            .btn-notif-bell {
+                width: 38px;
+                height: 38px;
+            }
+            .btn-notif-bell i {
+                font-size: 1.15rem;
+            }
+
+            .kpi-card {
+                padding: 12px 14px;
+                border-radius: 14px;
+            }
+            .kpi-value {
+                font-size: 1.35rem;
+            }
+            .kpi-title {
+                font-size: 0.72rem;
+            }
+
+            .dynamic-form-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .table-wrapper {
+                padding: 12px;
+                border-radius: 16px;
+            }
+            .table-scroll-container {
+                max-height: calc(100vh - 240px);
+                min-height: 320px;
+            }
+
+            .chart-container {
+                padding: 14px;
+                border-radius: 16px;
+            }
+
+            /* Prevent auto-zoom on iOS */
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+
         @page { size: A4 portrait; margin: 5mm 8mm; }
         @media print {
             html, body { height: auto !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; background: #ffffff !important; }
@@ -463,6 +570,9 @@
     </style>
 </head>
 <body>
+
+    <!-- Mobile Drawer Overlay Backdrop -->
+    <div id="mobileSidebarOverlay" onclick="closeMobileSidebar()"></div>
 
     <div class="sidebar">
         <div class="sidebar-brand">
@@ -508,9 +618,9 @@
                 </div>
             </div>
             
-            <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
                 <!-- 6-Month Notification Bell -->
-                <button class="btn btn-notif-bell me-2" id="notifBellBtn" onclick="openNotificationModal()" title="การแจ้งเตือนใกล้ครบกำหนด 6 เดือน">
+                <button class="btn btn-notif-bell me-1" id="notifBellBtn" onclick="openNotificationModal()" title="การแจ้งเตือนใกล้ครบกำหนด 6 เดือน">
                     <i class="fas fa-bell"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-2 border-white shadow-sm" id="notifCountBadge" style="display: none; font-size: 0.72rem; padding: 4px 7px; font-weight: 700; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.4);">
                         0
@@ -526,7 +636,7 @@
                 <!-- User Profile Badge -->
                 <div id="userDisplay" style="display: none;" class="d-flex align-items-center bg-white px-3 py-1 rounded-pill shadow-sm border border-light">
                     <div class="bg-success text-white rounded-circle d-flex justify-content-center align-items-center me-2 shadow-sm" style="width: 32px; height: 32px; font-weight: bold; font-size: 0.85rem;" id="userInitial">U</div>
-                    <div class="lh-1 me-2">
+                    <div class="lh-1 me-2 d-none d-sm-block">
                         <div class="fw-bold text-dark" id="userFullName" style="font-size: 0.84rem; white-space: nowrap;"></div>
                         <div class="text-success fw-semibold" id="userRoleBadge" style="font-size: 0.68rem;"></div>
                     </div>
@@ -534,7 +644,7 @@
                 </div>
                 
                 <button class="btn btn-success btn-modern py-2 px-3 shadow-sm" id="loginBtn" data-bs-toggle="modal" data-bs-target="#loginModal" style="background: linear-gradient(135deg, #059669, #0d9488); border: none; white-space: nowrap;">
-                    <i class="fas fa-user-lock me-1"></i> เข้าสู่ระบบ
+                    <i class="fas fa-user-lock me-1"></i> <span class="d-none d-sm-inline">เข้าสู่ระบบ</span>
                 </button>
             </div>
         </div>
@@ -544,7 +654,7 @@
                 <div class="row g-2 align-items-end">
 
                     <!-- Filter 1: Year -->
-                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6">
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-6">
                         <label class="form-label small fw-bold text-muted mb-1"><i class="fas fa-calendar-alt text-secondary me-1"></i> ปี พ.ศ. (ส่งเล่ม 1)</label>
                         <div class="dropdown custom-search-select" id="dropdownYear">
                             <button class="btn btn-sm btn-white border form-select form-select-sm text-start rounded-3 py-2 d-flex align-items-center justify-content-between w-100 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btnYear" style="font-size: 0.83rem;">
@@ -564,7 +674,7 @@
                     </div>
 
                     <!-- Filter 2: Hospital -->
-                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6">
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-6">
                         <label class="form-label small fw-bold text-muted mb-1"><i class="fas fa-hospital text-secondary me-1"></i> สังกัด / โรงพยาบาล</label>
                         <div class="dropdown custom-search-select" id="dropdownHospital">
                             <button class="btn btn-sm btn-white border form-select form-select-sm text-start rounded-3 py-2 d-flex align-items-center justify-content-between w-100 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btnHospital" style="font-size: 0.83rem;">
@@ -584,8 +694,8 @@
                     </div>
 
                     <!-- Filter 3: Position -->
-                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6">
-                        <label class="form-label small fw-bold text-muted mb-1"><i class="fas fa-id-card text-secondary me-1"></i> ตำแหน่ง (ตัดระดับออก)</label>
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-6">
+                        <label class="form-label small fw-bold text-muted mb-1"><i class="fas fa-id-card text-secondary me-1"></i> ตำแหน่ง</label>
                         <div class="dropdown custom-search-select" id="dropdownPosition">
                             <button class="btn btn-sm btn-white border form-select form-select-sm text-start rounded-3 py-2 d-flex align-items-center justify-content-between w-100 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btnPosition" style="font-size: 0.83rem;">
                                 <span class="text-truncate" id="labelPosition">-- ทุกตำแหน่ง --</span>
@@ -604,7 +714,7 @@
                     </div>
 
                     <!-- Filter 4: Level -->
-                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6">
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-6">
                         <label class="form-label small fw-bold text-muted mb-1"><i class="fas fa-layer-group text-secondary me-1"></i> ระดับการประเมิน</label>
                         <div class="dropdown custom-search-select" id="dropdownLevel">
                             <button class="btn btn-sm btn-white border form-select form-select-sm text-start rounded-3 py-2 d-flex align-items-center justify-content-between w-100 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btnLevel" style="font-size: 0.83rem;">
@@ -623,7 +733,7 @@
                         </div>
                     </div>
 
-                    <div class="col-xl-1 col-lg-1 col-md-12 col-sm-12 text-end">
+                    <div class="col-xl-1 col-lg-1 col-md-12 col-12 text-end mt-2 mt-md-0">
                         <button class="btn btn-light btn-sm rounded-3 py-2 w-100 fw-bold border text-secondary shadow-sm" onclick="resetDashboardFilters()" title="ล้างค่าตัวกรองทั้งหมด" style="font-size: 0.82rem; white-space: nowrap;">
                             <i class="fas fa-undo text-primary me-1"></i> รีเซ็ต
                         </button>
@@ -632,32 +742,32 @@
             </div>
 
             <!-- KPI Cards Row -->
-            <div class="row g-3 mb-4">
-                <div class="col-xl-3 col-md-6">
+            <div class="row g-2 g-md-3 mb-4">
+                <div class="col-xl-3 col-md-6 col-6">
                     <div class="kpi-card" id="kpiCardTotal" onclick="filterByKpi('all')" style="border-bottom: 4px solid #3b82f6;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
                         <i class="fas fa-folder-open kpi-icon text-primary"></i>
-                        <div class="kpi-title">เรื่องเสนอขอรวม (ทั้งหมด)</div>
+                        <div class="kpi-title">เสนอขอรวม</div>
                         <div class="kpi-value text-dark" id="kpiTotal">0</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-3 col-md-6 col-6">
                     <div class="kpi-card" id="kpiCardPass" onclick="filterByKpi('pass')" style="border-bottom: 4px solid #10b981;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
                         <i class="fas fa-check-circle kpi-icon text-success"></i>
-                        <div class="kpi-title">ผ่านการประเมิน (อนุมัติแล้ว)</div>
+                        <div class="kpi-title">ผ่านประเมิน</div>
                         <div class="kpi-value text-success" id="kpiPass">0</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-3 col-md-6 col-6">
                     <div class="kpi-card" id="kpiCardWait" onclick="filterByKpi('wait')" style="border-bottom: 4px solid #f59e0b;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
                         <i class="fas fa-clock kpi-icon text-warning"></i>
-                        <div class="kpi-title">อยู่ระหว่างดำเนินการ</div>
+                        <div class="kpi-title">อยู่ระหว่างดำเนิน</div>
                         <div class="kpi-value text-warning" id="kpiWait">0</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-3 col-md-6 col-6">
                     <div class="kpi-card" id="kpiCardFail" onclick="filterByKpi('fail')" style="border-bottom: 4px solid #ef4444;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
                         <i class="fas fa-times-circle kpi-icon text-danger"></i>
-                        <div class="kpi-title">ไม่ผ่าน / ยกเลิก / ถอนเรื่อง</div>
+                        <div class="kpi-title">ไม่ผ่าน / ยกเลิก</div>
                         <div class="kpi-value text-danger" id="kpiFail">0</div>
                     </div>
                 </div>
@@ -676,7 +786,7 @@
                 <div class="col-lg-4">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-chart-pie"></i> สัดส่วนแยกระดับวิชาการ (ร้อยละ)</div>
+                            <div class="chart-title"><i class="fas fa-chart-pie"></i> สัดส่วนแยกระดับวิชาการ (%)</div>
                         </div>
                         <div style="height: 290px; position: relative;"><canvas id="levelChart"></canvas></div>
                     </div>
@@ -688,7 +798,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-list-ol"></i> 10 อันดับแรกของตำแหน่งที่ส่งเล่มประเมินผลงานสูงที่สุด <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบเพื่อกรอง</span></div>
+                            <div class="chart-title"><i class="fas fa-list-ol"></i> 10 อันดับตำแหน่งที่ส่งเล่มสูงสุด <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบ</span></div>
                         </div>
                         <div id="topPositionsChartWrapper" style="position: relative; min-height: 290px;"><canvas id="topPositionsChart"></canvas></div>
                     </div>
@@ -696,7 +806,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-calendar-alt"></i> สถิติการยื่นส่งผลงานเปรียบเทียบระหว่างปี พ.ศ. (ส่งเล่ม 1)</div>
+                            <div class="chart-title"><i class="fas fa-calendar-alt"></i> สถิติการยื่นส่งผลงานเปรียบเทียบปี พ.ศ.</div>
                         </div>
                         <div style="height: 290px; position: relative;"><canvas id="yearChart"></canvas></div>
                     </div>
@@ -708,7 +818,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-tasks"></i> ภาระงานแยกตามเจ้าหน้าที่ <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบเพื่อตรวจสอบ</span></div>
+                            <div class="chart-title"><i class="fas fa-tasks"></i> ภาระงานแยกตามเจ้าหน้าที่ <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกตรวจสอบ</span></div>
                         </div>
                         <div id="staffChartWrapper" style="position: relative; min-height: 310px;"><canvas id="staffChart"></canvas></div>
                     </div>
@@ -716,7 +826,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-hospital"></i> จำนวนรายการประเมินแยกตามส่วนราชการ / โรงพยาบาล <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกแถบเพื่อกรอง</span></div>
+                            <div class="chart-title"><i class="fas fa-hospital"></i> รายการแยกตามส่วนราชการ / โรงพยาบาล <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกเพื่อกรอง</span></div>
                         </div>
                         <div id="hospitalChartWrapper" style="position: relative; min-height: 310px;"><canvas id="hospitalChart"></canvas></div>
                     </div>
@@ -728,7 +838,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-users"></i> เจ้าหน้าที่จัดประชุม (ชำนาญการ & พยาบาลวิชาชีพ) <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบเพื่อตรวจสอบ</span></div>
+                            <div class="chart-title"><i class="fas fa-users"></i> เจ้าหน้าที่จัดประชุม (ชำนาญการ & พยาบาล) <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกตรวจสอบ</span></div>
                         </div>
                         <div id="meetingStaffChartWrapper" style="position: relative; min-height: 310px;"><canvas id="meetingStaffChart"></canvas></div>
                     </div>
@@ -736,7 +846,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-exclamation-circle"></i> รายงานเหตุผลรายการที่อยู่ระหว่างดำเนินการ <span class="badge bg-warning-subtle text-warning border border-warning-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกเพื่อกรอง</span></div>
+                            <div class="chart-title"><i class="fas fa-exclamation-circle"></i> เหตุผลรายการที่อยู่ระหว่างดำเนินการ <span class="badge bg-warning-subtle text-warning border border-warning-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกกรอง</span></div>
                         </div>
                         <div id="pendingReasonChartWrapper" style="position: relative; min-height: 310px;"><canvas id="pendingReasonChart"></canvas></div>
                     </div>
@@ -745,32 +855,32 @@
         </div>
 
         <div id="tableView" style="display: none;">
-            <div class="row g-3 mb-4" id="levelKpiContainer">
-                <div class="col-xl-3 col-md-6">
+            <div class="row g-2 g-md-3 mb-4" id="levelKpiContainer">
+                <div class="col-xl-3 col-md-6 col-6">
                     <div class="kpi-card" id="subKpiCardTotal" onclick="filterSubKpi('all')" style="border-bottom: 4px solid #3b82f6;" title="คลิกเพื่อดูรายการทั้งหมดในระดับนี้">
                         <i class="fas fa-folder-open kpi-icon text-primary"></i>
-                        <div class="kpi-title">เรื่องเสนอขอรวม (ระดับนี้)</div>
+                        <div class="kpi-title">เรื่องเสนอขอรวม</div>
                         <div class="kpi-value text-dark" id="subKpiTotal">0</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-3 col-md-6 col-6">
                     <div class="kpi-card" id="subKpiCardPass" onclick="filterSubKpi('pass')" style="border-bottom: 4px solid #10b981;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง (เฉพาะระดับนี้)">
                         <i class="fas fa-check-circle kpi-icon text-success"></i>
-                        <div class="kpi-title">ผ่านการประเมินแล้ว</div>
+                        <div class="kpi-title">ผ่านการประเมิน</div>
                         <div class="kpi-value text-success" id="subKpiPass">0</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-3 col-md-6 col-6">
                     <div class="kpi-card" id="subKpiCardWait" onclick="filterSubKpi('wait')" style="border-bottom: 4px solid #f59e0b;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง (เฉพาะระดับนี้)">
                         <i class="fas fa-clock kpi-icon text-warning"></i>
-                        <div class="kpi-title">อยู่ระหว่างดำเนินการ</div>
+                        <div class="kpi-title">อยู่ระหว่างดำเนิน</div>
                         <div class="kpi-value text-warning" id="subKpiWait">0</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-3 col-md-6 col-6">
                     <div class="kpi-card" id="subKpiCardFail" onclick="filterSubKpi('fail')" style="border-bottom: 4px solid #ef4444;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง (เฉพาะระดับนี้)">
                         <i class="fas fa-times-circle kpi-icon text-danger"></i>
-                        <div class="kpi-title">ไม่ผ่าน / ยกเลิก / ถอน</div>
+                        <div class="kpi-title">ไม่ผ่าน / ยกเลิก</div>
                         <div class="kpi-value text-danger" id="subKpiFail">0</div>
                     </div>
                 </div>
@@ -778,16 +888,16 @@
 
             <div class="table-wrapper">
                 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                    <div class="input-group w-50 shadow-sm rounded-pill overflow-hidden border" style="min-width: 260px;">
+                    <div class="input-group flex-grow-1 shadow-sm rounded-pill overflow-hidden border" style="min-width: 240px; max-width: 450px;">
                         <span class="input-group-text bg-white border-0 text-muted"><i class="fas fa-search"></i></span>
-                        <input type="text" class="form-control border-0 py-2" id="searchInput" placeholder="ค้นหาข้อมูล (ลำดับ, ตำแหน่งเลขที่, ชื่อ-สกุล, ตำแหน่ง, เจ้าหน้าที่)..." oninput="filterTable()" onkeyup="filterTable()" style="box-shadow: none;">
+                        <input type="text" class="form-control border-0 py-2" id="searchInput" placeholder="ค้นหาข้อมูล (ลำดับ, เลขที่, ชื่อ-สกุล, ตำแหน่ง)..." oninput="filterTable()" onkeyup="filterTable()" style="box-shadow: none;">
                     </div>
-                    <div class="d-flex align-items-center gap-2">
+                    <div class="d-flex align-items-center gap-2 ms-auto">
                         <button class="btn btn-light btn-modern text-secondary border shadow-sm" onclick="resetPageFilter()" title="ล้างการกรองทั้งหมดในหน้านี้">
-                            <i class="fas fa-undo-alt me-1"></i> รีเซ็ตการกรอง
+                            <i class="fas fa-undo-alt me-1"></i> <span class="d-none d-sm-inline">รีเซ็ตการกรอง</span>
                         </button>
                         <button class="btn btn-primary btn-modern" id="addBtn" style="display: none; background: var(--bma-secondary); border: none;" onclick="openFormModal()">
-                            <i class="fas fa-plus-circle me-1"></i> เพิ่มรายการใหม่
+                            <i class="fas fa-plus-circle me-1"></i> <span>เพิ่มรายการ</span>
                         </button>
                     </div>
                 </div>
@@ -815,22 +925,22 @@
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body p-4 bg-light">
+                <div class="modal-body p-3 p-md-4 bg-light">
                     <!-- Notification Summary Tabs -->
                     <div class="row g-2 mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-12">
                             <div class="p-3 bg-white rounded-3 border-start border-4 border-danger shadow-sm">
                                 <div class="text-muted small fw-bold">⚠️ วิกฤต (เหลือ &le; 15 วัน)</div>
                                 <div class="h4 fw-bold text-danger mb-0" id="notifCriticalCount">0 รายการ</div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-12">
                             <div class="p-3 bg-white rounded-3 border-start border-4 border-warning shadow-sm">
                                 <div class="text-muted small fw-bold">⏳ เตือนล่วงหน้า (16 - 30 วัน)</div>
                                 <div class="h4 fw-bold text-warning mb-0" id="notifWarningCount">0 รายการ</div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-12">
                             <div class="p-3 bg-white rounded-3 border-start border-4 border-dark shadow-sm">
                                 <div class="text-muted small fw-bold">❌ เกินกำหนด (ยังไม่ส่งเล่ม 2)</div>
                                 <div class="h4 fw-bold text-dark mb-0" id="notifOverdueCount">0 รายการ</div>
@@ -874,7 +984,7 @@
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body p-4 bg-light">
+                <div class="modal-body p-3 p-md-4 bg-light">
                     <div id="staffInspectionFilterNote" class="alert alert-warning p-2 small rounded-3 mb-3" style="display: none;">
                         <i class="fas fa-filter me-1"></i> <strong>หมายเหตุ:</strong> ตารางนี้แสดงผลตามตัวกรองที่เลือกอยู่บนหน้าแดชบอร์ด
                     </div>
@@ -938,7 +1048,7 @@
                     <h5 class="modal-title fw-bold" id="formModalTitle"><i class="fas fa-edit me-2"></i> บันทึกข้อมูล</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body bg-light p-4">
+                <div class="modal-body bg-light p-3 p-md-4">
                     <div class="alert alert-info border-0 shadow-sm rounded-4 mb-4">
                         <i class="fas fa-magic text-warning me-2"></i> <strong>Smart Auto-Fill & Calculation System:</strong> ระบบคำนวณและอัปเดตระยะเวลารวม และกำหนดวันให้อัตโนมัติเมื่อเลือกหรือแก้ไขวันที่
                     </div>
@@ -1017,14 +1127,22 @@
         };
 
         function toggleSidebar() {
-            document.body.classList.toggle('sidebar-collapsed');
-            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-            try { localStorage.setItem('bma_sidebar_collapsed', isCollapsed ? 'true' : 'false'); } catch(e){}
-            if (currentMenu === 'dashboard') {
-                setTimeout(() => {
-                    Object.values(charts).forEach(c => { if (c && typeof c.resize === 'function') c.resize(); });
-                }, 310);
+            if (window.innerWidth <= 768) {
+                document.body.classList.toggle('sidebar-open-mobile');
+            } else {
+                document.body.classList.toggle('sidebar-collapsed');
+                const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+                try { localStorage.setItem('bma_sidebar_collapsed', isCollapsed ? 'true' : 'false'); } catch(e){}
+                if (currentMenu === 'dashboard') {
+                    setTimeout(() => {
+                        Object.values(charts).forEach(c => { if (c && typeof c.resize === 'function') c.resize(); });
+                    }, 310);
+                }
             }
+        }
+
+        function closeMobileSidebar() {
+            document.body.classList.remove('sidebar-open-mobile');
         }
 
         function syncToGoogleSheets(action, sheetName, data, isNew = false) {
@@ -1705,7 +1823,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('bma_sidebar_collapsed') === 'true') {
+            if (window.innerWidth > 768 && localStorage.getItem('bma_sidebar_collapsed') === 'true') {
                 document.body.classList.add('sidebar-collapsed');
             }
             fetchData(false);
@@ -1894,7 +2012,7 @@
             renderSearchDropdownOptions('Year', '-- ทุกปี พ.ศ. --');
             renderSearchDropdownOptions('Hospital', '-- ทุกสังกัด --');
             renderSearchDropdownOptions('Position', '-- ทุกตำแหน่ง --');
-            renderSearchDropdownOptions('Level', '-- ทุกระดับการประเมิน --');
+            renderSearchDropdownOptions('Level', '-- ทุกระดับ --');
         }
 
         function renderSearchDropdownOptions(type, defaultLabel, filterQuery = '') {
@@ -1933,7 +2051,7 @@
                 Year: '-- ทุกปี พ.ศ. --',
                 Hospital: '-- ทุกสังกัด --',
                 Position: '-- ทุกตำแหน่ง --',
-                Level: '-- ทุกระดับการประเมิน --'
+                Level: '-- ทุกระดับ --'
             };
             renderSearchDropdownOptions(type, defaultLabels[type] || '-- ทั้งหมด --', query);
         }
@@ -1951,7 +2069,7 @@
                 Year: '-- ทุกปี พ.ศ. --',
                 Hospital: '-- ทุกสังกัด --',
                 Position: '-- ทุกตำแหน่ง --',
-                Level: '-- ทุกระดับการประเมิน --'
+                Level: '-- ทุกระดับ --'
             };
             renderSearchDropdownOptions(type, defaultLabels[type] || '-- ทั้งหมด --', '');
 
@@ -1968,6 +2086,10 @@
             currentMenu = menu;
             document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
             event?.currentTarget?.classList?.add('active');
+
+            if (window.innerWidth <= 768) {
+                closeMobileSidebar();
+            }
 
             activeSubKpiFilter = 'all';
             tableColumnFilters = {};
@@ -2093,7 +2215,7 @@
                 Year: '-- ทุกปี พ.ศ. --',
                 Hospital: '-- ทุกสังกัด --',
                 Position: '-- ทุกตำแหน่ง --',
-                Level: '-- ทุกระดับการประเมิน --'
+                Level: '-- ทุกระดับ --'
             };
 
             ['Year', 'Hospital', 'Position', 'Level'].forEach(type => {
@@ -2340,8 +2462,8 @@
                             if (levelInput) {
                                 const newVal = (levelInput.value === clickedLevel) ? '' : clickedLevel;
                                 levelInput.value = newVal;
-                                if (levelLabel) levelLabel.innerText = newVal ? clickedLevel : '-- ทุกระดับการประเมิน --';
-                                renderSearchDropdownOptions('Level', '-- ทุกระดับการประเมิน --');
+                                if (levelLabel) levelLabel.innerText = newVal ? clickedLevel : '-- ทุกระดับ --';
+                                renderSearchDropdownOptions('Level', '-- ทุกระดับ --');
                                 updateDashboard();
                             }
                         }
@@ -2400,8 +2522,8 @@
                             if (levelInput) {
                                 const newVal = (levelInput.value === clickedLevel) ? '' : clickedLevel;
                                 levelInput.value = newVal;
-                                if (levelLabel) levelLabel.innerText = newVal ? clickedLevel : '-- ทุกระดับการประเมิน --';
-                                renderSearchDropdownOptions('Level', '-- ทุกระดับการประเมิน --');
+                                if (levelLabel) levelLabel.innerText = newVal ? clickedLevel : '-- ทุกระดับ --';
+                                renderSearchDropdownOptions('Level', '-- ทุกระดับ --');
                                 updateDashboard();
                             }
                         }
@@ -2658,7 +2780,7 @@
                     },
                     scales: { 
                         x: { beginAtZero: true, grace: '12%' }, 
-                        y: { ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } } 
+                        y: { stacked: true, ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } } 
                     } 
                 }
             });
@@ -2876,6 +2998,14 @@
         }
 
         function isStickyCol(colName) {
+            if (window.innerWidth <= 768) {
+                // On mobile devices, only freeze manage, seq, and position number to keep table spacious
+                if (colName === 'จัดการ') return true;
+                let norm = String(colName).replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
+                return (norm === 'ลำดับ' || norm === 'ตำแหน่งเลขที่');
+            }
+
+            // On Desktop, freeze up to Surname
             if (colName === 'จัดการ') return true;
             let norm = String(colName).replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
             return (
