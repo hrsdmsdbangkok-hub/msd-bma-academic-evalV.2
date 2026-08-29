@@ -19,17 +19,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
+        /* ==========================================================
+           🎨 1. UNIFIED DESIGN SYSTEM TOKENS (จุดที่ 1 & 2)
+           ========================================================== */
         :root {
             --bma-primary: #059669;
             --bma-primary-dark: #065f46;
             --bma-secondary: #0d9488;
             --bma-accent: #f59e0b;
+            --bma-danger: #ef4444;
+            --bma-info: #3b82f6;
             --bma-bg: #f8fafc;
             --bma-dark: #0f172a;
             --glass-bg: rgba(255, 255, 255, 0.94);
-            --shadow-subtle: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-            --shadow-card: 0 12px 30px -4px rgba(15, 23, 42, 0.06), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
-            --shadow-hover: 0 20px 35px -10px rgba(13, 148, 136, 0.15), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            
+            /* Unified Radius Tokens */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 18px;
+            --radius-pill: 9999px;
+            
+            /* Unified Shadow Tokens */
+            --shadow-subtle: 0 4px 15px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -2px rgba(15, 23, 42, 0.02);
+            --shadow-card: 0 10px 25px -4px rgba(15, 23, 42, 0.05), 0 4px 8px -2px rgba(15, 23, 42, 0.03);
+            --shadow-hover: 0 16px 30px -8px rgba(13, 148, 136, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+            
             --sidebar-width: 240px;
             --sidebar-collapsed-width: 72px;
         }
@@ -73,7 +88,7 @@
             padding: 0 10px;
             height: 42px;
             margin: 0 auto 8px;
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             background: #059669;
             color: #ffffff;
             font-weight: 800;
@@ -92,7 +107,7 @@
             padding: 10px 14px; 
             font-size: 0.85rem; 
             font-weight: 500;
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             transition: all 0.25s ease;
             cursor: pointer;
             display: flex;
@@ -148,7 +163,7 @@
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             padding: 10px 20px; 
-            border-radius: 16px; 
+            border-radius: var(--radius-lg); 
             margin-bottom: 18px; 
             box-shadow: var(--shadow-subtle); 
             display: flex; 
@@ -165,7 +180,7 @@
             color: #475569;
             width: 38px;
             height: 38px;
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -181,7 +196,7 @@
             color: #d97706;
             width: 44px;
             height: 44px;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -208,7 +223,7 @@
             border: 1px solid rgba(16, 185, 129, 0.25);
             color: #047857;
             padding: 5px 12px;
-            border-radius: 30px;
+            border-radius: var(--radius-pill);
             font-size: 0.8rem;
             font-weight: 600;
             display: inline-flex;
@@ -242,49 +257,49 @@
 
         .kpi-card { 
             background: white; 
-            border-radius: 18px; 
+            border-radius: var(--radius-xl); 
             padding: 14px 18px; 
             box-shadow: var(--shadow-subtle); 
             position: relative;
             overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
             border: 2px solid transparent;
             cursor: pointer;
             user-select: none;
         }
-        .kpi-card:hover { transform: translateY(-3px) scale(1.005); box-shadow: var(--shadow-hover); }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
         .kpi-card.active-filter { 
             border-color: var(--bma-secondary) !important; 
             background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
-            box-shadow: 0 10px 25px rgba(13, 148, 136, 0.2);
+            box-shadow: 0 10px 25px rgba(13, 148, 136, 0.18);
             transform: translateY(-2px);
         }
         .kpi-icon { 
             position: absolute; right: -10px; top: -10px; font-size: 4.2rem; opacity: 0.06; transform: rotate(-15deg);
-            transition: transform 0.5s;
+            transition: transform 0.4s;
         }
-        .kpi-card:hover .kpi-icon { transform: rotate(0deg) scale(1.1); opacity: 0.1; }
+        .kpi-card:hover .kpi-icon { transform: rotate(0deg) scale(1.08); opacity: 0.09; }
         .kpi-title { font-size: 0.78rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
         .kpi-value { font-size: 1.65rem; font-weight: 800; margin-top: 2px; letter-spacing: -0.5px; }
 
         .chart-container { 
             background: white; 
-            border-radius: 22px; 
+            border-radius: var(--radius-xl); 
             padding: 20px; 
             box-shadow: var(--shadow-subtle); 
             height: 100%;
             border: 1px solid rgba(226, 232, 240, 0.8); 
-            transition: box-shadow 0.3s;
+            transition: box-shadow 0.25s, transform 0.25s;
         }
-        .chart-container:hover { box-shadow: var(--shadow-hover); }
+        .chart-container:hover { box-shadow: var(--shadow-card); }
         .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
         .chart-title { font-size: 1rem; font-weight: 700; color: var(--bma-dark); display: flex; align-items: center; gap: 8px;}
         .chart-title i { color: var(--bma-secondary); font-size: 1.1rem; }
 
         .table-wrapper { 
             background: #ffffff; 
-            padding: 22px; 
-            border-radius: 22px; 
+            padding: 20px; 
+            border-radius: var(--radius-xl); 
             box-shadow: var(--shadow-card); 
             border: 1px solid rgba(226, 232, 240, 0.9); 
             display: flex;
@@ -295,7 +310,7 @@
             max-height: calc(100vh - 270px);
             min-height: 390px;
             overflow: auto;
-            border-radius: 14px;
+            border-radius: var(--radius-md);
             border: 1px solid #e2e8f0;
             background: #ffffff;
             position: relative;
@@ -309,7 +324,7 @@
 
         .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; }
         
-        /* Modern Sticky Header */
+        /* Unified Sticky Header (Point 4: Coherent Background & Contrast) */
         .table-custom th { 
             background: #f8fafc !important; 
             color: #334155 !important; 
@@ -375,54 +390,53 @@
         .table-custom tbody tr { transition: all 0.15s ease; cursor: pointer; }
         .table-custom tbody tr:hover { background-color: #f0fdf4; }
 
-        /* Action Buttons */
         .btn-action-edit {
             background-color: #fef3c7; color: #b45309; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
-            border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.3); transition: all 0.2s ease;
+            border-radius: var(--radius-sm); border: 1px solid rgba(245, 158, 11, 0.3); transition: all 0.2s ease;
             display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
         .btn-action-edit:hover { background-color: #fde68a; color: #78350f; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(245, 158, 11, 0.15); }
 
         .btn-action-delete {
             background-color: #fee2e2; color: #dc2626; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
-            border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s ease;
+            border-radius: var(--radius-sm); border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s ease;
             display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
         .btn-action-delete:hover { background-color: #fca5a5; color: #991b1b; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(239, 68, 68, 0.15); }
 
         .btn-action-lock {
             background-color: #d1fae5; color: #047857; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
-            border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3); transition: all 0.2s ease;
+            border-radius: var(--radius-sm); border: 1px solid rgba(16, 185, 129, 0.3); transition: all 0.2s ease;
             display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
         .btn-action-lock:hover { background-color: #a7f3d0; color: #065f46; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(16, 185, 129, 0.15); }
 
         .btn-action-unlock {
             background-color: #fee2e2; color: #dc2626; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
-            border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s ease;
+            border-radius: var(--radius-sm); border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s ease;
             display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
         .btn-action-unlock:hover { background-color: #fca5a5; color: #991b1b; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(239, 68, 68, 0.15); }
 
         .btn-action-resetpass {
             background-color: #e0f2fe; color: #0284c7; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
-            border-radius: 8px; border: 1px solid rgba(2, 132, 199, 0.3); transition: all 0.2s ease;
+            border-radius: var(--radius-sm); border: 1px solid rgba(2, 132, 199, 0.3); transition: all 0.2s ease;
             display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
         .btn-action-resetpass:hover { background-color: #bae6fd; color: #0369a1; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(2, 132, 199, 0.15); }
 
-        .badge-status { padding: 5px 12px; border-radius: 30px; font-weight: 600; font-size: 0.78rem; letter-spacing: 0.3px; }
-        .btn-modern { border-radius: 12px; padding: 8px 18px; font-weight: 600; transition: all 0.25s; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
+        .badge-status { padding: 5px 12px; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.3px; }
+        .btn-modern { border-radius: var(--radius-md); padding: 8px 18px; font-weight: 600; transition: all 0.25s; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
         .btn-modern:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
 
         .dynamic-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-control, .form-select { border-radius: 10px; padding: 10px 14px; border-color: #cbd5e1; font-size: 0.92rem; }
-        .form-control:focus, .form-select:focus { border-color: var(--bma-secondary); box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12); }
+        .form-control:focus, .form-select:focus { border-color: var(--bma-secondary); box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15); }
         .readonly-field { background-color: #f1f5f9; border-style: dashed; color: #64748b; font-weight: 500;}
 
         /* Custom Searchable Select Dropdown */
-        .custom-search-select .dropdown-menu { border: 1px solid #cbd5e1; box-shadow: 0 15px 30px rgba(0,0,0,0.12); }
-        .custom-search-select .dropdown-item { font-size: 0.82rem; padding: 5px 10px; transition: all 0.15s ease; }
+        .custom-search-select .dropdown-menu { border: 1px solid #cbd5e1; box-shadow: 0 15px 30px rgba(0,0,0,0.12); border-radius: var(--radius-md); }
+        .custom-search-select .dropdown-item { font-size: 0.82rem; padding: 6px 12px; transition: all 0.15s ease; }
         .custom-search-select .dropdown-item:hover { background-color: #f0fdf4; color: #047857; }
 
         /* Print Modal Styles */
@@ -430,13 +444,13 @@
         .report-header { text-align: center; position: relative; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 2px solid #059669; }
         .report-logo-badge {
             display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 80px; padding: 0 12px; height: 36px;
-            background: #059669; color: white; font-weight: 800; font-size: 0.88rem; border-radius: 8px; margin-bottom: 4px;
+            background: #059669; color: white; font-weight: 800; font-size: 0.88rem; border-radius: var(--radius-sm); margin-bottom: 4px;
         }
         .report-title { font-weight: 800; font-size: 1.2rem; color: #064e3b; margin-bottom: 1px; }
         .report-subtitle { font-weight: 600; font-size: 0.92rem; color: #334155; margin-bottom: 4px; }
         .report-level-pill {
             display: inline-block; background: linear-gradient(135deg, #059669, #0d9488); color: #ffffff;
-            padding: 2px 16px; border-radius: 30px; font-size: 0.8rem; font-weight: 700;
+            padding: 2px 16px; border-radius: var(--radius-pill); font-size: 0.8rem; font-weight: 700;
         }
 
         .report-section {
@@ -453,9 +467,8 @@
         .report-item.span-2 { grid-column: span 2; }
         .report-item-label { font-size: 0.72rem; font-weight: 700; color: #64748b; margin-bottom: 1px; }
         .report-item-value { font-size: 0.85rem; font-weight: 600; color: #0f172a; word-break: break-word; }
-        .report-status-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-weight: 700; font-size: 0.78rem; }
+        .report-status-badge { display: inline-block; padding: 2px 10px; border-radius: var(--radius-pill); font-weight: 700; font-size: 0.78rem; }
 
-        /* Modern Floating Hover Tooltip for Academic Work Titles */
         .global-work-tooltip {
             position: fixed;
             display: none;
@@ -465,7 +478,7 @@
             background: linear-gradient(145deg, #0f172a, #1e293b);
             color: #f8fafc;
             padding: 12px 16px;
-            border-radius: 14px;
+            border-radius: var(--radius-lg);
             box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.12);
             font-size: 0.92rem;
             line-height: 1.6;
@@ -529,7 +542,6 @@
 
         /* ==========================================================
            📱 MOBILE RESPONSIVE ADAPTATIONS (<= 768px)
-           * โค้ดส่วนนี้จะทำงานเฉพาะบนมือถือ ส่วนจอคอมจะใช้ค่าเดิม 100% *
            ========================================================== */
         @media (max-width: 768px) {
             .sidebar {
@@ -552,7 +564,7 @@
 
             .topbar {
                 padding: 8px 12px;
-                border-radius: 12px;
+                border-radius: var(--radius-md);
                 margin-bottom: 14px;
                 gap: 8px;
             }
@@ -581,7 +593,7 @@
 
             .kpi-card {
                 padding: 12px 14px;
-                border-radius: 14px;
+                border-radius: var(--radius-lg);
             }
             .kpi-value {
                 font-size: 1.35rem;
@@ -597,7 +609,7 @@
 
             .table-wrapper {
                 padding: 12px;
-                border-radius: 16px;
+                border-radius: var(--radius-lg);
             }
             .table-scroll-container {
                 max-height: calc(100vh - 240px);
@@ -606,7 +618,7 @@
 
             .chart-container {
                 padding: 14px;
-                border-radius: 16px;
+                border-radius: var(--radius-lg);
             }
 
             /* Prevent auto-zoom on iOS */
@@ -805,7 +817,6 @@
                 </div>
             </div>
 
-            <!-- KPI Cards Row -->
             <div class="row g-2 g-md-3 mb-4">
                 <div class="col-xl-3 col-md-6 col-6">
                     <div class="kpi-card" id="kpiCardTotal" onclick="filterByKpi('all')" style="border-bottom: 4px solid #3b82f6;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
@@ -1151,6 +1162,7 @@
         </div>
     </div>
 
+    <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
