@@ -16,11 +16,11 @@
     <!-- Google Fonts: Prompt & Plus Jakarta Sans & Sarabun -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         /* ==========================================================
-           🎨 1. UNIFIED DESIGN SYSTEM TOKENS (จุดที่ 1 & 2)
+           🎨 1. UNIFIED DESIGN SYSTEM TOKENS & BASE STYLING
            ========================================================== */
         :root {
             --bma-primary: #059669;
@@ -302,19 +302,19 @@
             border-radius: var(--radius-xl); 
             box-shadow: var(--shadow-card); 
             border: 1px solid rgba(226, 232, 240, 0.9); 
-            display: flex;
+            display: flex; 
             flex-direction: column;
         }
 
-        .table-scroll-container {
-            max-height: calc(100vh - 270px);
-            min-height: 390px;
-            overflow: auto;
-            border-radius: var(--radius-md);
-            border: 1px solid #e2e8f0;
-            background: #ffffff;
-            position: relative;
-            -webkit-overflow-scrolling: touch;
+        .table-scroll-container { 
+            max-height: calc(100vh - 270px); 
+            min-height: 390px; 
+            overflow: auto; 
+            border-radius: var(--radius-md); 
+            border: 1px solid #e2e8f0; 
+            background: #ffffff; 
+            position: relative; 
+            -webkit-overflow-scrolling: touch; 
         }
 
         .table-scroll-container::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -324,22 +324,20 @@
 
         .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; }
         
-        /* Unified Sticky Header (Point 4: Coherent Background & Contrast) */
         .table-custom th { 
             background: #f8fafc !important; 
             color: #334155 !important; 
             font-weight: 700; 
-            font-size: 0.84rem;
+            font-size: 0.84rem; 
             padding: 13px 15px; 
             border-bottom: 2px solid #e2e8f0; 
             white-space: nowrap; 
             position: sticky; 
             top: 0; 
-            z-index: 10;
-            letter-spacing: 0.2px;
+            z-index: 10; 
+            letter-spacing: 0.2px; 
         }
 
-        /* Modern Filter Button on Header */
         .th-filter-btn {
             background: transparent;
             border: 1px solid transparent;
@@ -357,7 +355,7 @@
             font-weight: 700;
         }
 
-        /* Sticky Left Columns (Fixed up to Surname on Desktop) */
+        /* Sticky Left Frozen Columns */
         .table-custom th.sticky-col {
             position: sticky;
             top: 0;
@@ -373,7 +371,6 @@
         }
         .table-custom tr:hover td.sticky-col { background-color: #f0fdf4 !important; }
 
-        /* Right shadow elevation for the last frozen column */
         .sticky-col-last {
             border-right: 2px solid #cbd5e1 !important;
             box-shadow: 6px 0 12px -3px rgba(15, 23, 42, 0.08) !important;
@@ -540,9 +537,7 @@
             transition: opacity 0.3s ease;
         }
 
-        /* ==========================================================
-           📱 MOBILE RESPONSIVE ADAPTATIONS (<= 768px)
-           ========================================================== */
+        /* Responsive Mobile Layout (<= 768px) */
         @media (max-width: 768px) {
             .sidebar {
                 left: calc(-1 * var(--sidebar-width));
@@ -621,7 +616,6 @@
                 border-radius: var(--radius-lg);
             }
 
-            /* Prevent auto-zoom on iOS */
             input, select, textarea {
                 font-size: 16px !important;
             }
@@ -644,12 +638,13 @@
     <!-- Mobile Drawer Overlay Backdrop -->
     <div id="mobileSidebarOverlay" onclick="closeMobileSidebar()"></div>
 
-    <!-- Floating Hover Card for Academic Work Titles -->
+    <!-- Floating Hover Tooltip for Academic Work Titles -->
     <div id="globalWorkTooltip" class="global-work-tooltip">
         <div class="tooltip-header"><i class="fas fa-book-open"></i> <span id="workTooltipColName">ชื่อผลงาน</span></div>
         <div class="tooltip-body" id="workTooltipText"></div>
     </div>
 
+    <!-- Sidebar Navigation -->
     <div class="sidebar">
         <div class="sidebar-brand">
             <div class="brand-logo-badge">MSD BMA</div>
@@ -681,6 +676,7 @@
         </div>
     </div>
 
+    <!-- Main Content Layout -->
     <div class="main-content">
         <!-- Topbar -->
         <div class="topbar">
@@ -725,6 +721,7 @@
             </div>
         </div>
 
+        <!-- Dashboard View Container -->
         <div id="dashboardView">
             <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white" style="border: 1px solid rgba(226, 232, 240, 0.8) !important;">
                 <div class="row g-2 align-items-end">
@@ -817,9 +814,10 @@
                 </div>
             </div>
 
+            <!-- KPI Cards Row -->
             <div class="row g-2 g-md-3 mb-4">
                 <div class="col-xl-3 col-md-6 col-6">
-                    <div class="kpi-card" id="kpiCardTotal" onclick="filterByKpi('all')" style="border-bottom: 4px solid #3b82f6;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
+                    <div class="kpi-card active-filter" id="kpiCardTotal" onclick="filterByKpi('all')" style="border-bottom: 4px solid #3b82f6;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
                         <i class="fas fa-folder-open kpi-icon text-primary"></i>
                         <div class="kpi-title">เสนอขอรวม</div>
                         <div class="kpi-value text-dark" id="kpiTotal">0</div>
@@ -929,6 +927,7 @@
             </div>
         </div>
 
+        <!-- Table View Container -->
         <div id="tableView" style="display: none;">
             <div class="row g-2 g-md-3 mb-4" id="levelKpiContainer">
                 <div class="col-xl-3 col-md-6 col-6">
@@ -1001,7 +1000,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-3 p-md-4 bg-light">
-                    <!-- Notification Summary Tabs -->
+                    <!-- Notification Summary Badges -->
                     <div class="row g-2 mb-3">
                         <div class="col-md-4 col-12">
                             <div class="p-3 bg-white rounded-3 border-start border-4 border-danger shadow-sm">
@@ -1060,9 +1059,6 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-3 p-md-4 bg-light">
-                    <div id="staffInspectionFilterNote" class="alert alert-warning p-2 small rounded-3 mb-3" style="display: none;">
-                        <i class="fas fa-filter me-1"></i> <strong>หมายเหตุ:</strong> ตารางนี้แสดงผลตามตัวกรองที่เลือกอยู่บนหน้าแดชบอร์ด
-                    </div>
                     <div class="table-responsive bg-white rounded-3 shadow-sm border p-2">
                         <table class="table table-hover align-middle mb-0" style="font-size:0.88rem;">
                             <thead class="table-light">
@@ -1471,18 +1467,23 @@
         }
 
         function cleanDateStr(val) {
-            if (!val || String(val).trim() === '' || String(val).trim() === '-') return '-';
+            if (!val || String(val).trim() === '' || String(val).trim() === '-' || String(val).trim() === 'null') return '-';
             let s = String(val).trim();
-            if (s.includes('T')) {
-                s = s.split('T')[0];
+            const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
+            // กรณีข้อมูลถูกจัดรูปแบบเป็นภาษาไทยไว้แล้ว
+            if (/^\d{1,2}\s+(ม\.ค\.|ก\.พ\.|มี\.ค\.|เม\.ย\.|พ\.ค\.|มิ\.ย\.|ก\.ค\.|ส\.ค\.|ก\.ย\.|ต\.ค\.|พ\.ย\.|ธ\.ค\.)\s+\d{4}$/.test(s)) {
+                return s;
             }
-            let matchISO = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-            if (matchISO) {
-                let y = parseInt(matchISO[1]);
-                let m = parseInt(matchISO[2]);
-                let d = parseInt(matchISO[3]);
-                return `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
+
+            let dObj = parseDateStrict(s);
+            if (dObj && !isNaN(dObj.getTime())) {
+                let day = dObj.getDate();
+                let monthStr = thaiMonths[dObj.getMonth()];
+                let yearBE = dObj.getFullYear() + 543;
+                return `${day} ${monthStr} ${yearBE}`;
             }
+
             return s;
         }
 
@@ -1492,6 +1493,18 @@
             if (!s || s === '-' || s === 'null' || s === 'undefined') return null;
 
             if (s.includes('T')) s = s.split('T')[0];
+
+            const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            let thaiMatch = s.match(/^(\d{1,2})\s+([^\s]+)\s+(\d{4})/);
+            if (thaiMatch) {
+                let d = parseInt(thaiMatch[1], 10);
+                let mIdx = thaiMonths.indexOf(thaiMatch[2]);
+                let y = parseInt(thaiMatch[3], 10);
+                if (y > 2400) y -= 543;
+                if (mIdx !== -1) {
+                    return new Date(y, mIdx, d);
+                }
+            }
 
             let isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
             if (isoMatch) {
@@ -1651,11 +1664,9 @@
                 rows.forEach(row => {
                     if (!isValidRow(row)) return;
 
-                    // Check if Volume 2 has already been submitted
                     const vol2DateStr = getRowValue(row, 'วันที่ส่งเล่ม 2') || getRowValue(row, 'สนพ. รับผลงาน') || getRowValue(row, 'สนพ. รับเรื่อง');
                     if (vol2DateStr && vol2DateStr !== '-' && String(vol2DateStr).trim() !== '') return;
 
-                    // Check status - ONLY alert for cases with status "อยู่ระหว่างดำเนินการ"
                     const statusStr = String(getRowValue(row, 'ผลการประเมิน')).trim();
                     if (!statusStr.includes('อยู่ระหว่างดำเนินการ')) return;
 
@@ -1666,9 +1677,8 @@
                         const diffTime = deadlineDate.getTime() - today.getTime();
                         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-                        // Only alert if within 30 days or overdue
                         if (diffDays <= 30) {
-                            let alertType = 'warning'; // 16 - 30 days
+                            let alertType = 'warning';
                             let alertLabel = `⏳ เหลืออีก ${diffDays} วัน (เตือนล่วงหน้า 1 เดือน)`;
                             let badgeClass = 'bg-warning text-dark';
 
@@ -1710,7 +1720,6 @@
                 });
             });
 
-            // Sort by most urgent (lowest diffDays first)
             cachedNotificationList.sort((a, b) => a.diffDays - b.diffDays);
 
             const totalAlerts = cachedNotificationList.length;
@@ -2204,8 +2213,12 @@
 
         function changeMenu(menu) {
             currentMenu = menu;
-            document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
-            event?.currentTarget?.classList?.add('active');
+            document.querySelectorAll('.sidebar .nav-link').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('onclick')?.includes(`'${menu}'`)) {
+                    el.classList.add('active');
+                }
+            });
 
             if (window.innerWidth <= 768) {
                 closeMobileSidebar();
@@ -2887,23 +2900,23 @@
                             const hospLabel = document.getElementById('labelHospital');
                             if (hospInput) {
                                 if (hospInput.value === clickedHospShort) {
-                                    hospInput.value = '';
-                                    if (hospLabel) hospLabel.innerText = '-- ทุกสังกัด --';
-                                } else {
-                                    hospInput.value = clickedHospShort;
-                                    if (hospLabel) hospLabel.innerText = clickedHospShort;
-                                }
-                                renderSearchDropdownOptions('Hospital', '-- ทุกสังกัด --');
-                                updateDashboard();
+                                hospInput.value = '';
+                                if (hospLabel) hospLabel.innerText = '-- ทุกสังกัด --';
+                            } else {
+                                hospInput.value = clickedHospShort;
+                                if (hospLabel) hospLabel.innerText = clickedHospShort;
                             }
+                            renderSearchDropdownOptions('Hospital', '-- ทุกสังกัด --');
+                            updateDashboard();
                         }
-                    },
-                    scales: { 
-                        x: { beginAtZero: true, grace: '12%' }, 
-                        y: { stacked: true, ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } } 
-                    } 
-                }
-            });
+                    }
+                },
+                scales: { 
+                    x: { beginAtZero: true, grace: '12%' }, 
+                    y: { ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } } 
+                } 
+            }
+        });
 
             // 7. Meeting Staff Chart
             let meetingStaffBreakdown = {};
@@ -3119,13 +3132,11 @@
 
         function isStickyCol(colName) {
             if (window.innerWidth <= 768) {
-                // On mobile devices, only freeze manage, seq, and position number to keep table spacious
                 if (colName === 'จัดการ') return true;
                 let norm = String(colName).replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
                 return (norm === 'ลำดับ' || norm === 'ตำแหน่งเลขที่');
             }
 
-            // On Desktop, freeze up to Surname
             if (colName === 'จัดการ') return true;
             let norm = String(colName).replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
             return (
@@ -3188,7 +3199,6 @@
                 });
             }
 
-            // Apply column header filters
             Object.keys(tableColumnFilters).forEach(col => {
                 let filterVal = tableColumnFilters[col];
                 if (filterVal) {
@@ -3228,7 +3238,6 @@
 
             currentHeaders = Object.keys(data[0]); 
 
-            // Calculate sticky left offsets
             let stickyOffsets = {};
             let currentLeft = 0;
             let lastStickyCol = '';
@@ -3272,7 +3281,6 @@
                     th.style.maxWidth = '260px';
                 }
 
-                // Collect unique values for column filter
                 let uniqueVals = Array.from(new Set(rawData.map(r => String(getRowValue(r, col)).trim()).filter(v => v !== '' && v !== '-'))).sort((a,b) => a.localeCompare(b, 'th'));
                 let currentColFilter = tableColumnFilters[col] || '';
                 let filterActive = currentColFilter !== '';
@@ -3302,7 +3310,6 @@
                 dropdownMenu.className = "dropdown-menu p-2 shadow-lg";
                 dropdownMenu.style.cssText = "min-width: 200px; max-height: 280px; overflow-y: auto; border-radius: 12px; z-index: 1050;";
 
-                // Search box inside column filter
                 let searchBox = document.createElement('div');
                 searchBox.className = "p-1 mb-2 border-bottom";
                 searchBox.onclick = (e) => e.stopPropagation();
@@ -3440,8 +3447,12 @@
 
                     let val = getRowValue(row, col);
                     let displayVal = val !== undefined && val !== null && String(val).trim() !== '' ? val : '-';
-                    if (typeof displayVal === 'string' && displayVal.includes('T') && displayVal.endsWith('Z')) {
+                    if (typeof displayVal === 'string' && (displayVal.includes('T') || displayVal.match(/^\d{4}-\d{2}-\d{2}/) || displayVal.match(/^\d{1,2}\/\d{1,2}\/\d{4}/))) {
                         displayVal = cleanDateStr(displayVal);
+                    } else if ((col.includes('วัน') || col.includes('ลงวันที่') || col.includes('รับผลงาน') || col.includes('รับเรื่อง')) && !col.includes('ระยะเวลา') && !col.includes('ผลการประเมิน')) {
+                        if (val && String(val).trim() !== '' && String(val).trim() !== '-') {
+                            displayVal = cleanDateStr(val);
+                        }
                     }
 
                     if(col.includes('ผลการประเมิน') && val) {
