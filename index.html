@@ -919,7 +919,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-exclamation-circle"></i> เหตุผลรายการที่อยู่ระหว่างดำเนินการ <span class="badge bg-warning-subtle text-warning border border-warning-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกกรอง</span></div>
+                            <div class="chart-title"><i class="fas fa-exclamation-circle"></i> เหตุผลรายการที่อยู่ระหว่างดำเนินการ <span class="badge bg-warning-subtle text-warning border border-warning-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกตรวจสอบ</span></div>
                         </div>
                         <div id="pendingReasonChartWrapper" style="position: relative; min-height: 310px;"><canvas id="pendingReasonChart"></canvas></div>
                     </div>
@@ -1074,6 +1074,44 @@
                                 </tr>
                             </thead>
                             <tbody id="staffInspectionTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-0">
+                    <button type="button" class="btn btn-secondary rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">ปิดหน้าต่าง</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Reason Drilldown Inspection Modal -->
+    <div class="modal fade" id="pendingReasonModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #d97706, #b45309); border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                    <div>
+                        <h5 class="modal-title fw-bold" id="pendingReasonTitle"><i class="fas fa-exclamation-circle me-2"></i> ตรวจสอบรายการที่อยู่ระหว่างดำเนินการ</h5>
+                        <small class="opacity-75" id="pendingReasonSubtitle">รายละเอียดเคสตามเหตุผลที่ระบุในระบบ</small>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3 p-md-4 bg-light">
+                    <div class="table-responsive bg-white rounded-3 shadow-sm border p-2">
+                        <table class="table table-hover align-middle mb-0" style="font-size:0.88rem;">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>ระดับการประเมิน</th>
+                                    <th>ตำแหน่งเลขที่</th>
+                                    <th>ผู้เสนอขอประเมิน</th>
+                                    <th>ตำแหน่งปัจจุบัน</th>
+                                    <th>สังกัด / โรงพยาบาล</th>
+                                    <th>วันที่ส่งเล่ม 1</th>
+                                    <th>เจ้าหน้าที่รับผิดชอบ</th>
+                                    <th>เหตุผล / หมายเหตุ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendingReasonTableBody"></tbody>
                         </table>
                     </div>
                 </div>
@@ -3055,11 +3093,6 @@
                         backgroundColor: function(context) {
                             const { ctx, chartArea } = context.chart;
                             if (!chartArea) return baseColors.amberStart;
-                            
-                            const reasonName = sortedReasons[context.dataIndex];
-                            if (activePendingReasonFilter && reasonName === activePendingReasonFilter) {
-                                return createGradientH(ctx, chartArea, '#d97706', '#b45309');
-                            }
                             return createGradientH(ctx, chartArea, baseColors.amberEnd, baseColors.amberStart);
                         },
                         borderRadius: 6
@@ -3091,35 +3124,7 @@
                         if (elements && elements.length > 0) {
                             const index = elements[0].index;
                             const clickedReason = sortedReasons[index];
-                            
-                            if (activePendingReasonFilter === clickedReason) {
-                                activePendingReasonFilter = '';
-                                if (activeKpiFilter === 'wait') {
-                                    activeKpiFilter = 'all';
-                                    ['Total', 'Pass', 'Wait', 'Fail'].forEach(k => {
-                                        const el = document.getElementById(`kpiCard${k}`);
-                                        if (el) el.classList.remove('active-filter');
-                                    });
-                                    document.getElementById('kpiCardTotal')?.classList.add('active-filter');
-                                }
-                                const searchInput = document.getElementById('searchInput');
-                                if (searchInput) searchInput.value = '';
-                            } else {
-                                activePendingReasonFilter = clickedReason;
-                                if (activeKpiFilter !== 'wait') {
-                                    activeKpiFilter = 'wait';
-                                    ['Total', 'Pass', 'Wait', 'Fail'].forEach(k => {
-                                        const el = document.getElementById(`kpiCard${k}`);
-                                        if (el) el.classList.remove('active-filter');
-                                    });
-                                    document.getElementById('kpiCardWait')?.classList.add('active-filter');
-                                }
-                                const searchInput = document.getElementById('searchInput');
-                                if (searchInput && clickedReason !== 'ไม่ระบุเหตุผล') {
-                                    searchInput.value = clickedReason;
-                                }
-                            }
-                            updateDashboard();
+                            openPendingReasonModal(clickedReason);
                         }
                     },
                     scales: {
@@ -4157,6 +4162,128 @@
                     renderTable();
                 }
             }, 150);
+        }
+
+        function inspectFromPendingModal(level, posNo) {
+            const modalEl = document.getElementById('pendingReasonModal');
+            const inst = bootstrap.Modal.getInstance(modalEl);
+            if (inst) inst.hide();
+
+            changeMenu(level);
+            setTimeout(() => {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput && posNo && posNo !== '-') {
+                    searchInput.value = posNo;
+                    renderTable();
+                }
+            }, 150);
+        }
+
+        function openPendingReasonModal(reasonName) {
+            const modalTitle = document.getElementById('pendingReasonTitle');
+            const modalSub = document.getElementById('pendingReasonSubtitle');
+            const tbody = document.getElementById('pendingReasonTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            let fYear = document.getElementById('filterYear')?.value || '';
+            let fHosp = document.getElementById('filterHospital')?.value || '';
+            let fPos = document.getElementById('filterPosition')?.value || '';
+            let fLevel = document.getElementById('filterLevel')?.value || '';
+
+            let matchedRows = [];
+            let levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
+
+            let activeStaffMap = {};
+            if (appData['Users'] && Array.isArray(appData['Users'])) {
+                appData['Users'].forEach(u => {
+                    let shortName = (u['Unnamed: 4'] || u['ชื่อย่อ'] || u['ชื่อ-สกุลเต็ม'] || u.Username || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+                    let fullName = (u['ชื่อ-สกุลเต็ม'] || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+                    if (shortName) {
+                        activeStaffMap[shortName] = shortName;
+                        activeStaffMap[normalizeThaiName(shortName)] = shortName;
+                        if (fullName) activeStaffMap[fullName] = shortName;
+                    }
+                });
+            }
+
+            levels.forEach(lvl => {
+                if (fLevel && fLevel !== lvl) return;
+                let rawData = appData[lvl] || [];
+                rawData.forEach(row => {
+                    if (!isValidRow(row)) return;
+
+                    if (fHosp && String(getRowValue(row, 'สังกัด')).trim() !== fHosp) return;
+
+                    if (fPos) {
+                        let rawPos = getRowValue(row, 'ตำแหน่งปัจจุบัน') || getRowValue(row, 'ตำแหน่งที่ขอประเมิน') || getRowValue(row, 'ตำแหน่ง');
+                        let basePos = extractBasePosition(rawPos);
+                        if (basePos !== fPos) return;
+                    }
+
+                    let dateStr = getRowValue(row, 'วันที่ส่งเล่ม 1');
+                    if (fYear) {
+                        let y = extractYearBE(dateStr);
+                        if (!y || String(y) !== String(fYear)) return;
+                    }
+
+                    let statusStr = String(getRowValue(row, 'ผลการประเมิน')).trim();
+                    let isPass = statusStr.includes('ผ่านการประเมิน') && !statusStr.includes('ไม่');
+                    let isFail = statusStr.includes('ไม่ผ่าน') || statusStr.includes('ยกเลิก') || statusStr.includes('ถอน');
+                    let isWait = !isPass && !isFail;
+
+                    if (!isWait) return;
+
+                    let rowReason = getRemarkReason(row);
+                    if (rowReason === reasonName) {
+                        matchedRows.push({ level: lvl, row: row });
+                    }
+                });
+            });
+
+            if (modalTitle) {
+                modalTitle.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i> รายการเหตุผล: "${reasonName}" (${matchedRows.length} รายการ)`;
+            }
+            if (modalSub) {
+                modalSub.innerText = `รายการที่อยู่ระหว่างดำเนินการที่ตรงกับเหตุผล "${reasonName}"`;
+            }
+
+            if (matchedRows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-muted">ไม่พบรายการข้อมูลที่ตรงกับเหตุผลนี้</td></tr>';
+            } else {
+                matchedRows.forEach((item, i) => {
+                    let r = item.row;
+                    let seq = getRowValue(r, 'ลำดับ') || '-';
+                    let posNo = getRowValue(r, 'ตำแหน่งเลขที่') || '-';
+                    let prefix = getRowValue(r, 'คำนำหน้า') || '';
+                    let fname = getRowValue(r, 'ชื่อ -') || getRowValue(r, 'ชื่อ') || '';
+                    let lname = getRowValue(r, 'สกุล') || getRowValue(r, 'นามสกุล') || '';
+                    let fullName = `${prefix}${fname} ${lname}`.trim() || '-';
+                    let pos = getRowValue(r, 'ตำแหน่งปัจจุบัน') || '-';
+                    let hosp = getRowValue(r, 'สังกัด') || '-';
+                    let date1 = cleanDateStr(getRowValue(r, 'วันที่ส่งเล่ม 1'));
+                    let staff = getStaffFromRow(r, item.level, activeStaffMap, {}) || getRowValue(r, 'เจ้าหน้าที่ 1') || '-';
+                    let remark = getRowValue(r, 'หมายเหตุ') || reasonName;
+
+                    let safePosNo = String(posNo).replace(/'/g, "\\'");
+
+                    tbody.innerHTML += `
+                        <tr style="cursor: pointer;" onclick="inspectFromPendingModal('${item.level}', '${safePosNo}')" title="คลิกเพื่อไปยังหน้าทะเบียนนี้">
+                            <td>${i + 1}</td>
+                            <td><span class="badge bg-light text-dark border">${item.level}</span></td>
+                            <td class="fw-bold text-primary">${posNo} (ลำดับ ${seq})</td>
+                            <td class="fw-bold">${fullName}</td>
+                            <td style="max-width: 180px; font-size: 0.82rem;">${pos}</td>
+                            <td>${hosp}</td>
+                            <td>${date1}</td>
+                            <td class="fw-bold text-secondary">${staff}</td>
+                            <td class="text-warning-emphasis fw-semibold">${remark}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            new bootstrap.Modal(document.getElementById('pendingReasonModal')).show();
         }
 
         function openStaffInspectionModal(staffName, isMeetingStaff = false) {
