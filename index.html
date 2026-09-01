@@ -1687,6 +1687,24 @@
             return null;
         }
 
+        function isVolume2Submitted(row) {
+            if (!row || typeof row !== 'object') return false;
+            const vol2Keys = [
+                'วันที่ส่งเล่ม 2', 'วันที่ส่งเล่ม2', 'สนพ. รับผลงาน', 'สนพ.รับผลงาน',
+                'สนพ รับผลงาน', 'สนพ. รับเรื่อง', 'สนพ.รับเรื่อง', 'วันส่งเล่ม 2'
+            ];
+            for (let k of vol2Keys) {
+                let val = getRowValue(row, k);
+                if (val !== undefined && val !== null) {
+                    let str = String(val).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+                    if (str !== '' && str !== '-' && str !== 'null' && str !== 'undefined' && str !== 'ไม่มี') {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         function updateNotifications() {
             cachedNotificationList = [];
             const levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
@@ -1702,8 +1720,8 @@
                 rows.forEach(row => {
                     if (!isValidRow(row)) return;
 
-                    const vol2DateStr = getRowValue(row, 'วันที่ส่งเล่ม 2') || getRowValue(row, 'สนพ. รับผลงาน') || getRowValue(row, 'สนพ. รับเรื่อง');
-                    if (vol2DateStr && vol2DateStr !== '-' && String(vol2DateStr).trim() !== '') return;
+                    // ตรวจสอบว่ามีการส่งเล่ม 2 หรือ สนพ. รับผลงานแล้วหรือไม่ (ถ้าส่งแล้วจะไม่แจ้งเตือน)
+                    if (isVolume2Submitted(row)) return;
 
                     const statusStr = String(getRowValue(row, 'ผลการประเมิน')).trim();
                     if (!statusStr.includes('อยู่ระหว่างดำเนินการ')) return;
@@ -3468,8 +3486,7 @@
                         td.innerHTML = `<span class="badge ${badgeClass} badge-status">${val}</span>`;
                     } else if (col.includes('ครบกำหนด 6 เดือน') || col.includes('วันที่ครบกำหนด 6 เดือน')) {
                         let statusVal = String(getRowValue(row, 'ผลการประเมิน')).trim();
-                        let vol2Date = getRowValue(row, 'วันที่ส่งเล่ม 2') || getRowValue(row, 'สนพ. รับผลงาน') || getRowValue(row, 'สนพ. รับเรื่อง');
-                        let isVol2Sent = vol2Date && vol2Date !== '-' && String(vol2Date).trim() !== '';
+                        let isVol2Sent = isVolume2Submitted(row);
                         let dObj = parseDateStrict(val);
 
                         if (isVol2Sent) {
@@ -3491,6 +3508,8 @@
                         } else {
                             td.innerText = displayVal;
                         }
+                    } else if (col.includes('ระยะเวลาส่งเล่ม 2') || col.includes('ระยะเวลาเล่ม 2')) {
+                        td.innerText = displayVal;
                     } else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่')) {
                         td.style.minWidth = '260px';
                         td.style.maxWidth = '260px';
