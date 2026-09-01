@@ -3780,7 +3780,8 @@
             let elPass = getEl(['วันที่ผ่านประเมิน', 'ผ่านประเมินลงวันที่']);
             let el6M = getEl(['วันที่ครบกำหนด 6 เดือน', 'ครบกำหนด 6 เดือน']);
             if (el6M) {
-                let dBase = parseDate(elPass?.value) || parseDate(elAnn?.value);
+                // คำนวณวันครบกำหนด 6 เดือน: ลำดับความสำคัญ ประกาศครบ 30 วัน -> ประกาศลงวันที่ -> วันที่ผ่านประเมิน
+                let dBase = parseDate(el30?.value) || parseDate(elAnn?.value) || parseDate(elPass?.value);
                 if (dBase) {
                     let d6M = new Date(dBase);
                     d6M.setMonth(d6M.getMonth() + 6);
@@ -3799,10 +3800,11 @@
                 }
             }
 
-            let elSub2 = getEl(['วันที่ส่งเล่ม 2', 'วันที่ส่งเล่ม2', 'สนพ. รับผลงาน', 'สนพ.รับผลงาน', 'สนพ. รับเรื่อง']);
+            let elSub2 = getEl(['วันที่ส่งเล่ม 2', 'วันที่ส่งเล่ม2', 'สนพ. รับผลงาน', 'สนพ.รับผลงาน', 'สนพ. รับเรื่อง', 'วันส่งเล่ม 2']);
             let elDur2 = getEl(['ระยะเวลาส่งเล่ม 2', 'ระยะเวลาเล่ม 2']);
             if (elDur2) {
-                let dBase1 = parseDate(elSub1?.value) || parseDate(elPass?.value) || parseDate(elAnn?.value);
+                // วันเริ่มต้นนับระยะเวลาส่งเล่ม 2: ลำดับความสำคัญ ประกาศครบ 30 วัน -> ประกาศลงวันที่ -> วันที่ผ่านประเมิน
+                let dBase1 = parseDate(el30?.value) || parseDate(elAnn?.value) || parseDate(elPass?.value);
                 let dBase2 = parseDate(elSub2?.value);
                 if (dBase1 && dBase2) {
                     elDur2.value = calcDurationStr(dBase1, dBase2);
