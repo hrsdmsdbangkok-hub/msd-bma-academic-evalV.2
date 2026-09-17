@@ -1450,7 +1450,63 @@
             }
         };
 
-        Chart.register(totalLabelsPlugin, doughnutPercentagePlugin);
+        const doughnutCenterTextPlugin = {
+            id: 'doughnutCenterTextPlugin',
+            afterDraw(chart) {
+                if (chart.config.type !== 'doughnut') return;
+                const centerConfig = chart.config.options.plugins?.centerText;
+                if (!centerConfig || centerConfig.display === false) return;
+
+                const { ctx, chartArea } = chart;
+                if (!chartArea) return;
+
+                const meta = chart.getDatasetMeta(0);
+                let centerX = (chartArea.left + chartArea.right) / 2;
+                let centerY = (chartArea.top + chartArea.bottom) / 2;
+
+                if (meta && meta.data && meta.data[0]) {
+                    centerX = meta.data[0].x;
+                    centerY = meta.data[0].y;
+                }
+
+                const title = centerConfig.title || '';
+                const value = centerConfig.value || '0';
+                const subtitle = centerConfig.subtitle || '';
+                const titleColor = centerConfig.titleColor || '#64748b';
+                const valueColor = centerConfig.valueColor || '#0f172a';
+                const subtitleColor = centerConfig.subtitleColor || '#0d9488';
+
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                // Line 1: Header / Level title
+                let displayTitle = title;
+                if (displayTitle === 'ชำนาญการ (พยาบาลวิชาชีพ)') displayTitle = 'ชำนาญการ (พยาบาลฯ)';
+                const titleFontSize = displayTitle.length > 14 ? '11px' : '12px';
+                ctx.font = `700 ${titleFontSize} 'Prompt', sans-serif`;
+                ctx.fillStyle = titleColor;
+                ctx.fillText(displayTitle, centerX, centerY - 21);
+
+                // Line 2: Prominent Value
+                const valStr = String(value);
+                const valFontSize = valStr.length > 5 ? '22px' : '26px';
+                ctx.font = `800 ${valFontSize} 'Prompt', sans-serif`;
+                ctx.fillStyle = valueColor;
+                ctx.fillText(valStr, centerX, centerY + 3);
+
+                // Line 3: Subtitle / Percentage / Unit
+                if (subtitle) {
+                    ctx.font = `600 10.5px 'Prompt', sans-serif`;
+                    ctx.fillStyle = subtitleColor;
+                    ctx.fillText(subtitle, centerX, centerY + 25);
+                }
+
+                ctx.restore();
+            }
+        };
+
+        Chart.register(totalLabelsPlugin, doughnutPercentagePlugin, doughnutCenterTextPlugin);
 
         function getRowValue(row, colName) {
             if (!row || typeof row !== 'object') return '';
@@ -2442,6 +2498,7 @@
             let total = 0, pass = 0, fail = 0;
             let levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
             let levelCounts = [0,0,0,0,0];
+            let allLevelCounts = [0,0,0,0,0];
             let hospCounts = {};
             let staffBreakdown = {};
             let statusByLevel = {};
@@ -2540,6 +2597,22 @@
                     return true;
                 });
 
+                // Count for Level Proportions Chart (calculated across all levels respecting active filters)
+                data.forEach(row => {
+                    let statusStr = String(getRowValue(row, 'ผลการประเมิน')).trim();
+                    let cat = 'wait';
+                    if(statusStr.includes('ผ่านการประเมิน') && !statusStr.includes('ไม่')) cat = 'pass';
+                    else if(statusStr.includes('ไม่ผ่าน') || statusStr.includes('ยกเลิก') || statusStr.includes('ถอน')) cat = 'fail';
+
+                    if (activeKpiFilter === 'pass' && cat !== 'pass') return;
+                    if (activeKpiFilter === 'fail' && cat !== 'fail') return;
+                    if (activeKpiFilter === 'wait' && cat !== 'wait') return;
+
+                    allLevelCounts[idx]++;
+                });
+
+                if(fLevel && fLevel !== lvl) return;
+
                 total += data.length;
                 
                 data.forEach(row => {
@@ -2600,12 +2673,34 @@
             ['level', 'hosp', 'stacked', 'staff', 'year', 'topPos', 'meetingStaff', 'pendingReason'].forEach(c => { if(charts[c]) charts[c].destroy(); });
 
             // 1. Level Chart (Doughnut)
+            const donutTotal = allLevelCounts.reduce((a, b) => a + b, 0);
+            const selLevelIdx = fLevel ? levels.indexOf(fLevel) : -1;
+            const levelThemeColors = ['#059669', '#0284c7', '#d97706', '#7c3aed', '#e11d48'];
+
+            let centerTitle = 'เสนอขอรวม';
+            let centerVal = donutTotal.toLocaleString();
+            let centerSub = 'รายการ';
+            let centerTitleCol = '#64748b';
+            let centerValCol = '#0f172a';
+            let centerSubCol = '#0d9488';
+
+            if (selLevelIdx !== -1) {
+                const countThisLevel = allLevelCounts[selLevelIdx] || 0;
+                const pctThisLevel = donutTotal > 0 ? ((countThisLevel / donutTotal) * 100).toFixed(1) : '0.0';
+                centerTitle = fLevel;
+                centerVal = countThisLevel.toLocaleString();
+                centerSub = `${pctThisLevel}% (${countThisLevel.toLocaleString()} รายการ)`;
+                centerTitleCol = levelThemeColors[selLevelIdx] || '#059669';
+                centerValCol = '#0f172a';
+                centerSubCol = levelThemeColors[selLevelIdx] || '#0d9488';
+            }
+
             charts.level = new Chart(document.getElementById('levelChart'), { 
                 type: 'doughnut', 
                 data: { 
                     labels: levels, 
                     datasets: [{ 
-                        data: levelCounts, 
+                        data: allLevelCounts, 
                         backgroundColor: function(context) {
                             const { ctx, chartArea } = context.chart;
                             if (!chartArea) return baseColors.palette[context.dataIndex % baseColors.palette.length];
@@ -2619,7 +2714,8 @@
                         }, 
                         borderWidth: 2,
                         borderColor: '#ffffff',
-                        hoverOffset: 8
+                        hoverOffset: 8,
+                        offset: levels.map(l => (fLevel && l === fLevel) ? 14 : 0)
                     }] 
                 },
                 options: { 
@@ -2627,19 +2723,42 @@
                     plugins: { 
                         legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { family: 'Prompt', size: 11 } } },
                         tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const val = Number(context.raw) || 0;
-                                    const totalVal = context.dataset.data.reduce((a, b) => a + (Number(b) || 0), 0);
-                                    const pct = totalVal > 0 ? ((val / totalVal) * 100).toFixed(1) : '0.0';
-                                    return ` ${context.label}: ${val.toLocaleString()} รายการ (${pct}%)`;
-                                }
-                            }
+                            enabled: false
+                        },
+                        centerText: {
+                            display: true,
+                            title: centerTitle,
+                            value: centerVal,
+                            subtitle: centerSub,
+                            titleColor: centerTitleCol,
+                            valueColor: centerValCol,
+                            subtitleColor: centerSubCol
                         }
                     },
                     onHover: (event, chartElement) => {
                         if (event.native && event.native.target) {
                             event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                        }
+                        if (charts.level && charts.level.options.plugins?.centerText) {
+                            if (chartElement.length > 0) {
+                                const hIdx = chartElement[0].index;
+                                const hLevel = levels[hIdx];
+                                const hCount = allLevelCounts[hIdx] || 0;
+                                const hPct = donutTotal > 0 ? ((hCount / donutTotal) * 100).toFixed(1) : '0.0';
+                                charts.level.options.plugins.centerText.title = hLevel;
+                                charts.level.options.plugins.centerText.value = hCount.toLocaleString();
+                                charts.level.options.plugins.centerText.subtitle = `${hPct}% (${hCount.toLocaleString()} รายการ)`;
+                                charts.level.options.plugins.centerText.titleColor = levelThemeColors[hIdx] || '#059669';
+                                charts.level.options.plugins.centerText.subtitleColor = levelThemeColors[hIdx] || '#0d9488';
+                                charts.level.update('none');
+                            } else {
+                                charts.level.options.plugins.centerText.title = centerTitle;
+                                charts.level.options.plugins.centerText.value = centerVal;
+                                charts.level.options.plugins.centerText.subtitle = centerSub;
+                                charts.level.options.plugins.centerText.titleColor = centerTitleCol;
+                                charts.level.options.plugins.centerText.subtitleColor = centerSubCol;
+                                charts.level.update('none');
+                            }
                         }
                     },
                     onClick: (event, elements) => {
