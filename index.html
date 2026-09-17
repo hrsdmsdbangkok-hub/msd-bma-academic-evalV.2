@@ -3299,9 +3299,10 @@
                     let w = getStickyColWidth(col);
                     th.className = `sticky-col ${isLast ? 'sticky-col-last' : ''}`;
                     th.style.cssText = `left: ${leftPx}px; min-width: ${w}px; max-width: ${w}px; width: ${w}px; z-index: 25;`;
-                } else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่')) {
-                    th.style.minWidth = '260px';
-                    th.style.maxWidth = '260px';
+                } else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่') || col.includes('มติคณะกรรมการ') || col.includes('มติ')) {
+                    let colWidth = (col.includes('มติคณะกรรมการ') || col.includes('มติ')) ? '220px' : '260px';
+                    th.style.minWidth = colWidth;
+                    th.style.maxWidth = colWidth;
                 }
 
                 let uniqueVals = Array.from(new Set(rawData.map(r => String(getRowValue(r, col)).trim()).filter(v => v !== '' && v !== '-'))).sort((a,b) => a.localeCompare(b, 'th'));
@@ -3510,9 +3511,10 @@
                         }
                     } else if (col.includes('ระยะเวลาส่งเล่ม 2') || col.includes('ระยะเวลาเล่ม 2')) {
                         td.innerText = displayVal;
-                    } else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่')) {
-                        td.style.minWidth = '260px';
-                        td.style.maxWidth = '260px';
+                    } else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่') || col.includes('มติคณะกรรมการ') || col.includes('มติ')) {
+                        let colWidth = (col.includes('มติคณะกรรมการ') || col.includes('มติ')) ? '220px' : '260px';
+                        td.style.minWidth = colWidth;
+                        td.style.maxWidth = colWidth;
                         td.style.whiteSpace = 'nowrap';
                         td.style.overflow = 'hidden';
                         td.style.textOverflow = 'ellipsis';
