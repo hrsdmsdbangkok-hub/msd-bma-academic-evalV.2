@@ -3835,13 +3835,13 @@
                 }
             }
 
-            let elPass = getEl(['วันที่ผ่านประเมิน', 'ผ่านประเมินลงวันที่']);
             let el6M = getEl(['วันที่ครบกำหนด 6 เดือน', 'ครบกำหนด 6 เดือน']);
             if (el6M) {
-                let dBase = parseDate(elPass?.value) || parseDate(elAnn?.value);
+                let dBase = parseDate(el30?.value) || parseDate(elPass?.value) || parseDate(elAnn?.value);
                 if (dBase) {
                     let d6M = new Date(dBase);
                     d6M.setMonth(d6M.getMonth() + 6);
+                    d6M.setDate(d6M.getDate() - 1);
                     el6M.value = fmtDateInput(d6M);
                 }
             }
