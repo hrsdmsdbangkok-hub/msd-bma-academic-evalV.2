@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบติดตามการประเมินผลงานทางวิชาการ (Ver.2) - MSD BMA</title>
     
     <!-- CSS Libraries -->
@@ -13,38 +13,23 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Google Fonts: Prompt & Plus Jakarta Sans & Sarabun -->
+    <!-- Google Fonts: Prompt & Sarabun & Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* ==========================================================
-           🎨 1. UNIFIED DESIGN SYSTEM TOKENS & BASE STYLING
-           ========================================================== */
         :root {
             --bma-primary: #059669;
             --bma-primary-dark: #065f46;
             --bma-secondary: #0d9488;
             --bma-accent: #f59e0b;
-            --bma-danger: #ef4444;
-            --bma-info: #3b82f6;
             --bma-bg: #f8fafc;
             --bma-dark: #0f172a;
-            --glass-bg: rgba(255, 255, 255, 0.94);
-            
-            /* Unified Radius Tokens */
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 18px;
-            --radius-pill: 9999px;
-            
-            /* Unified Shadow Tokens */
-            --shadow-subtle: 0 4px 15px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -2px rgba(15, 23, 42, 0.02);
-            --shadow-card: 0 10px 25px -4px rgba(15, 23, 42, 0.05), 0 4px 8px -2px rgba(15, 23, 42, 0.03);
-            --shadow-hover: 0 16px 30px -8px rgba(13, 148, 136, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-            
+            --glass-bg: rgba(255, 255, 255, 0.92);
+            --shadow-subtle: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --shadow-card: 0 12px 30px -4px rgba(15, 23, 42, 0.06), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
+            --shadow-hover: 0 20px 35px -10px rgba(13, 148, 136, 0.15), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
             --sidebar-width: 240px;
             --sidebar-collapsed-width: 72px;
         }
@@ -67,12 +52,10 @@
             z-index: 1000; 
             overflow-y: auto; 
             box-shadow: 8px 0 30px rgba(0,0,0,0.12); 
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-right: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
-            top: 0;
-            left: 0;
         }
         .sidebar-brand { 
             padding: 20px 14px 16px; 
@@ -88,7 +71,7 @@
             padding: 0 10px;
             height: 42px;
             margin: 0 auto 8px;
-            border-radius: var(--radius-md);
+            border-radius: 10px;
             background: #059669;
             color: #ffffff;
             font-weight: 800;
@@ -107,7 +90,7 @@
             padding: 10px 14px; 
             font-size: 0.85rem; 
             font-weight: 500;
-            border-radius: var(--radius-md);
+            border-radius: 10px;
             transition: all 0.25s ease;
             cursor: pointer;
             display: flex;
@@ -139,7 +122,7 @@
             background: rgba(0, 0, 0, 0.15);
         }
 
-        /* Collapsed Sidebar Styles (Desktop) */
+        /* Collapsed Sidebar Styles */
         body.sidebar-collapsed .sidebar { width: var(--sidebar-collapsed-width); }
         body.sidebar-collapsed .main-content { margin-left: var(--sidebar-collapsed-width); }
         body.sidebar-collapsed .sidebar-brand-text,
@@ -157,13 +140,12 @@
             min-height: 100vh; 
             transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
         .topbar { 
             background: var(--glass-bg); 
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             padding: 10px 20px; 
-            border-radius: var(--radius-lg); 
+            border-radius: 16px; 
             margin-bottom: 18px; 
             box-shadow: var(--shadow-subtle); 
             display: flex; 
@@ -180,13 +162,12 @@
             color: #475569;
             width: 38px;
             height: 38px;
-            border-radius: var(--radius-md);
+            border-radius: 10px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            cursor: pointer;
         }
         .btn-sidebar-toggle:hover { background: #f1f5f9; color: #0d9488; border-color: #cbd5e1; }
 
@@ -196,7 +177,7 @@
             color: #d97706;
             width: 44px;
             height: 44px;
-            border-radius: var(--radius-md);
+            border-radius: 12px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -216,14 +197,16 @@
             transform: scale(1.06);
             box-shadow: 0 6px 15px rgba(217, 119, 6, 0.16);
         }
-        .btn-notif-bell:hover i { transform: rotate(15deg); }
+        .btn-notif-bell:hover i {
+            transform: rotate(15deg);
+        }
 
         .sync-badge {
             background: #f0fdf4;
             border: 1px solid rgba(16, 185, 129, 0.25);
             color: #047857;
             padding: 5px 12px;
-            border-radius: var(--radius-pill);
+            border-radius: 30px;
             font-size: 0.8rem;
             font-weight: 600;
             display: inline-flex;
@@ -257,64 +240,63 @@
 
         .kpi-card { 
             background: white; 
-            border-radius: var(--radius-xl); 
+            border-radius: 18px; 
             padding: 14px 18px; 
             box-shadow: var(--shadow-subtle); 
             position: relative;
             overflow: hidden;
-            transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
             border: 2px solid transparent;
             cursor: pointer;
             user-select: none;
         }
-        .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+        .kpi-card:hover { transform: translateY(-3px) scale(1.005); box-shadow: var(--shadow-hover); }
         .kpi-card.active-filter { 
             border-color: var(--bma-secondary) !important; 
             background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
-            box-shadow: 0 10px 25px rgba(13, 148, 136, 0.18);
+            box-shadow: 0 10px 25px rgba(13, 148, 136, 0.2);
             transform: translateY(-2px);
         }
         .kpi-icon { 
             position: absolute; right: -10px; top: -10px; font-size: 4.2rem; opacity: 0.06; transform: rotate(-15deg);
-            transition: transform 0.4s;
+            transition: transform 0.5s;
         }
-        .kpi-card:hover .kpi-icon { transform: rotate(0deg) scale(1.08); opacity: 0.09; }
+        .kpi-card:hover .kpi-icon { transform: rotate(0deg) scale(1.1); opacity: 0.1; }
         .kpi-title { font-size: 0.78rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
         .kpi-value { font-size: 1.65rem; font-weight: 800; margin-top: 2px; letter-spacing: -0.5px; }
 
         .chart-container { 
             background: white; 
-            border-radius: var(--radius-xl); 
+            border-radius: 22px; 
             padding: 20px; 
             box-shadow: var(--shadow-subtle); 
             height: 100%;
             border: 1px solid rgba(226, 232, 240, 0.8); 
-            transition: box-shadow 0.25s, transform 0.25s;
+            transition: box-shadow 0.3s;
         }
-        .chart-container:hover { box-shadow: var(--shadow-card); }
+        .chart-container:hover { box-shadow: var(--shadow-hover); }
         .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
         .chart-title { font-size: 1rem; font-weight: 700; color: var(--bma-dark); display: flex; align-items: center; gap: 8px;}
         .chart-title i { color: var(--bma-secondary); font-size: 1.1rem; }
 
         .table-wrapper { 
             background: #ffffff; 
-            padding: 20px; 
-            border-radius: var(--radius-xl); 
+            padding: 22px; 
+            border-radius: 22px; 
             box-shadow: var(--shadow-card); 
             border: 1px solid rgba(226, 232, 240, 0.9); 
-            display: flex; 
+            display: flex;
             flex-direction: column;
         }
 
-        .table-scroll-container { 
-            max-height: calc(100vh - 270px); 
-            min-height: 390px; 
-            overflow: auto; 
-            border-radius: var(--radius-md); 
-            border: 1px solid #e2e8f0; 
-            background: #ffffff; 
-            position: relative; 
-            -webkit-overflow-scrolling: touch; 
+        .table-scroll-container {
+            max-height: calc(100vh - 270px);
+            min-height: 390px;
+            overflow: auto;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            position: relative;
         }
 
         .table-scroll-container::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -324,20 +306,22 @@
 
         .table-custom { border-collapse: separate; border-spacing: 0; width: 100%; }
         
+        /* Modern Sticky Header */
         .table-custom th { 
             background: #f8fafc !important; 
             color: #334155 !important; 
             font-weight: 700; 
-            font-size: 0.84rem; 
+            font-size: 0.84rem;
             padding: 13px 15px; 
             border-bottom: 2px solid #e2e8f0; 
             white-space: nowrap; 
             position: sticky; 
             top: 0; 
-            z-index: 10; 
-            letter-spacing: 0.2px; 
+            z-index: 10;
+            letter-spacing: 0.2px;
         }
 
+        /* Modern Filter Button on Header */
         .th-filter-btn {
             background: transparent;
             border: 1px solid transparent;
@@ -355,7 +339,7 @@
             font-weight: 700;
         }
 
-        /* Sticky Left Frozen Columns */
+        /* Sticky Left Columns (up to Surname) */
         .table-custom th.sticky-col {
             position: sticky;
             top: 0;
@@ -371,6 +355,7 @@
         }
         .table-custom tr:hover td.sticky-col { background-color: #f0fdf4 !important; }
 
+        /* Right shadow elevation for the last frozen column */
         .sticky-col-last {
             border-right: 2px solid #cbd5e1 !important;
             box-shadow: 6px 0 12px -3px rgba(15, 23, 42, 0.08) !important;
@@ -387,67 +372,67 @@
         .table-custom tbody tr { transition: all 0.15s ease; cursor: pointer; }
         .table-custom tbody tr:hover { background-color: #f0fdf4; }
 
+        /* Action Buttons */
         .btn-action-edit {
             background-color: #fef3c7; color: #b45309; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
-            border-radius: var(--radius-sm); border: 1px solid rgba(245, 158, 11, 0.3); transition: all 0.2s ease;
+            border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.3); transition: all 0.2s ease;
             display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
         .btn-action-edit:hover { background-color: #fde68a; color: #78350f; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(245, 158, 11, 0.15); }
 
         .btn-action-delete {
             background-color: #fee2e2; color: #dc2626; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
-            border-radius: var(--radius-sm); border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s ease;
+            border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s ease;
             display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
         .btn-action-delete:hover { background-color: #fca5a5; color: #991b1b; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(239, 68, 68, 0.15); }
 
         .btn-action-lock {
             background-color: #d1fae5; color: #047857; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
-            border-radius: var(--radius-sm); border: 1px solid rgba(16, 185, 129, 0.3); transition: all 0.2s ease;
+            border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3); transition: all 0.2s ease;
             display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
         .btn-action-lock:hover { background-color: #a7f3d0; color: #065f46; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(16, 185, 129, 0.15); }
 
         .btn-action-unlock {
             background-color: #fee2e2; color: #dc2626; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
-            border-radius: var(--radius-sm); border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s ease;
+            border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.3); transition: all 0.2s ease;
             display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
         .btn-action-unlock:hover { background-color: #fca5a5; color: #991b1b; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(239, 68, 68, 0.15); }
 
         .btn-action-resetpass {
             background-color: #e0f2fe; color: #0284c7; font-weight: 600; font-size: 0.76rem; padding: 4px 10px;
-            border-radius: var(--radius-sm); border: 1px solid rgba(2, 132, 199, 0.3); transition: all 0.2s ease;
+            border-radius: 8px; border: 1px solid rgba(2, 132, 199, 0.3); transition: all 0.2s ease;
             display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
         }
         .btn-action-resetpass:hover { background-color: #bae6fd; color: #0369a1; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(2, 132, 199, 0.15); }
 
-        .badge-status { padding: 5px 12px; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.3px; }
-        .btn-modern { border-radius: var(--radius-md); padding: 8px 18px; font-weight: 600; transition: all 0.25s; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
+        .badge-status { padding: 5px 12px; border-radius: 30px; font-weight: 600; font-size: 0.78rem; letter-spacing: 0.3px; }
+        .btn-modern { border-radius: 12px; padding: 8px 18px; font-weight: 600; transition: all 0.25s; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
         .btn-modern:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
 
         .dynamic-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-control, .form-select { border-radius: 10px; padding: 10px 14px; border-color: #cbd5e1; font-size: 0.92rem; }
-        .form-control:focus, .form-select:focus { border-color: var(--bma-secondary); box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15); }
+        .form-control:focus, .form-select:focus { border-color: var(--bma-secondary); box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12); }
         .readonly-field { background-color: #f1f5f9; border-style: dashed; color: #64748b; font-weight: 500;}
 
         /* Custom Searchable Select Dropdown */
-        .custom-search-select .dropdown-menu { border: 1px solid #cbd5e1; box-shadow: 0 15px 30px rgba(0,0,0,0.12); border-radius: var(--radius-md); }
-        .custom-search-select .dropdown-item { font-size: 0.82rem; padding: 6px 12px; transition: all 0.15s ease; }
+        .custom-search-select .dropdown-menu { border: 1px solid #cbd5e1; box-shadow: 0 15px 30px rgba(0,0,0,0.12); }
+        .custom-search-select .dropdown-item { font-size: 0.82rem; padding: 5px 10px; transition: all 0.15s ease; }
         .custom-search-select .dropdown-item:hover { background-color: #f0fdf4; color: #047857; }
 
-        /* Print Modal Styles */
         .print-modal { font-family: 'Prompt', 'Sarabun', sans-serif !important; padding: 16px 20px; background: #ffffff; color: #1e293b; }
         .report-header { text-align: center; position: relative; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 2px solid #059669; }
         .report-logo-badge {
             display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 80px; padding: 0 12px; height: 36px;
-            background: #059669; color: white; font-weight: 800; font-size: 0.88rem; border-radius: var(--radius-sm); margin-bottom: 4px;
+            background: #059669; color: white; font-weight: 800; font-size: 0.88rem; border-radius: 8px; margin-bottom: 4px;
         }
         .report-title { font-weight: 800; font-size: 1.2rem; color: #064e3b; margin-bottom: 1px; }
         .report-subtitle { font-weight: 600; font-size: 0.92rem; color: #334155; margin-bottom: 4px; }
         .report-level-pill {
             display: inline-block; background: linear-gradient(135deg, #059669, #0d9488); color: #ffffff;
-            padding: 2px 16px; border-radius: var(--radius-pill); font-size: 0.8rem; font-weight: 700;
+            padding: 2px 16px; border-radius: 30px; font-size: 0.8rem; font-weight: 700;
         }
 
         .report-section {
@@ -464,162 +449,7 @@
         .report-item.span-2 { grid-column: span 2; }
         .report-item-label { font-size: 0.72rem; font-weight: 700; color: #64748b; margin-bottom: 1px; }
         .report-item-value { font-size: 0.85rem; font-weight: 600; color: #0f172a; word-break: break-word; }
-        .report-status-badge { display: inline-block; padding: 2px 10px; border-radius: var(--radius-pill); font-weight: 700; font-size: 0.78rem; }
-
-        .global-work-tooltip {
-            position: fixed;
-            display: none;
-            z-index: 99999;
-            max-width: 520px;
-            min-width: 260px;
-            background: linear-gradient(145deg, #0f172a, #1e293b);
-            color: #f8fafc;
-            padding: 12px 16px;
-            border-radius: var(--radius-lg);
-            box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.12);
-            font-size: 0.92rem;
-            line-height: 1.6;
-            pointer-events: none;
-            transition: opacity 0.12s cubic-bezier(0.4, 0, 0.2, 1), transform 0.12s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-            transform: translateY(6px);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-left: 4px solid #10b981;
-        }
-        .global-work-tooltip.show {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .global-work-tooltip .tooltip-header {
-            font-size: 0.76rem;
-            font-weight: 700;
-            color: #34d399;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-            padding-bottom: 5px;
-        }
-        .global-work-tooltip .tooltip-body {
-            font-size: 0.9rem;
-            color: #f8fafc;
-            font-weight: 500;
-            word-break: break-word;
-            white-space: normal;
-        }
-
-        .work-title-cell {
-            cursor: pointer;
-            transition: color 0.15s ease;
-        }
-        .work-title-cell:hover {
-            color: #047857 !important;
-            text-decoration: underline;
-            text-underline-offset: 3px;
-        }
-
-        /* Mobile Drawer Backdrop Overlay */
-        #mobileSidebarOverlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(15, 23, 42, 0.5);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            transition: opacity 0.3s ease;
-        }
-
-        /* Responsive Mobile Layout (<= 768px) */
-        @media (max-width: 768px) {
-            .sidebar {
-                left: calc(-1 * var(--sidebar-width));
-                width: var(--sidebar-width) !important;
-                box-shadow: 10px 0 30px rgba(0,0,0,0.3);
-            }
-            body.sidebar-open-mobile .sidebar {
-                left: 0 !important;
-            }
-            body.sidebar-open-mobile #mobileSidebarOverlay {
-                display: block;
-            }
-
-            .main-content {
-                margin-left: 0 !important;
-                padding: 14px 12px;
-                width: 100%;
-            }
-
-            .topbar {
-                padding: 8px 12px;
-                border-radius: var(--radius-md);
-                margin-bottom: 14px;
-                gap: 8px;
-            }
-            #pageTitle {
-                font-size: 1.05rem !important;
-            }
-            #pageSubtitle {
-                font-size: 0.75rem !important;
-            }
-
-            .sync-badge {
-                padding: 4px 8px;
-                font-size: 0.72rem;
-            }
-            #syncLabelEl {
-                display: none;
-            }
-
-            .btn-notif-bell {
-                width: 38px;
-                height: 38px;
-            }
-            .btn-notif-bell i {
-                font-size: 1.15rem;
-            }
-
-            .kpi-card {
-                padding: 12px 14px;
-                border-radius: var(--radius-lg);
-            }
-            .kpi-value {
-                font-size: 1.35rem;
-            }
-            .kpi-title {
-                font-size: 0.72rem;
-            }
-
-            .dynamic-form-grid {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .table-wrapper {
-                padding: 12px;
-                border-radius: var(--radius-lg);
-            }
-            .table-scroll-container {
-                max-height: calc(100vh - 240px);
-                min-height: 320px;
-            }
-
-            .chart-container {
-                padding: 14px;
-                border-radius: var(--radius-lg);
-            }
-
-            input, select, textarea {
-                font-size: 16px !important;
-            }
-        }
+        .report-status-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-weight: 700; font-size: 0.78rem; }
 
         @page { size: A4 portrait; margin: 5mm 8mm; }
         @media print {
@@ -635,16 +465,6 @@
 </head>
 <body>
 
-    <!-- Mobile Drawer Overlay Backdrop -->
-    <div id="mobileSidebarOverlay" onclick="closeMobileSidebar()"></div>
-
-    <!-- Floating Hover Tooltip for Academic Work Titles -->
-    <div id="globalWorkTooltip" class="global-work-tooltip">
-        <div class="tooltip-header"><i class="fas fa-book-open"></i> <span id="workTooltipColName">ชื่อผลงาน</span></div>
-        <div class="tooltip-body" id="workTooltipText"></div>
-    </div>
-
-    <!-- Sidebar Navigation -->
     <div class="sidebar">
         <div class="sidebar-brand">
             <div class="brand-logo-badge">MSD BMA</div>
@@ -676,7 +496,6 @@
         </div>
     </div>
 
-    <!-- Main Content Layout -->
     <div class="main-content">
         <!-- Topbar -->
         <div class="topbar">
@@ -690,9 +509,9 @@
                 </div>
             </div>
             
-            <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
                 <!-- 6-Month Notification Bell -->
-                <button class="btn btn-notif-bell me-1" id="notifBellBtn" onclick="openNotificationModal()" title="การแจ้งเตือนใกล้ครบกำหนด 6 เดือน">
+                <button class="btn btn-notif-bell me-2" id="notifBellBtn" onclick="openNotificationModal()" title="การแจ้งเตือนใกล้ครบกำหนด 6 เดือน">
                     <i class="fas fa-bell"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-2 border-white shadow-sm" id="notifCountBadge" style="display: none; font-size: 0.72rem; padding: 4px 7px; font-weight: 700; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.4);">
                         0
@@ -708,7 +527,7 @@
                 <!-- User Profile Badge -->
                 <div id="userDisplay" style="display: none;" class="d-flex align-items-center bg-white px-3 py-1 rounded-pill shadow-sm border border-light">
                     <div class="bg-success text-white rounded-circle d-flex justify-content-center align-items-center me-2 shadow-sm" style="width: 32px; height: 32px; font-weight: bold; font-size: 0.85rem;" id="userInitial">U</div>
-                    <div class="lh-1 me-2 d-none d-sm-block">
+                    <div class="lh-1 me-2">
                         <div class="fw-bold text-dark" id="userFullName" style="font-size: 0.84rem; white-space: nowrap;"></div>
                         <div class="text-success fw-semibold" id="userRoleBadge" style="font-size: 0.68rem;"></div>
                     </div>
@@ -716,18 +535,17 @@
                 </div>
                 
                 <button class="btn btn-success btn-modern py-2 px-3 shadow-sm" id="loginBtn" data-bs-toggle="modal" data-bs-target="#loginModal" style="background: linear-gradient(135deg, #059669, #0d9488); border: none; white-space: nowrap;">
-                    <i class="fas fa-user-lock me-1"></i> <span class="d-none d-sm-inline">เข้าสู่ระบบ</span>
+                    <i class="fas fa-user-lock me-1"></i> เข้าสู่ระบบ
                 </button>
             </div>
         </div>
 
-        <!-- Dashboard View Container -->
         <div id="dashboardView">
             <div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white" style="border: 1px solid rgba(226, 232, 240, 0.8) !important;">
                 <div class="row g-2 align-items-end">
 
                     <!-- Filter 1: Year -->
-                    <div class="col-xl-3 col-lg-3 col-md-3 col-6">
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6">
                         <label class="form-label small fw-bold text-muted mb-1"><i class="fas fa-calendar-alt text-secondary me-1"></i> ปี พ.ศ. (ส่งเล่ม 1)</label>
                         <div class="dropdown custom-search-select" id="dropdownYear">
                             <button class="btn btn-sm btn-white border form-select form-select-sm text-start rounded-3 py-2 d-flex align-items-center justify-content-between w-100 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btnYear" style="font-size: 0.83rem;">
@@ -747,7 +565,7 @@
                     </div>
 
                     <!-- Filter 2: Hospital -->
-                    <div class="col-xl-3 col-lg-3 col-md-3 col-6">
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6">
                         <label class="form-label small fw-bold text-muted mb-1"><i class="fas fa-hospital text-secondary me-1"></i> สังกัด / โรงพยาบาล</label>
                         <div class="dropdown custom-search-select" id="dropdownHospital">
                             <button class="btn btn-sm btn-white border form-select form-select-sm text-start rounded-3 py-2 d-flex align-items-center justify-content-between w-100 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btnHospital" style="font-size: 0.83rem;">
@@ -767,8 +585,8 @@
                     </div>
 
                     <!-- Filter 3: Position -->
-                    <div class="col-xl-3 col-lg-3 col-md-3 col-6">
-                        <label class="form-label small fw-bold text-muted mb-1"><i class="fas fa-id-card text-secondary me-1"></i> ตำแหน่ง</label>
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6">
+                        <label class="form-label small fw-bold text-muted mb-1"><i class="fas fa-id-card text-secondary me-1"></i> ตำแหน่ง (ตัดระดับออก)</label>
                         <div class="dropdown custom-search-select" id="dropdownPosition">
                             <button class="btn btn-sm btn-white border form-select form-select-sm text-start rounded-3 py-2 d-flex align-items-center justify-content-between w-100 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btnPosition" style="font-size: 0.83rem;">
                                 <span class="text-truncate" id="labelPosition">-- ทุกตำแหน่ง --</span>
@@ -787,7 +605,7 @@
                     </div>
 
                     <!-- Filter 4: Level -->
-                    <div class="col-xl-2 col-lg-2 col-md-3 col-6">
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6">
                         <label class="form-label small fw-bold text-muted mb-1"><i class="fas fa-layer-group text-secondary me-1"></i> ระดับการประเมิน</label>
                         <div class="dropdown custom-search-select" id="dropdownLevel">
                             <button class="btn btn-sm btn-white border form-select form-select-sm text-start rounded-3 py-2 d-flex align-items-center justify-content-between w-100 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="btnLevel" style="font-size: 0.83rem;">
@@ -806,7 +624,7 @@
                         </div>
                     </div>
 
-                    <div class="col-xl-1 col-lg-1 col-md-12 col-12 text-end mt-2 mt-md-0">
+                    <div class="col-xl-1 col-lg-1 col-md-12 col-sm-12 text-end">
                         <button class="btn btn-light btn-sm rounded-3 py-2 w-100 fw-bold border text-secondary shadow-sm" onclick="resetDashboardFilters()" title="ล้างค่าตัวกรองทั้งหมด" style="font-size: 0.82rem; white-space: nowrap;">
                             <i class="fas fa-undo text-primary me-1"></i> รีเซ็ต
                         </button>
@@ -815,32 +633,32 @@
             </div>
 
             <!-- KPI Cards Row -->
-            <div class="row g-2 g-md-3 mb-4">
-                <div class="col-xl-3 col-md-6 col-6">
-                    <div class="kpi-card active-filter" id="kpiCardTotal" onclick="filterByKpi('all')" style="border-bottom: 4px solid #3b82f6;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
+            <div class="row g-3 mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="kpi-card" id="kpiCardTotal" onclick="filterByKpi('all')" style="border-bottom: 4px solid #3b82f6;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
                         <i class="fas fa-folder-open kpi-icon text-primary"></i>
-                        <div class="kpi-title">เสนอขอรวม</div>
+                        <div class="kpi-title">เรื่องเสนอขอรวม (ทั้งหมด)</div>
                         <div class="kpi-value text-dark" id="kpiTotal">0</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6 col-6">
+                <div class="col-xl-3 col-md-6">
                     <div class="kpi-card" id="kpiCardPass" onclick="filterByKpi('pass')" style="border-bottom: 4px solid #10b981;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
                         <i class="fas fa-check-circle kpi-icon text-success"></i>
-                        <div class="kpi-title">ผ่านประเมิน</div>
+                        <div class="kpi-title">ผ่านการประเมิน (อนุมัติแล้ว)</div>
                         <div class="kpi-value text-success" id="kpiPass">0</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6 col-6">
+                <div class="col-xl-3 col-md-6">
                     <div class="kpi-card" id="kpiCardWait" onclick="filterByKpi('wait')" style="border-bottom: 4px solid #f59e0b;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
                         <i class="fas fa-clock kpi-icon text-warning"></i>
-                        <div class="kpi-title">อยู่ระหว่างดำเนิน</div>
+                        <div class="kpi-title">อยู่ระหว่างดำเนินการ</div>
                         <div class="kpi-value text-warning" id="kpiWait">0</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6 col-6">
+                <div class="col-xl-3 col-md-6">
                     <div class="kpi-card" id="kpiCardFail" onclick="filterByKpi('fail')" style="border-bottom: 4px solid #ef4444;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง">
                         <i class="fas fa-times-circle kpi-icon text-danger"></i>
-                        <div class="kpi-title">ไม่ผ่าน / ยกเลิก</div>
+                        <div class="kpi-title">ไม่ผ่าน / ยกเลิก / ถอนเรื่อง</div>
                         <div class="kpi-value text-danger" id="kpiFail">0</div>
                     </div>
                 </div>
@@ -859,7 +677,7 @@
                 <div class="col-lg-4">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-chart-pie"></i> สัดส่วนแยกระดับวิชาการ (%)</div>
+                            <div class="chart-title"><i class="fas fa-chart-pie"></i> สัดส่วนแยกระดับวิชาการ (ร้อยละ)</div>
                         </div>
                         <div style="height: 290px; position: relative;"><canvas id="levelChart"></canvas></div>
                     </div>
@@ -871,7 +689,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-list-ol"></i> 10 อันดับตำแหน่งที่ส่งเล่มสูงสุด <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบ</span></div>
+                            <div class="chart-title"><i class="fas fa-list-ol"></i> 10 อันดับแรกของตำแหน่งที่ส่งเล่มประเมินผลงานสูงที่สุด <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบเพื่อกรอง</span></div>
                         </div>
                         <div id="topPositionsChartWrapper" style="position: relative; min-height: 290px;"><canvas id="topPositionsChart"></canvas></div>
                     </div>
@@ -879,7 +697,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-calendar-alt"></i> สถิติการยื่นส่งผลงานเปรียบเทียบปี พ.ศ.</div>
+                            <div class="chart-title"><i class="fas fa-calendar-alt"></i> สถิติการยื่นส่งผลงานเปรียบเทียบระหว่างปี พ.ศ. (ส่งเล่ม 1)</div>
                         </div>
                         <div style="height: 290px; position: relative;"><canvas id="yearChart"></canvas></div>
                     </div>
@@ -891,7 +709,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-tasks"></i> ภาระงานแยกตามเจ้าหน้าที่ <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกตรวจสอบ</span></div>
+                            <div class="chart-title"><i class="fas fa-tasks"></i> ภาระงานแยกตามเจ้าหน้าที่ <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบเพื่อตรวจสอบ</span></div>
                         </div>
                         <div id="staffChartWrapper" style="position: relative; min-height: 310px;"><canvas id="staffChart"></canvas></div>
                     </div>
@@ -899,7 +717,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-hospital"></i> รายการแยกตามส่วนราชการ / โรงพยาบาล <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกเพื่อกรอง</span></div>
+                            <div class="chart-title"><i class="fas fa-hospital"></i> จำนวนรายการประเมินแยกตามส่วนราชการ / โรงพยาบาล <span class="badge bg-primary-subtle text-primary border border-primary-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกแถบเพื่อกรอง</span></div>
                         </div>
                         <div id="hospitalChartWrapper" style="position: relative; min-height: 310px;"><canvas id="hospitalChart"></canvas></div>
                     </div>
@@ -911,7 +729,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-users"></i> เจ้าหน้าที่จัดประชุม (ชำนาญการ & พยาบาล) <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกตรวจสอบ</span></div>
+                            <div class="chart-title"><i class="fas fa-users"></i> เจ้าหน้าที่จัดประชุม (ชำนาญการ & พยาบาลวิชาชีพ) <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกแถบเพื่อตรวจสอบ</span></div>
                         </div>
                         <div id="meetingStaffChartWrapper" style="position: relative; min-height: 310px;"><canvas id="meetingStaffChart"></canvas></div>
                     </div>
@@ -919,7 +737,7 @@
                 <div class="col-lg-6">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <div class="chart-title"><i class="fas fa-exclamation-circle"></i> เหตุผลรายการที่อยู่ระหว่างดำเนินการ <span class="badge bg-warning-subtle text-warning border border-warning-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-mouse-pointer me-1"></i> คลิกตรวจสอบ</span></div>
+                            <div class="chart-title"><i class="fas fa-exclamation-circle"></i> รายงานเหตุผลรายการที่อยู่ระหว่างดำเนินการ <span class="badge bg-warning-subtle text-warning border border-warning-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-filter me-1"></i> คลิกเพื่อกรอง</span></div>
                         </div>
                         <div id="pendingReasonChartWrapper" style="position: relative; min-height: 310px;"><canvas id="pendingReasonChart"></canvas></div>
                     </div>
@@ -927,34 +745,33 @@
             </div>
         </div>
 
-        <!-- Table View Container -->
         <div id="tableView" style="display: none;">
-            <div class="row g-2 g-md-3 mb-4" id="levelKpiContainer">
-                <div class="col-xl-3 col-md-6 col-6">
+            <div class="row g-3 mb-4" id="levelKpiContainer">
+                <div class="col-xl-3 col-md-6">
                     <div class="kpi-card" id="subKpiCardTotal" onclick="filterSubKpi('all')" style="border-bottom: 4px solid #3b82f6;" title="คลิกเพื่อดูรายการทั้งหมดในระดับนี้">
                         <i class="fas fa-folder-open kpi-icon text-primary"></i>
-                        <div class="kpi-title">เรื่องเสนอขอรวม</div>
+                        <div class="kpi-title">เรื่องเสนอขอรวม (ระดับนี้)</div>
                         <div class="kpi-value text-dark" id="subKpiTotal">0</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6 col-6">
+                <div class="col-xl-3 col-md-6">
                     <div class="kpi-card" id="subKpiCardPass" onclick="filterSubKpi('pass')" style="border-bottom: 4px solid #10b981;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง (เฉพาะระดับนี้)">
                         <i class="fas fa-check-circle kpi-icon text-success"></i>
-                        <div class="kpi-title">ผ่านการประเมิน</div>
+                        <div class="kpi-title">ผ่านการประเมินแล้ว</div>
                         <div class="kpi-value text-success" id="subKpiPass">0</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6 col-6">
+                <div class="col-xl-3 col-md-6">
                     <div class="kpi-card" id="subKpiCardWait" onclick="filterSubKpi('wait')" style="border-bottom: 4px solid #f59e0b;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง (เฉพาะระดับนี้)">
                         <i class="fas fa-clock kpi-icon text-warning"></i>
-                        <div class="kpi-title">อยู่ระหว่างดำเนิน</div>
+                        <div class="kpi-title">อยู่ระหว่างดำเนินการ</div>
                         <div class="kpi-value text-warning" id="subKpiWait">0</div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6 col-6">
+                <div class="col-xl-3 col-md-6">
                     <div class="kpi-card" id="subKpiCardFail" onclick="filterSubKpi('fail')" style="border-bottom: 4px solid #ef4444;" title="คลิกเพื่อเลือก/ยกเลิกการกรอง (เฉพาะระดับนี้)">
                         <i class="fas fa-times-circle kpi-icon text-danger"></i>
-                        <div class="kpi-title">ไม่ผ่าน / ยกเลิก</div>
+                        <div class="kpi-title">ไม่ผ่าน / ยกเลิก / ถอน</div>
                         <div class="kpi-value text-danger" id="subKpiFail">0</div>
                     </div>
                 </div>
@@ -962,16 +779,16 @@
 
             <div class="table-wrapper">
                 <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                    <div class="input-group flex-grow-1 shadow-sm rounded-pill overflow-hidden border" style="min-width: 240px; max-width: 450px;">
+                    <div class="input-group w-50 shadow-sm rounded-pill overflow-hidden border" style="min-width: 260px;">
                         <span class="input-group-text bg-white border-0 text-muted"><i class="fas fa-search"></i></span>
-                        <input type="text" class="form-control border-0 py-2" id="searchInput" placeholder="ค้นหาข้อมูล (ลำดับ, เลขที่, ชื่อ-สกุล, ตำแหน่ง)..." oninput="filterTable()" onkeyup="filterTable()" style="box-shadow: none;">
+                        <input type="text" class="form-control border-0 py-2" id="searchInput" placeholder="ค้นหาข้อมูล (ลำดับ, ตำแหน่งเลขที่, ชื่อ-สกุล, ตำแหน่ง, เจ้าหน้าที่)..." oninput="filterTable()" onkeyup="filterTable()" style="box-shadow: none;">
                     </div>
-                    <div class="d-flex align-items-center gap-2 ms-auto">
+                    <div class="d-flex align-items-center gap-2">
                         <button class="btn btn-light btn-modern text-secondary border shadow-sm" onclick="resetPageFilter()" title="ล้างการกรองทั้งหมดในหน้านี้">
-                            <i class="fas fa-undo-alt me-1"></i> <span class="d-none d-sm-inline">รีเซ็ตการกรอง</span>
+                            <i class="fas fa-undo-alt me-1"></i> รีเซ็ตการกรอง
                         </button>
                         <button class="btn btn-primary btn-modern" id="addBtn" style="display: none; background: var(--bma-secondary); border: none;" onclick="openFormModal()">
-                            <i class="fas fa-plus-circle me-1"></i> <span>เพิ่มรายการ</span>
+                            <i class="fas fa-plus-circle me-1"></i> เพิ่มรายการใหม่
                         </button>
                     </div>
                 </div>
@@ -995,26 +812,26 @@
                 <div class="modal-header text-white" style="background: linear-gradient(135deg, #d97706, #b45309); border-top-left-radius: 20px; border-top-right-radius: 20px;">
                     <div>
                         <h5 class="modal-title fw-bold" id="notificationModalTitle"><i class="fas fa-bell me-2"></i> ศูนย์แจ้งเตือนกำหนดส่งผลงาน (ครบกำหนด 6 เดือน)</h5>
-                        <small class="opacity-75">รายการที่ต้องติดตามและประสานงานผู้ขอประเมิน [เฉพาะสถานะอยู่ระหว่างดำเนินการ]</small>
+                        <small class="opacity-75">รายการที่ต้องติดตามและประสานงานผู้ขอประเมิน</small>
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body p-3 p-md-4 bg-light">
-                    <!-- Notification Summary Badges -->
+                <div class="modal-body p-4 bg-light">
+                    <!-- Notification Summary Tabs -->
                     <div class="row g-2 mb-3">
-                        <div class="col-md-4 col-12">
+                        <div class="col-md-4">
                             <div class="p-3 bg-white rounded-3 border-start border-4 border-danger shadow-sm">
                                 <div class="text-muted small fw-bold">⚠️ วิกฤต (เหลือ &le; 15 วัน)</div>
                                 <div class="h4 fw-bold text-danger mb-0" id="notifCriticalCount">0 รายการ</div>
                             </div>
                         </div>
-                        <div class="col-md-4 col-12">
+                        <div class="col-md-4">
                             <div class="p-3 bg-white rounded-3 border-start border-4 border-warning shadow-sm">
                                 <div class="text-muted small fw-bold">⏳ เตือนล่วงหน้า (16 - 30 วัน)</div>
                                 <div class="h4 fw-bold text-warning mb-0" id="notifWarningCount">0 รายการ</div>
                             </div>
                         </div>
-                        <div class="col-md-4 col-12">
+                        <div class="col-md-4">
                             <div class="p-3 bg-white rounded-3 border-start border-4 border-dark shadow-sm">
                                 <div class="text-muted small fw-bold">❌ เกินกำหนด (ยังไม่ส่งเล่ม 2)</div>
                                 <div class="h4 fw-bold text-dark mb-0" id="notifOverdueCount">0 รายการ</div>
@@ -1058,7 +875,10 @@
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body p-3 p-md-4 bg-light">
+                <div class="modal-body p-4 bg-light">
+                    <div id="staffInspectionFilterNote" class="alert alert-warning p-2 small rounded-3 mb-3" style="display: none;">
+                        <i class="fas fa-filter me-1"></i> <strong>หมายเหตุ:</strong> ตารางนี้แสดงผลตามตัวกรองที่เลือกอยู่บนหน้าแดชบอร์ด
+                    </div>
                     <div class="table-responsive bg-white rounded-3 shadow-sm border p-2">
                         <table class="table table-hover align-middle mb-0" style="font-size:0.88rem;">
                             <thead class="table-light">
@@ -1074,44 +894,6 @@
                                 </tr>
                             </thead>
                             <tbody id="staffInspectionTableBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer bg-white border-0">
-                    <button type="button" class="btn btn-secondary rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">ปิดหน้าต่าง</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Pending Reason Drilldown Inspection Modal -->
-    <div class="modal fade" id="pendingReasonModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-                <div class="modal-header text-white" style="background: linear-gradient(135deg, #d97706, #b45309); border-top-left-radius: 20px; border-top-right-radius: 20px;">
-                    <div>
-                        <h5 class="modal-title fw-bold" id="pendingReasonTitle"><i class="fas fa-exclamation-circle me-2"></i> ตรวจสอบรายการที่อยู่ระหว่างดำเนินการ</h5>
-                        <small class="opacity-75" id="pendingReasonSubtitle">รายละเอียดเคสตามเหตุผลที่ระบุในระบบ</small>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-3 p-md-4 bg-light">
-                    <div class="table-responsive bg-white rounded-3 shadow-sm border p-2">
-                        <table class="table table-hover align-middle mb-0" style="font-size:0.88rem;">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>#</th>
-                                    <th>ระดับการประเมิน</th>
-                                    <th>ตำแหน่งเลขที่</th>
-                                    <th>ผู้เสนอขอประเมิน</th>
-                                    <th>ตำแหน่งปัจจุบัน</th>
-                                    <th>สังกัด / โรงพยาบาล</th>
-                                    <th>วันที่ส่งเล่ม 1</th>
-                                    <th>เจ้าหน้าที่รับผิดชอบ</th>
-                                    <th>เหตุผล / หมายเหตุ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pendingReasonTableBody"></tbody>
                         </table>
                     </div>
                 </div>
@@ -1157,7 +939,7 @@
                     <h5 class="modal-title fw-bold" id="formModalTitle"><i class="fas fa-edit me-2"></i> บันทึกข้อมูล</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body bg-light p-3 p-md-4">
+                <div class="modal-body bg-light p-4">
                     <div class="alert alert-info border-0 shadow-sm rounded-4 mb-4">
                         <i class="fas fa-magic text-warning me-2"></i> <strong>Smart Auto-Fill & Calculation System:</strong> ระบบคำนวณและอัปเดตระยะเวลารวม และกำหนดวันให้อัตโนมัติเมื่อเลือกหรือแก้ไขวันที่
                     </div>
@@ -1196,7 +978,6 @@
         </div>
     </div>
 
-    <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
@@ -1229,50 +1010,6 @@
         let formDropdownStores = {};
         let cachedNotificationList = [];
 
-        function showWorkTooltip(e, colName, fullText) {
-            const tooltip = document.getElementById('globalWorkTooltip');
-            const colHeader = document.getElementById('workTooltipColName');
-            const body = document.getElementById('workTooltipText');
-            if (!tooltip || !body) return;
-
-            colHeader.innerText = colName || 'ชื่อผลงาน';
-            body.innerText = fullText || '';
-            tooltip.classList.add('show');
-            moveWorkTooltip(e);
-        }
-
-        function moveWorkTooltip(e) {
-            const tooltip = document.getElementById('globalWorkTooltip');
-            if (!tooltip || !tooltip.classList.contains('show')) return;
-
-            const offset = 14;
-            let left = e.clientX + offset;
-            let top = e.clientY + offset;
-
-            const rect = tooltip.getBoundingClientRect();
-            const width = rect.width || 320;
-            const height = rect.height || 100;
-
-            if (left + width > window.innerWidth - 12) {
-                left = e.clientX - width - 10;
-            }
-            if (top + height > window.innerHeight - 12) {
-                top = e.clientY - height - 10;
-            }
-            if (left < 10) left = 10;
-            if (top < 10) top = 10;
-
-            tooltip.style.left = `${left}px`;
-            tooltip.style.top = `${top}px`;
-        }
-
-        function hideWorkTooltip() {
-            const tooltip = document.getElementById('globalWorkTooltip');
-            if (tooltip) {
-                tooltip.classList.remove('show');
-            }
-        }
-
         const baseColors = {
             greenStart: '#047857', greenEnd: '#34d399',
             amberStart: '#d97706', amberEnd: '#fcd34d',
@@ -1281,31 +1018,23 @@
         };
 
         function toggleSidebar() {
-            if (window.innerWidth <= 768) {
-                document.body.classList.toggle('sidebar-open-mobile');
-            } else {
-                document.body.classList.toggle('sidebar-collapsed');
-                const isCollapsed = document.body.classList.contains('sidebar-collapsed');
-                try { localStorage.setItem('bma_sidebar_collapsed', isCollapsed ? 'true' : 'false'); } catch(e){}
-                if (currentMenu === 'dashboard') {
-                    setTimeout(() => {
-                        Object.values(charts).forEach(c => { if (c && typeof c.resize === 'function') c.resize(); });
-                    }, 310);
-                }
+            document.body.classList.toggle('sidebar-collapsed');
+            const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+            try { localStorage.setItem('bma_sidebar_collapsed', isCollapsed ? 'true' : 'false'); } catch(e){}
+            if (currentMenu === 'dashboard') {
+                setTimeout(() => {
+                    Object.values(charts).forEach(c => { if (c && typeof c.resize === 'function') c.resize(); });
+                }, 310);
             }
         }
 
-        function closeMobileSidebar() {
-            document.body.classList.remove('sidebar-open-mobile');
-        }
-
-        function syncToGoogleSheets(action, sheetName, data, isNew = false) {
+        function syncToGoogleSheets(action, sheetName, data, isNew = false, origMeta = {}) {
             lastMutationTime = Date.now();
             
             let rowId = '';
             if (data && typeof data === 'object') {
                 let firstKey = Object.keys(data)[0];
-                if (firstKey) rowId = String(data[firstKey] || '');
+                if (firstKey) rowId = String(origMeta._origSeq || data[firstKey] || '');
             }
 
             let syncUrl = GOOGLE_APPS_SCRIPT_URL;
@@ -1336,7 +1065,11 @@
                 row: data,
                 payload: data,
                 isNew: !!isNew,
-                id: rowId
+                id: rowId,
+                _origSeq: origMeta._origSeq || '',
+                _origPosNo: origMeta._origPosNo || '',
+                _origFirstName: origMeta._origFirstName || '',
+                _origLastName: origMeta._origLastName || ''
             };
 
             return fetch(syncUrl, {
@@ -1450,63 +1183,7 @@
             }
         };
 
-        const doughnutCenterTextPlugin = {
-            id: 'doughnutCenterTextPlugin',
-            afterDraw(chart) {
-                if (chart.config.type !== 'doughnut') return;
-                const centerConfig = chart.config.options.plugins?.centerText;
-                if (!centerConfig || centerConfig.display === false) return;
-
-                const { ctx, chartArea } = chart;
-                if (!chartArea) return;
-
-                const meta = chart.getDatasetMeta(0);
-                let centerX = (chartArea.left + chartArea.right) / 2;
-                let centerY = (chartArea.top + chartArea.bottom) / 2;
-
-                if (meta && meta.data && meta.data[0]) {
-                    centerX = meta.data[0].x;
-                    centerY = meta.data[0].y;
-                }
-
-                const title = centerConfig.title || '';
-                const value = centerConfig.value || '0';
-                const subtitle = centerConfig.subtitle || '';
-                const titleColor = centerConfig.titleColor || '#64748b';
-                const valueColor = centerConfig.valueColor || '#0f172a';
-                const subtitleColor = centerConfig.subtitleColor || '#0d9488';
-
-                ctx.save();
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-
-                // Line 1: Header / Level title
-                let displayTitle = title;
-                if (displayTitle === 'ชำนาญการ (พยาบาลวิชาชีพ)') displayTitle = 'ชำนาญการ (พยาบาลฯ)';
-                const titleFontSize = displayTitle.length > 14 ? '11px' : '12px';
-                ctx.font = `700 ${titleFontSize} 'Prompt', sans-serif`;
-                ctx.fillStyle = titleColor;
-                ctx.fillText(displayTitle, centerX, centerY - 21);
-
-                // Line 2: Prominent Value
-                const valStr = String(value);
-                const valFontSize = valStr.length > 5 ? '22px' : '26px';
-                ctx.font = `800 ${valFontSize} 'Prompt', sans-serif`;
-                ctx.fillStyle = valueColor;
-                ctx.fillText(valStr, centerX, centerY + 3);
-
-                // Line 3: Subtitle / Percentage / Unit
-                if (subtitle) {
-                    ctx.font = `600 10.5px 'Prompt', sans-serif`;
-                    ctx.fillStyle = subtitleColor;
-                    ctx.fillText(subtitle, centerX, centerY + 25);
-                }
-
-                ctx.restore();
-            }
-        };
-
-        Chart.register(totalLabelsPlugin, doughnutPercentagePlugin, doughnutCenterTextPlugin);
+        Chart.register(totalLabelsPlugin, doughnutPercentagePlugin);
 
         function getRowValue(row, colName) {
             if (!row || typeof row !== 'object') return '';
@@ -1561,23 +1238,18 @@
         }
 
         function cleanDateStr(val) {
-            if (!val || String(val).trim() === '' || String(val).trim() === '-' || String(val).trim() === 'null') return '-';
+            if (!val || String(val).trim() === '' || String(val).trim() === '-') return '-';
             let s = String(val).trim();
-            const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-
-            // กรณีข้อมูลถูกจัดรูปแบบเป็นภาษาไทยไว้แล้ว
-            if (/^\d{1,2}\s+(ม\.ค\.|ก\.พ\.|มี\.ค\.|เม\.ย\.|พ\.ค\.|มิ\.ย\.|ก\.ค\.|ส\.ค\.|ก\.ย\.|ต\.ค\.|พ\.ย\.|ธ\.ค\.)\s+\d{4}$/.test(s)) {
-                return s;
+            if (s.includes('T')) {
+                s = s.split('T')[0];
             }
-
-            let dObj = parseDateStrict(s);
-            if (dObj && !isNaN(dObj.getTime())) {
-                let day = dObj.getDate();
-                let monthStr = thaiMonths[dObj.getMonth()];
-                let yearBE = dObj.getFullYear() + 543;
-                return `${day} ${monthStr} ${yearBE}`;
+            let matchISO = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (matchISO) {
+                let y = parseInt(matchISO[1]);
+                let m = parseInt(matchISO[2]);
+                let d = parseInt(matchISO[3]);
+                return `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
             }
-
             return s;
         }
 
@@ -1587,18 +1259,6 @@
             if (!s || s === '-' || s === 'null' || s === 'undefined') return null;
 
             if (s.includes('T')) s = s.split('T')[0];
-
-            const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-            let thaiMatch = s.match(/^(\d{1,2})\s+([^\s]+)\s+(\d{4})/);
-            if (thaiMatch) {
-                let d = parseInt(thaiMatch[1], 10);
-                let mIdx = thaiMonths.indexOf(thaiMatch[2]);
-                let y = parseInt(thaiMatch[3], 10);
-                if (y > 2400) y -= 543;
-                if (mIdx !== -1) {
-                    return new Date(y, mIdx, d);
-                }
-            }
 
             let isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
             if (isoMatch) {
@@ -1743,24 +1403,6 @@
             return null;
         }
 
-        function isVolume2Submitted(row) {
-            if (!row || typeof row !== 'object') return false;
-            const vol2Keys = [
-                'วันที่ส่งเล่ม 2', 'วันที่ส่งเล่ม2', 'สนพ. รับผลงาน', 'สนพ.รับผลงาน',
-                'สนพ รับผลงาน', 'สนพ. รับเรื่อง', 'สนพ.รับเรื่อง', 'วันส่งเล่ม 2'
-            ];
-            for (let k of vol2Keys) {
-                let val = getRowValue(row, k);
-                if (val !== undefined && val !== null) {
-                    let str = String(val).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-                    if (str !== '' && str !== '-' && str !== 'null' && str !== 'undefined' && str !== 'ไม่มี') {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
         function updateNotifications() {
             cachedNotificationList = [];
             const levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
@@ -1776,11 +1418,13 @@
                 rows.forEach(row => {
                     if (!isValidRow(row)) return;
 
-                    // ตรวจสอบว่ามีการส่งเล่ม 2 หรือ สนพ. รับผลงานแล้วหรือไม่ (ถ้าส่งแล้วจะไม่แจ้งเตือน)
-                    if (isVolume2Submitted(row)) return;
+                    // Check if Volume 2 has already been submitted (if so, case is completed for 6-month tracking)
+                    const vol2DateStr = getRowValue(row, 'วันที่ส่งเล่ม 2') || getRowValue(row, 'สนพ. รับผลงาน') || getRowValue(row, 'สนพ. รับเรื่อง');
+                    if (vol2DateStr && vol2DateStr !== '-' && String(vol2DateStr).trim() !== '') return;
 
+                    // Check status - if cancelled or failed, no deadline alert needed
                     const statusStr = String(getRowValue(row, 'ผลการประเมิน')).trim();
-                    if (!statusStr.includes('อยู่ระหว่างดำเนินการ')) return;
+                    if (statusStr.includes('ไม่ผ่าน') || statusStr.includes('ยกเลิก') || statusStr.includes('ถอน')) return;
 
                     const deadlineVal = getRowValue(row, 'วันที่ครบกำหนด 6 เดือน') || getRowValue(row, 'ครบกำหนด 6 เดือน');
                     const deadlineDate = parseDateStrict(deadlineVal);
@@ -1789,8 +1433,9 @@
                         const diffTime = deadlineDate.getTime() - today.getTime();
                         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
+                        // Only alert if within 30 days or overdue
                         if (diffDays <= 30) {
-                            let alertType = 'warning';
+                            let alertType = 'warning'; // 16 - 30 days
                             let alertLabel = `⏳ เหลืออีก ${diffDays} วัน (เตือนล่วงหน้า 1 เดือน)`;
                             let badgeClass = 'bg-warning text-dark';
 
@@ -1832,6 +1477,7 @@
                 });
             });
 
+            // Sort by most urgent (lowest diffDays first)
             cachedNotificationList.sort((a, b) => a.diffDays - b.diffDays);
 
             const totalAlerts = cachedNotificationList.length;
@@ -1860,7 +1506,7 @@
             tbody.innerHTML = '';
 
             if (cachedNotificationList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted"><i class="fas fa-check-circle fa-3x mb-3 text-success opacity-50"></i><br><span class="fw-bold">ไม่มีรายการที่ใกล้ครบกำหนด 6 เดือนในขณะนี้</span><br><small class="text-secondary">ระบบจะแจ้งเตือนอัตโนมัติเมื่อมีเคสที่เหลือเวลา &le; 30 วัน หรือ &le; 15 วัน [เฉพาะสถานะอยู่ระหว่างดำเนินการ]</small></td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted"><i class="fas fa-check-circle fa-3x mb-3 text-success opacity-50"></i><br><span class="fw-bold">ไม่มีรายการที่ใกล้ครบกำหนด 6 เดือนในขณะนี้</span><br><small class="text-secondary">ระบบจะแจ้งเตือนอัตโนมัติเมื่อมีเคสที่เหลือเวลา &le; 30 วัน หรือ &le; 15 วัน</small></td></tr>`;
             } else {
                 cachedNotificationList.forEach((item, i) => {
                     tbody.innerHTML += `
@@ -2064,7 +1710,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            if (window.innerWidth > 768 && localStorage.getItem('bma_sidebar_collapsed') === 'true') {
+            if (localStorage.getItem('bma_sidebar_collapsed') === 'true') {
                 document.body.classList.add('sidebar-collapsed');
             }
             fetchData(false);
@@ -2253,7 +1899,7 @@
             renderSearchDropdownOptions('Year', '-- ทุกปี พ.ศ. --');
             renderSearchDropdownOptions('Hospital', '-- ทุกสังกัด --');
             renderSearchDropdownOptions('Position', '-- ทุกตำแหน่ง --');
-            renderSearchDropdownOptions('Level', '-- ทุกระดับ --');
+            renderSearchDropdownOptions('Level', '-- ทุกระดับการประเมิน --');
         }
 
         function renderSearchDropdownOptions(type, defaultLabel, filterQuery = '') {
@@ -2292,7 +1938,7 @@
                 Year: '-- ทุกปี พ.ศ. --',
                 Hospital: '-- ทุกสังกัด --',
                 Position: '-- ทุกตำแหน่ง --',
-                Level: '-- ทุกระดับ --'
+                Level: '-- ทุกระดับการประเมิน --'
             };
             renderSearchDropdownOptions(type, defaultLabels[type] || '-- ทั้งหมด --', query);
         }
@@ -2310,7 +1956,7 @@
                 Year: '-- ทุกปี พ.ศ. --',
                 Hospital: '-- ทุกสังกัด --',
                 Position: '-- ทุกตำแหน่ง --',
-                Level: '-- ทุกระดับ --'
+                Level: '-- ทุกระดับการประเมิน --'
             };
             renderSearchDropdownOptions(type, defaultLabels[type] || '-- ทั้งหมด --', '');
 
@@ -2325,16 +1971,8 @@
 
         function changeMenu(menu) {
             currentMenu = menu;
-            document.querySelectorAll('.sidebar .nav-link').forEach(el => {
-                el.classList.remove('active');
-                if (el.getAttribute('onclick')?.includes(`'${menu}'`)) {
-                    el.classList.add('active');
-                }
-            });
-
-            if (window.innerWidth <= 768) {
-                closeMobileSidebar();
-            }
+            document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
+            event?.currentTarget?.classList?.add('active');
 
             activeSubKpiFilter = 'all';
             tableColumnFilters = {};
@@ -2460,7 +2098,7 @@
                 Year: '-- ทุกปี พ.ศ. --',
                 Hospital: '-- ทุกสังกัด --',
                 Position: '-- ทุกตำแหน่ง --',
-                Level: '-- ทุกระดับ --'
+                Level: '-- ทุกระดับการประเมิน --'
             };
 
             ['Year', 'Hospital', 'Position', 'Level'].forEach(type => {
@@ -2498,7 +2136,6 @@
             let total = 0, pass = 0, fail = 0;
             let levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
             let levelCounts = [0,0,0,0,0];
-            let allLevelCounts = [0,0,0,0,0];
             let hospCounts = {};
             let staffBreakdown = {};
             let statusByLevel = {};
@@ -2597,22 +2234,6 @@
                     return true;
                 });
 
-                // Count for Level Proportions Chart (calculated across all levels respecting active filters)
-                data.forEach(row => {
-                    let statusStr = String(getRowValue(row, 'ผลการประเมิน')).trim();
-                    let cat = 'wait';
-                    if(statusStr.includes('ผ่านการประเมิน') && !statusStr.includes('ไม่')) cat = 'pass';
-                    else if(statusStr.includes('ไม่ผ่าน') || statusStr.includes('ยกเลิก') || statusStr.includes('ถอน')) cat = 'fail';
-
-                    if (activeKpiFilter === 'pass' && cat !== 'pass') return;
-                    if (activeKpiFilter === 'fail' && cat !== 'fail') return;
-                    if (activeKpiFilter === 'wait' && cat !== 'wait') return;
-
-                    allLevelCounts[idx]++;
-                });
-
-                if(fLevel && fLevel !== lvl) return;
-
                 total += data.length;
                 
                 data.forEach(row => {
@@ -2673,34 +2294,12 @@
             ['level', 'hosp', 'stacked', 'staff', 'year', 'topPos', 'meetingStaff', 'pendingReason'].forEach(c => { if(charts[c]) charts[c].destroy(); });
 
             // 1. Level Chart (Doughnut)
-            const donutTotal = allLevelCounts.reduce((a, b) => a + b, 0);
-            const selLevelIdx = fLevel ? levels.indexOf(fLevel) : -1;
-            const levelThemeColors = ['#059669', '#0284c7', '#d97706', '#7c3aed', '#e11d48'];
-
-            let centerTitle = 'เสนอขอรวม';
-            let centerVal = donutTotal.toLocaleString();
-            let centerSub = 'รายการ';
-            let centerTitleCol = '#64748b';
-            let centerValCol = '#0f172a';
-            let centerSubCol = '#0d9488';
-
-            if (selLevelIdx !== -1) {
-                const countThisLevel = allLevelCounts[selLevelIdx] || 0;
-                const pctThisLevel = donutTotal > 0 ? ((countThisLevel / donutTotal) * 100).toFixed(1) : '0.0';
-                centerTitle = fLevel;
-                centerVal = countThisLevel.toLocaleString();
-                centerSub = `${pctThisLevel}% (${countThisLevel.toLocaleString()} รายการ)`;
-                centerTitleCol = levelThemeColors[selLevelIdx] || '#059669';
-                centerValCol = '#0f172a';
-                centerSubCol = levelThemeColors[selLevelIdx] || '#0d9488';
-            }
-
             charts.level = new Chart(document.getElementById('levelChart'), { 
                 type: 'doughnut', 
                 data: { 
                     labels: levels, 
                     datasets: [{ 
-                        data: allLevelCounts, 
+                        data: levelCounts, 
                         backgroundColor: function(context) {
                             const { ctx, chartArea } = context.chart;
                             if (!chartArea) return baseColors.palette[context.dataIndex % baseColors.palette.length];
@@ -2714,8 +2313,7 @@
                         }, 
                         borderWidth: 2,
                         borderColor: '#ffffff',
-                        hoverOffset: 8,
-                        offset: levels.map(l => (fLevel && l === fLevel) ? 14 : 0)
+                        hoverOffset: 8
                     }] 
                 },
                 options: { 
@@ -2723,42 +2321,19 @@
                     plugins: { 
                         legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { family: 'Prompt', size: 11 } } },
                         tooltip: {
-                            enabled: false
-                        },
-                        centerText: {
-                            display: true,
-                            title: centerTitle,
-                            value: centerVal,
-                            subtitle: centerSub,
-                            titleColor: centerTitleCol,
-                            valueColor: centerValCol,
-                            subtitleColor: centerSubCol
+                            callbacks: {
+                                label: function(context) {
+                                    const val = Number(context.raw) || 0;
+                                    const totalVal = context.dataset.data.reduce((a, b) => a + (Number(b) || 0), 0);
+                                    const pct = totalVal > 0 ? ((val / totalVal) * 100).toFixed(1) : '0.0';
+                                    return ` ${context.label}: ${val.toLocaleString()} รายการ (${pct}%)`;
+                                }
+                            }
                         }
                     },
                     onHover: (event, chartElement) => {
                         if (event.native && event.native.target) {
                             event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
-                        }
-                        if (charts.level && charts.level.options.plugins?.centerText) {
-                            if (chartElement.length > 0) {
-                                const hIdx = chartElement[0].index;
-                                const hLevel = levels[hIdx];
-                                const hCount = allLevelCounts[hIdx] || 0;
-                                const hPct = donutTotal > 0 ? ((hCount / donutTotal) * 100).toFixed(1) : '0.0';
-                                charts.level.options.plugins.centerText.title = hLevel;
-                                charts.level.options.plugins.centerText.value = hCount.toLocaleString();
-                                charts.level.options.plugins.centerText.subtitle = `${hPct}% (${hCount.toLocaleString()} รายการ)`;
-                                charts.level.options.plugins.centerText.titleColor = levelThemeColors[hIdx] || '#059669';
-                                charts.level.options.plugins.centerText.subtitleColor = levelThemeColors[hIdx] || '#0d9488';
-                                charts.level.update('none');
-                            } else {
-                                charts.level.options.plugins.centerText.title = centerTitle;
-                                charts.level.options.plugins.centerText.value = centerVal;
-                                charts.level.options.plugins.centerText.subtitle = centerSub;
-                                charts.level.options.plugins.centerText.titleColor = centerTitleCol;
-                                charts.level.options.plugins.centerText.subtitleColor = centerSubCol;
-                                charts.level.update('none');
-                            }
                         }
                     },
                     onClick: (event, elements) => {
@@ -2770,8 +2345,8 @@
                             if (levelInput) {
                                 const newVal = (levelInput.value === clickedLevel) ? '' : clickedLevel;
                                 levelInput.value = newVal;
-                                if (levelLabel) levelLabel.innerText = newVal ? clickedLevel : '-- ทุกระดับ --';
-                                renderSearchDropdownOptions('Level', '-- ทุกระดับ --');
+                                if (levelLabel) levelLabel.innerText = newVal ? clickedLevel : '-- ทุกระดับการประเมิน --';
+                                renderSearchDropdownOptions('Level', '-- ทุกระดับการประเมิน --');
                                 updateDashboard();
                             }
                         }
@@ -2830,8 +2405,8 @@
                             if (levelInput) {
                                 const newVal = (levelInput.value === clickedLevel) ? '' : clickedLevel;
                                 levelInput.value = newVal;
-                                if (levelLabel) levelLabel.innerText = newVal ? clickedLevel : '-- ทุกระดับ --';
-                                renderSearchDropdownOptions('Level', '-- ทุกระดับ --');
+                                if (levelLabel) levelLabel.innerText = newVal ? clickedLevel : '-- ทุกระดับการประเมิน --';
+                                renderSearchDropdownOptions('Level', '-- ทุกระดับการประเมิน --');
                                 updateDashboard();
                             }
                         }
@@ -3075,23 +2650,23 @@
                             const hospLabel = document.getElementById('labelHospital');
                             if (hospInput) {
                                 if (hospInput.value === clickedHospShort) {
-                                hospInput.value = '';
-                                if (hospLabel) hospLabel.innerText = '-- ทุกสังกัด --';
-                            } else {
-                                hospInput.value = clickedHospShort;
-                                if (hospLabel) hospLabel.innerText = clickedHospShort;
+                                    hospInput.value = '';
+                                    if (hospLabel) hospLabel.innerText = '-- ทุกสังกัด --';
+                                } else {
+                                    hospInput.value = clickedHospShort;
+                                    if (hospLabel) hospLabel.innerText = clickedHospShort;
+                                }
+                                renderSearchDropdownOptions('Hospital', '-- ทุกสังกัด --');
+                                updateDashboard();
                             }
-                            renderSearchDropdownOptions('Hospital', '-- ทุกสังกัด --');
-                            updateDashboard();
                         }
-                    }
-                },
-                scales: { 
-                    x: { beginAtZero: true, grace: '12%' }, 
-                    y: { ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } } 
-                } 
-            }
-        });
+                    },
+                    scales: { 
+                        x: { beginAtZero: true, grace: '12%' }, 
+                        y: { ticks: { autoSkip: false, font: { family: 'Prompt', size: 11 } } } 
+                    } 
+                }
+            });
 
             // 7. Meeting Staff Chart
             let meetingStaffBreakdown = {};
@@ -3230,6 +2805,11 @@
                         backgroundColor: function(context) {
                             const { ctx, chartArea } = context.chart;
                             if (!chartArea) return baseColors.amberStart;
+                            
+                            const reasonName = sortedReasons[context.dataIndex];
+                            if (activePendingReasonFilter && reasonName === activePendingReasonFilter) {
+                                return createGradientH(ctx, chartArea, '#d97706', '#b45309');
+                            }
                             return createGradientH(ctx, chartArea, baseColors.amberEnd, baseColors.amberStart);
                         },
                         borderRadius: 6
@@ -3261,7 +2841,35 @@
                         if (elements && elements.length > 0) {
                             const index = elements[0].index;
                             const clickedReason = sortedReasons[index];
-                            openPendingReasonModal(clickedReason);
+                            
+                            if (activePendingReasonFilter === clickedReason) {
+                                activePendingReasonFilter = '';
+                                if (activeKpiFilter === 'wait') {
+                                    activeKpiFilter = 'all';
+                                    ['Total', 'Pass', 'Wait', 'Fail'].forEach(k => {
+                                        const el = document.getElementById(`kpiCard${k}`);
+                                        if (el) el.classList.remove('active-filter');
+                                    });
+                                    document.getElementById('kpiCardTotal')?.classList.add('active-filter');
+                                }
+                                const searchInput = document.getElementById('searchInput');
+                                if (searchInput) searchInput.value = '';
+                            } else {
+                                activePendingReasonFilter = clickedReason;
+                                if (activeKpiFilter !== 'wait') {
+                                    activeKpiFilter = 'wait';
+                                    ['Total', 'Pass', 'Wait', 'Fail'].forEach(k => {
+                                        const el = document.getElementById(`kpiCard${k}`);
+                                        if (el) el.classList.remove('active-filter');
+                                    });
+                                    document.getElementById('kpiCardWait')?.classList.add('active-filter');
+                                }
+                                const searchInput = document.getElementById('searchInput');
+                                if (searchInput && clickedReason !== 'ไม่ระบุเหตุผล') {
+                                    searchInput.value = clickedReason;
+                                }
+                            }
+                            updateDashboard();
                         }
                     },
                     scales: {
@@ -3273,12 +2881,6 @@
         }
 
         function isStickyCol(colName) {
-            if (window.innerWidth <= 768) {
-                if (colName === 'จัดการ') return true;
-                let norm = String(colName).replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
-                return (norm === 'ลำดับ' || norm === 'ตำแหน่งเลขที่');
-            }
-
             if (colName === 'จัดการ') return true;
             let norm = String(colName).replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
             return (
@@ -3341,6 +2943,7 @@
                 });
             }
 
+            // Apply column header filters
             Object.keys(tableColumnFilters).forEach(col => {
                 let filterVal = tableColumnFilters[col];
                 if (filterVal) {
@@ -3380,6 +2983,7 @@
 
             currentHeaders = Object.keys(data[0]); 
 
+            // Calculate sticky left offsets
             let stickyOffsets = {};
             let currentLeft = 0;
             let lastStickyCol = '';
@@ -3418,12 +3022,12 @@
                     let w = getStickyColWidth(col);
                     th.className = `sticky-col ${isLast ? 'sticky-col-last' : ''}`;
                     th.style.cssText = `left: ${leftPx}px; min-width: ${w}px; max-width: ${w}px; width: ${w}px; z-index: 25;`;
-                } else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่') || col.includes('มติคณะกรรมการ') || col.includes('มติ')) {
-                    let colWidth = (col.includes('มติคณะกรรมการ') || col.includes('มติ')) ? '220px' : '260px';
-                    th.style.minWidth = colWidth;
-                    th.style.maxWidth = colWidth;
+                } else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่')) {
+                    th.style.minWidth = '260px';
+                    th.style.maxWidth = '260px';
                 }
 
+                // Collect unique values for column filter
                 let uniqueVals = Array.from(new Set(rawData.map(r => String(getRowValue(r, col)).trim()).filter(v => v !== '' && v !== '-'))).sort((a,b) => a.localeCompare(b, 'th'));
                 let currentColFilter = tableColumnFilters[col] || '';
                 let filterActive = currentColFilter !== '';
@@ -3453,6 +3057,7 @@
                 dropdownMenu.className = "dropdown-menu p-2 shadow-lg";
                 dropdownMenu.style.cssText = "min-width: 200px; max-height: 280px; overflow-y: auto; border-radius: 12px; z-index: 1050;";
 
+                // Search box inside column filter
                 let searchBox = document.createElement('div');
                 searchBox.className = "p-1 mb-2 border-bottom";
                 searchBox.onclick = (e) => e.stopPropagation();
@@ -3590,12 +3195,8 @@
 
                     let val = getRowValue(row, col);
                     let displayVal = val !== undefined && val !== null && String(val).trim() !== '' ? val : '-';
-                    if (typeof displayVal === 'string' && (displayVal.includes('T') || displayVal.match(/^\d{4}-\d{2}-\d{2}/) || displayVal.match(/^\d{1,2}\/\d{1,2}\/\d{4}/))) {
+                    if (typeof displayVal === 'string' && displayVal.includes('T') && displayVal.endsWith('Z')) {
                         displayVal = cleanDateStr(displayVal);
-                    } else if ((col.includes('วัน') || col.includes('ลงวันที่') || col.includes('รับผลงาน') || col.includes('รับเรื่อง')) && !col.includes('ระยะเวลา') && !col.includes('ผลการประเมิน')) {
-                        if (val && String(val).trim() !== '' && String(val).trim() !== '-') {
-                            displayVal = cleanDateStr(val);
-                        }
                     }
 
                     if(col.includes('ผลการประเมิน') && val) {
@@ -3605,13 +3206,13 @@
                         else if(val.includes('ประชุม') || val.includes('ระหว่าง')) badgeClass = 'bg-warning text-dark';
                         td.innerHTML = `<span class="badge ${badgeClass} badge-status">${val}</span>`;
                     } else if (col.includes('ครบกำหนด 6 เดือน') || col.includes('วันที่ครบกำหนด 6 เดือน')) {
-                        let statusVal = String(getRowValue(row, 'ผลการประเมิน')).trim();
-                        let isVol2Sent = isVolume2Submitted(row);
+                        let vol2Date = getRowValue(row, 'วันที่ส่งเล่ม 2') || getRowValue(row, 'สนพ. รับผลงาน') || getRowValue(row, 'สนพ. รับเรื่อง');
+                        let isVol2Sent = vol2Date && vol2Date !== '-' && String(vol2Date).trim() !== '';
                         let dObj = parseDateStrict(val);
 
                         if (isVol2Sent) {
                             td.innerHTML = `<span>${displayVal}</span> <span class="badge bg-success-subtle text-success border border-success-subtle ms-1" style="font-size:0.7rem;"><i class="fas fa-check-circle me-1"></i>ส่งเล่ม 2 แล้ว</span>`;
-                        } else if (dObj && statusVal.includes('อยู่ระหว่างดำเนินการ')) {
+                        } else if (dObj) {
                             let diffTime = dObj.getTime() - today.getTime();
                             let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                             let badgeHtml = '';
@@ -3628,22 +3229,14 @@
                         } else {
                             td.innerText = displayVal;
                         }
-                    } else if (col.includes('ระยะเวลาส่งเล่ม 2') || col.includes('ระยะเวลาเล่ม 2')) {
-                        td.innerText = displayVal;
-                    } else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่') || col.includes('มติคณะกรรมการ') || col.includes('มติ')) {
-                        let colWidth = (col.includes('มติคณะกรรมการ') || col.includes('มติ')) ? '220px' : '260px';
-                        td.style.minWidth = colWidth;
-                        td.style.maxWidth = colWidth;
+                    } else if (col.includes('ชื่อผลงาน') || col.includes('เรื่องที่')) {
+                        td.style.minWidth = '260px';
+                        td.style.maxWidth = '260px';
                         td.style.whiteSpace = 'nowrap';
                         td.style.overflow = 'hidden';
                         td.style.textOverflow = 'ellipsis';
-                        td.className += " work-title-cell";
+                        td.setAttribute('title', String(displayVal));
                         td.innerText = displayVal;
-                        if (displayVal && displayVal !== '-') {
-                            td.onmouseenter = (e) => showWorkTooltip(e, col, displayVal);
-                            td.onmousemove = (e) => moveWorkTooltip(e);
-                            td.onmouseleave = () => hideWorkTooltip();
-                        }
                     } else {
                         td.innerText = displayVal;
                     }
@@ -3741,9 +3334,21 @@
         }
 
         function saveData() {
+            const saveBtn = document.getElementById('saveBtn');
+            if (saveBtn && saveBtn.disabled) return; // ป้องกันการกดปุ่มบันทึกซ้ำซ้อน
+
             const form = document.getElementById('dynamicForm');
             const isNew = form.getAttribute('data-is-new') === 'true';
-            let payload = (editingRowData && !isNew) ? { ...editingRowData } : {};
+            const origRowRef = editingRowData;
+            let payload = (origRowRef && !isNew) ? { ...origRowRef } : {};
+
+            // เก็บค่าอ้างอิงเดิมก่อนแก้ไข เพื่อป้องกันแถวคลาดเคลื่อน
+            const origMeta = (!isNew && origRowRef) ? {
+                _origSeq: String(getRowValue(origRowRef, currentHeaders[0]) || '').trim(),
+                _origPosNo: String(getRowValue(origRowRef, 'ตำแหน่งเลขที่') || '').trim(),
+                _origFirstName: String(getRowValue(origRowRef, 'ชื่อ -') || getRowValue(origRowRef, 'ชื่อ') || '').trim(),
+                _origLastName: String(getRowValue(origRowRef, 'สกุล') || getRowValue(origRowRef, 'นามสกุล') || '').trim()
+            } : {};
 
             let formElements = Array.from(form.elements);
             currentHeaders.forEach(col => {
@@ -3777,6 +3382,11 @@
                 }
             }
 
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                setTimeout(() => { saveBtn.disabled = false; }, 1500);
+            }
+
             payload['IsLocked'] = 'FALSE';
             let firstColKey = currentHeaders[0];
 
@@ -3785,7 +3395,11 @@
             if (isNew) {
                 appData[currentMenu].push(payload);
             } else {
-                let rowIdx = appData[currentMenu].findIndex(r => String(getRowValue(r, firstColKey)) === String(payload[firstColKey]));
+                // อัปเดตตรงเข้า Object อ้างอิงเดิมในหน่วยความจำทันที
+                let rowIdx = origRowRef ? appData[currentMenu].indexOf(origRowRef) : -1;
+                if (rowIdx === -1) {
+                    rowIdx = appData[currentMenu].findIndex(r => String(getRowValue(r, firstColKey)) === String(origMeta._origSeq || payload[firstColKey]));
+                }
                 if (rowIdx !== -1) appData[currentMenu][rowIdx] = payload;
             }
 
@@ -3810,7 +3424,273 @@
             });
 
             let actionName = isNew ? 'insert' : 'update';
-            syncToGoogleSheets(actionName, currentMenu, payload, isNew);
+            syncToGoogleSheets(actionName, currentMenu, payload, isNew, origMeta);
+        }
+
+        function performLogin() {
+            const user = document.getElementById('loginUsername').value.trim();
+            const pass = document.getElementById('loginPassword').value.trim();
+            
+            if(!appData['Users'] || appData['Users'].length === 0) {
+                document.getElementById('loginAlert').style.display = 'block';
+                return Swal.fire('ระบบยังไม่พร้อม', 'ระบบกำลังโหลดฐานข้อมูลผู้ใช้งาน กรุณาลองใหม่อีกครั้งครับ', 'warning');
+            }
+
+            document.getElementById('loginAlert').style.display = 'none';
+
+            if (user.length < 6 || pass.length < 6) {
+                return Swal.fire({
+                    icon: 'error',
+                    title: 'ปฏิเสธการเข้าถึง',
+                    text: 'Username และ Password ต้องมีความยาวอย่างน้อย 6 ตัวอักษร (ตรงตามตัวพิมพ์เล็ก-ใหญ่ ตัวเลข หรืออักขระพิเศษ)'
+                });
+            }
+
+            const foundUser = appData['Users'].find(u => 
+                String(u.Username || u['ชื่อผู้ใช้'] || '').trim() === user && 
+                String(u.Password || u['รหัสผ่าน'] || '').trim() === pass && 
+                String(u.Status || u['สถานะ'] || '').trim().toLowerCase() !== 'disabled'
+            );
+            
+            if(foundUser) {
+                let loginModalEl = document.getElementById('loginModal');
+                let modalInst = bootstrap.Modal.getInstance(loginModalEl);
+                if (modalInst) modalInst.hide();
+
+                if (String(foundUser.Password).trim() === '123456') {
+                    promptChangePassword(foundUser);
+                } else {
+                    completeLogin(foundUser);
+                }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ปฏิเสธการเข้าถึง',
+                    text: 'Username หรือ Password ไม่ถูกต้อง (กรุณาตรวจสอบตัวพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข หรืออักขระพิเศษให้ตรงกัน)'
+                });
+            }
+        }
+
+        function promptChangePassword(userObj) {
+            Swal.fire({
+                title: '<i class="fas fa-key text-warning me-2"></i>กรุณาเปลี่ยนรหัสผ่านใหม่',
+                html: `
+                    <div class="text-start mb-3 small text-muted">
+                        เนื่องจากรหัสผ่านของคุณคือรหัสผ่านเริ่มต้น (<b class="text-dark">123456</b>) หรือเพิ่งได้รับการรีเซ็ตรหัสผ่าน เพื่อความปลอดภัยกรุณาตั้งรหัสผ่านใหม่ก่อนเข้าใช้งานครับ
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" id="swalNewPass" class="form-control rounded-4" placeholder="รหัสผ่านใหม่">
+                        <label for="swalNewPass">รหัสผ่านใหม่ (ห้ามเป็น 123456)</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" id="swalConfirmPass" class="form-control rounded-4" placeholder="ยืนยันรหัสผ่านใหม่">
+                        <label for="swalConfirmPass">ยืนยันรหัสผ่านใหม่อีกครั้ง</label>
+                    </div>
+                `,
+                focusConfirm: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                confirmButtonText: '<i class="fas fa-save me-1"></i> บันทึกรหัสผ่านใหม่',
+                confirmButtonColor: '#059669',
+                preConfirm: () => {
+                    const newPass = document.getElementById('swalNewPass').value.trim();
+                    const confirmPass = document.getElementById('swalConfirmPass').value.trim();
+
+                    if (!newPass) {
+                        Swal.showValidationMessage('กรุณากรอกรหัสผ่านใหม่');
+                        return false;
+                    }
+                    if (newPass === '123456') {
+                        Swal.showValidationMessage('รหัสผ่านใหม่ต้องไม่เป็น 123456');
+                        return false;
+                    }
+                    if (newPass.length < 6) {
+                        Swal.showValidationMessage('รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
+                        return false;
+                    }
+                    if (newPass !== confirmPass) {
+                        Swal.showValidationMessage('รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน');
+                        return false;
+                    }
+                    return newPass;
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    const newPassword = result.value;
+                    userObj['Password'] = newPassword;
+                    if (userObj['รหัสผ่าน'] !== undefined) userObj['รหัสผ่าน'] = newPassword;
+
+                    completeLogin(userObj);
+                    syncToGoogleSheets('update', 'Users', userObj, false);
+                }
+            });
+        }
+
+        function resetUserPassword(row) {
+            let uName = getRowValue(row, 'Username') || getRowValue(row, 'ชื่อผู้ใช้') || '';
+            let fullName = getRowValue(row, 'ชื่อ-สกุลเต็ม') || uName;
+
+            Swal.fire({
+                title: 'รีเซ็ตรหัสผ่าน?',
+                html: `คุณต้องการรีเซ็ตรหัสผ่านของผู้ใช้ <b>${fullName} (${uName})</b> เป็น <b class="text-primary">123456</b> หรือไม่?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#0284c7',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: '<i class="fas fa-key me-1"></i> ยืนยันรีเซ็ต 123456',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    row['Password'] = '123456';
+                    if (row['รหัสผ่าน'] !== undefined) row['รหัสผ่าน'] = '123456';
+
+                    try { localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(appData)); } catch(e){}
+                    renderTable();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'รีเซ็ตรหัสผ่านสำเร็จ!',
+                        text: 'รหัสผ่านถูกเปลี่ยนเป็น 123456 เรียบร้อยแล้ว',
+                        timer: 1200,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+
+                    syncToGoogleSheets('update', 'Users', row, false);
+                }
+            });
+        }
+
+        function completeLogin(userObj) {
+            currentUser = userObj;
+            let fullName = currentUser['ชื่อ-สกุลเต็ม'] || currentUser.Username;
+            document.getElementById('userFullName').innerText = fullName;
+            document.getElementById('userInitial').innerText = fullName.charAt(0);
+            document.getElementById('userRoleBadge').innerText = currentUser.Role.toUpperCase();
+            
+            document.getElementById('userDisplay').style.display = 'flex';
+            document.getElementById('loginBtn').style.display = 'none';
+            
+            if(currentUser.Role === 'Admin') document.getElementById('adminMenuSection').style.display = 'block';
+
+            Swal.fire({icon: 'success', title: 'เข้าสู่ระบบสำเร็จ', text: `ยินดีต้อนรับ ${fullName}`, timer: 1200, showConfirmButton: false, toast: true, position: 'top-end'});
+            changeMenu(currentMenu);
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('userDisplay').style.display = 'none';
+            document.getElementById('loginBtn').style.display = 'inline-block';
+            document.getElementById('adminMenuSection').style.display = 'none';
+            if(currentMenu === 'Users') changeMenu('dashboard');
+            else changeMenu(currentMenu);
+        }
+
+        function inspectFromStaffModal(level, posNo) {
+            const modalEl = document.getElementById('staffInspectionModal');
+            const inst = bootstrap.Modal.getInstance(modalEl);
+            if (inst) inst.hide();
+
+            changeMenu(level);
+            setTimeout(() => {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput && posNo && posNo !== '-') {
+                    searchInput.value = posNo;
+                    renderTable();
+                }
+            }, 150);
+        }
+
+        function openStaffInspectionModal(staffName, isMeetingStaff = false) {
+            const modalTitle = document.getElementById('staffInspectionTitle');
+            const tbody = document.getElementById('staffInspectionTableBody');
+            tbody.innerHTML = '';
+
+            let matchedRows = [];
+            let levels = isMeetingStaff 
+                ? ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)'] 
+                : ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
+
+            let activeStaffMap = {};
+            if (appData['Users'] && Array.isArray(appData['Users'])) {
+                appData['Users'].forEach(u => {
+                    let shortName = (u['Unnamed: 4'] || u['ชื่อย่อ'] || u['ชื่อ-สกุลเต็ม'] || u.Username || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+                    let fullName = (u['ชื่อ-สกุลเต็ม'] || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+                    if (shortName) {
+                        activeStaffMap[shortName] = shortName;
+                        activeStaffMap[normalizeThaiName(shortName)] = shortName;
+                        if (fullName) activeStaffMap[fullName] = shortName;
+                    }
+                });
+            }
+
+            levels.forEach(lvl => {
+                let rawData = appData[lvl] || [];
+                rawData.forEach(row => {
+                    if (!isValidRow(row)) return;
+                    if (isMeetingStaff) {
+                        let msVal = getRowValue(row, 'เจ้าหน้าที่จัดประชุม') || getRowValue(row, 'เจ้าหน้าที่จัดประชุม1') || getRowValue(row, 'เจ้าหน้าที่ประชุม');
+                        if (msVal && msVal !== '-') {
+                            msVal = String(msVal).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+                            let normMs = normalizeThaiName(msVal);
+                            let canonicalMs = activeStaffMap[msVal] || activeStaffMap[normMs] || msVal;
+                            if (canonicalMs === staffName || msVal === staffName) {
+                                matchedRows.push({ level: lvl, row: row });
+                            }
+                        }
+                    } else {
+                        let matched = getStaffFromRow(row, lvl, activeStaffMap, {});
+                        if (matched === staffName) {
+                            matchedRows.push({ level: lvl, row: row });
+                        }
+                    }
+                });
+            });
+
+            modalTitle.innerHTML = isMeetingStaff 
+                ? `<i class="fas fa-users me-2"></i> รายการจัดประชุมของ: ${staffName} (${matchedRows.length} รายการ)`
+                : `<i class="fas fa-user-check me-2"></i> รายการภาระงานของ: ${staffName} (${matchedRows.length} รายการ)`;
+
+            if (matchedRows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">ไม่พบรายการข้อมูลที่ตรงกับเจ้าหน้าที่ท่านนี้</td></tr>';
+            } else {
+                matchedRows.forEach((item, i) => {
+                    let r = item.row;
+                    let seq = getRowValue(r, 'ลำดับ') || '-';
+                    let posNo = getRowValue(r, 'ตำแหน่งเลขที่') || '-';
+                    let prefix = getRowValue(r, 'คำนำหน้า') || '';
+                    let fname = getRowValue(r, 'ชื่อ -') || getRowValue(r, 'ชื่อ') || '';
+                    let lname = getRowValue(r, 'สกุล') || getRowValue(r, 'นามสกุล') || '';
+                    let fullName = `${prefix}${fname} ${lname}`.trim() || '-';
+                    let pos = getRowValue(r, 'ตำแหน่งปัจจุบัน') || '-';
+                    let hosp = getRowValue(r, 'สังกัด') || '-';
+                    let date1 = cleanDateStr(getRowValue(r, 'วันที่ส่งเล่ม 1'));
+                    let status = getRowValue(r, 'ผลการประเมิน') || '-';
+
+                    let statusBadgeClass = 'bg-secondary';
+                    if (status.includes('ผ่าน') && !status.includes('ไม่')) statusBadgeClass = 'bg-success';
+                    else if (status.includes('ไม่ผ่าน') || status.includes('ยกเลิก')) statusBadgeClass = 'bg-danger';
+                    else statusBadgeClass = 'bg-warning text-dark';
+
+                    let safePosNo = String(posNo).replace(/'/g, "\\'");
+
+                    tbody.innerHTML += `
+                        <tr style="cursor: pointer;" onclick="inspectFromStaffModal('${item.level}', '${safePosNo}')" title="คลิกเพื่อไปยังหน้าทะเบียนนี้">
+                            <td>${i + 1}</td>
+                            <td><span class="badge bg-light text-dark border">${item.level}</span></td>
+                            <td class="fw-bold text-primary">${posNo} (ลำดับ ${seq})</td>
+                            <td class="fw-bold">${fullName}</td>
+                            <td style="max-width: 180px; font-size: 0.82rem;">${pos}</td>
+                            <td>${hosp}</td>
+                            <td>${date1}</td>
+                            <td class="text-center"><span class="badge ${statusBadgeClass}">${status}</span></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            new bootstrap.Modal(document.getElementById('staffInspectionModal')).show();
         }
 
         function formatInputDate(val) {
@@ -3920,8 +3800,7 @@
             let elPass = getEl(['วันที่ผ่านประเมิน', 'ผ่านประเมินลงวันที่']);
             let el6M = getEl(['วันที่ครบกำหนด 6 เดือน', 'ครบกำหนด 6 เดือน']);
             if (el6M) {
-                // คำนวณวันครบกำหนด 6 เดือน: ลำดับความสำคัญ ประกาศครบ 30 วัน -> ประกาศลงวันที่ -> วันที่ผ่านประเมิน
-                let dBase = parseDate(el30?.value) || parseDate(elAnn?.value) || parseDate(elPass?.value);
+                let dBase = parseDate(elPass?.value) || parseDate(elAnn?.value);
                 if (dBase) {
                     let d6M = new Date(dBase);
                     d6M.setMonth(d6M.getMonth() + 6);
@@ -3940,11 +3819,10 @@
                 }
             }
 
-            let elSub2 = getEl(['วันที่ส่งเล่ม 2', 'วันที่ส่งเล่ม2', 'สนพ. รับผลงาน', 'สนพ.รับผลงาน', 'สนพ. รับเรื่อง', 'วันส่งเล่ม 2']);
+            let elSub2 = getEl(['วันที่ส่งเล่ม 2', 'วันที่ส่งเล่ม2', 'สนพ. รับผลงาน', 'สนพ.รับผลงาน', 'สนพ. รับเรื่อง']);
             let elDur2 = getEl(['ระยะเวลาส่งเล่ม 2', 'ระยะเวลาเล่ม 2']);
             if (elDur2) {
-                // วันเริ่มต้นนับระยะเวลาส่งเล่ม 2: ลำดับความสำคัญ ประกาศครบ 30 วัน -> ประกาศลงวันที่ -> วันที่ผ่านประเมิน
-                let dBase1 = parseDate(el30?.value) || parseDate(elAnn?.value) || parseDate(elPass?.value);
+                let dBase1 = parseDate(elSub1?.value) || parseDate(elPass?.value) || parseDate(elAnn?.value);
                 let dBase2 = parseDate(elSub2?.value);
                 if (dBase1 && dBase2) {
                     elDur2.value = calcDurationStr(dBase1, dBase2);
@@ -4129,394 +4007,6 @@
                     if (remarkLabel) remarkLabel.innerHTML = `หมายเหตุ`;
                 }
             }
-        }
-
-        function performLogin() {
-            const user = document.getElementById('loginUsername').value.trim();
-            const pass = document.getElementById('loginPassword').value.trim();
-            
-            if(!appData['Users'] || appData['Users'].length === 0) {
-                document.getElementById('loginAlert').style.display = 'block';
-                return Swal.fire('ระบบยังไม่พร้อม', 'ระบบกำลังโหลดฐานข้อมูลผู้ใช้งาน กรุณาลองใหม่อีกครั้งครับ', 'warning');
-            }
-
-            document.getElementById('loginAlert').style.display = 'none';
-
-            if (user.length < 6 || pass.length < 6) {
-                return Swal.fire({
-                    icon: 'error',
-                    title: 'ปฏิเสธการเข้าถึง',
-                    text: 'Username และ Password ต้องมีความยาวอย่างน้อย 6 ตัวอักษร (ตรงตามตัวพิมพ์เล็ก-ใหญ่ ตัวเลข หรืออักขระพิเศษ)'
-                });
-            }
-
-            const foundUser = appData['Users'].find(u => 
-                String(u.Username || u['ชื่อผู้ใช้'] || '').trim() === user && 
-                String(u.Password || u['รหัสผ่าน'] || '').trim() === pass && 
-                String(u.Status || u['สถานะ'] || '').trim().toLowerCase() !== 'disabled'
-            );
-            
-            if(foundUser) {
-                let loginModalEl = document.getElementById('loginModal');
-                let modalInst = bootstrap.Modal.getInstance(loginModalEl);
-                if (modalInst) modalInst.hide();
-
-                if (String(foundUser.Password).trim() === '123456') {
-                    promptChangePassword(foundUser);
-                } else {
-                    completeLogin(foundUser);
-                }
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'ปฏิเสธการเข้าถึง',
-                    text: 'Username หรือ Password ไม่ถูกต้อง (กรุณาตรวจสอบตัวพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข หรืออักขระพิเศษให้ตรงกัน)'
-                });
-            }
-        }
-
-        function promptChangePassword(userObj) {
-            Swal.fire({
-                title: '<i class="fas fa-key text-warning me-2"></i>กรุณาเปลี่ยนรหัสผ่านใหม่',
-                html: `
-                    <div class="text-start mb-3 small text-muted">
-                        เนื่องจากรหัสผ่านของคุณคือรหัสผ่านเริ่มต้น (<b class="text-dark">123456</b>) หรือเพิ่งได้รับการรีเซ็ตรหัสผ่าน เพื่อความปลอดภัยกรุณาตั้งรหัสผ่านใหม่ก่อนเข้าใช้งานครับ
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="password" id="swalNewPass" class="form-control rounded-4" placeholder="รหัสผ่านใหม่">
-                        <label for="swalNewPass">รหัสผ่านใหม่ (ห้ามเป็น 123456)</label>
-                    </div>
-                    <div class="form-floating">
-                        <input type="password" id="swalConfirmPass" class="form-control rounded-4" placeholder="ยืนยันรหัสผ่านใหม่">
-                        <label for="swalConfirmPass">ยืนยันรหัสผ่านใหม่อีกครั้ง</label>
-                    </div>
-                `,
-                focusConfirm: false,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                confirmButtonText: '<i class="fas fa-save me-1"></i> บันทึกรหัสผ่านใหม่',
-                confirmButtonColor: '#059669',
-                preConfirm: () => {
-                    const newPass = document.getElementById('swalNewPass').value.trim();
-                    const confirmPass = document.getElementById('swalConfirmPass').value.trim();
-
-                    if (!newPass) {
-                        Swal.showValidationMessage('กรุณากรอกรหัสผ่านใหม่');
-                        return false;
-                    }
-                    if (newPass === '123456') {
-                        Swal.showValidationMessage('รหัสผ่านใหม่ต้องไม่เป็น 123456');
-                        return false;
-                    }
-                    if (newPass.length < 6) {
-                        Swal.showValidationMessage('รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร');
-                        return false;
-                    }
-                    if (newPass !== confirmPass) {
-                        Swal.showValidationMessage('รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน');
-                        return false;
-                    }
-                    return newPass;
-                }
-            }).then((result) => {
-                if (result.isConfirmed && result.value) {
-                    const newPassword = result.value;
-                    userObj['Password'] = newPassword;
-                    if (userObj['รหัสผ่าน'] !== undefined) userObj['รหัสผ่าน'] = newPassword;
-
-                    completeLogin(userObj);
-                    syncToGoogleSheets('update', 'Users', userObj, false);
-                }
-            });
-        }
-
-        function resetUserPassword(row) {
-            let uName = getRowValue(row, 'Username') || getRowValue(row, 'ชื่อผู้ใช้') || '';
-            let fullName = getRowValue(row, 'ชื่อ-สกุลเต็ม') || uName;
-
-            Swal.fire({
-                title: 'รีเซ็ตรหัสผ่าน?',
-                html: `คุณต้องการรีเซ็ตรหัสผ่านของผู้ใช้ <b>${fullName} (${uName})</b> เป็น <b class="text-primary">123456</b> หรือไม่?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#0284c7',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: '<i class="fas fa-key me-1"></i> ยืนยันรีเซ็ต 123456',
-                cancelButtonText: 'ยกเลิก'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    row['Password'] = '123456';
-                    if (row['รหัสผ่าน'] !== undefined) row['รหัสผ่าน'] = '123456';
-
-                    try { localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(appData)); } catch(e){}
-                    renderTable();
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'รีเซ็ตรหัสผ่านสำเร็จ!',
-                        text: 'รหัสผ่านถูกเปลี่ยนเป็น 123456 เรียบร้อยแล้ว',
-                        timer: 1200,
-                        showConfirmButton: false,
-                        toast: true,
-                        position: 'top-end'
-                    });
-
-                    syncToGoogleSheets('update', 'Users', row, false);
-                }
-            });
-        }
-
-        function completeLogin(userObj) {
-            currentUser = userObj;
-            let fullName = currentUser['ชื่อ-สกุลเต็ม'] || currentUser.Username;
-            document.getElementById('userFullName').innerText = fullName;
-            document.getElementById('userInitial').innerText = fullName.charAt(0);
-            document.getElementById('userRoleBadge').innerText = currentUser.Role.toUpperCase();
-            
-            document.getElementById('userDisplay').style.display = 'flex';
-            document.getElementById('loginBtn').style.display = 'none';
-            
-            if(currentUser.Role === 'Admin') document.getElementById('adminMenuSection').style.display = 'block';
-
-            Swal.fire({icon: 'success', title: 'เข้าสู่ระบบสำเร็จ', text: `ยินดีต้อนรับ ${fullName}`, timer: 1200, showConfirmButton: false, toast: true, position: 'top-end'});
-            changeMenu(currentMenu);
-        }
-
-        function logout() {
-            currentUser = null;
-            document.getElementById('userDisplay').style.display = 'none';
-            document.getElementById('loginBtn').style.display = 'inline-block';
-            document.getElementById('adminMenuSection').style.display = 'none';
-            if(currentMenu === 'Users') changeMenu('dashboard');
-            else changeMenu(currentMenu);
-        }
-
-        function inspectFromStaffModal(level, posNo) {
-            const modalEl = document.getElementById('staffInspectionModal');
-            const inst = bootstrap.Modal.getInstance(modalEl);
-            if (inst) inst.hide();
-
-            changeMenu(level);
-            setTimeout(() => {
-                const searchInput = document.getElementById('searchInput');
-                if (searchInput && posNo && posNo !== '-') {
-                    searchInput.value = posNo;
-                    renderTable();
-                }
-            }, 150);
-        }
-
-        function inspectFromPendingModal(level, posNo) {
-            const modalEl = document.getElementById('pendingReasonModal');
-            const inst = bootstrap.Modal.getInstance(modalEl);
-            if (inst) inst.hide();
-
-            changeMenu(level);
-            setTimeout(() => {
-                const searchInput = document.getElementById('searchInput');
-                if (searchInput && posNo && posNo !== '-') {
-                    searchInput.value = posNo;
-                    renderTable();
-                }
-            }, 150);
-        }
-
-        function openPendingReasonModal(reasonName) {
-            const modalTitle = document.getElementById('pendingReasonTitle');
-            const modalSub = document.getElementById('pendingReasonSubtitle');
-            const tbody = document.getElementById('pendingReasonTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            let fYear = document.getElementById('filterYear')?.value || '';
-            let fHosp = document.getElementById('filterHospital')?.value || '';
-            let fPos = document.getElementById('filterPosition')?.value || '';
-            let fLevel = document.getElementById('filterLevel')?.value || '';
-
-            let matchedRows = [];
-            let levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
-
-            let activeStaffMap = {};
-            if (appData['Users'] && Array.isArray(appData['Users'])) {
-                appData['Users'].forEach(u => {
-                    let shortName = (u['Unnamed: 4'] || u['ชื่อย่อ'] || u['ชื่อ-สกุลเต็ม'] || u.Username || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-                    let fullName = (u['ชื่อ-สกุลเต็ม'] || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-                    if (shortName) {
-                        activeStaffMap[shortName] = shortName;
-                        activeStaffMap[normalizeThaiName(shortName)] = shortName;
-                        if (fullName) activeStaffMap[fullName] = shortName;
-                    }
-                });
-            }
-
-            levels.forEach(lvl => {
-                if (fLevel && fLevel !== lvl) return;
-                let rawData = appData[lvl] || [];
-                rawData.forEach(row => {
-                    if (!isValidRow(row)) return;
-
-                    if (fHosp && String(getRowValue(row, 'สังกัด')).trim() !== fHosp) return;
-
-                    if (fPos) {
-                        let rawPos = getRowValue(row, 'ตำแหน่งปัจจุบัน') || getRowValue(row, 'ตำแหน่งที่ขอประเมิน') || getRowValue(row, 'ตำแหน่ง');
-                        let basePos = extractBasePosition(rawPos);
-                        if (basePos !== fPos) return;
-                    }
-
-                    let dateStr = getRowValue(row, 'วันที่ส่งเล่ม 1');
-                    if (fYear) {
-                        let y = extractYearBE(dateStr);
-                        if (!y || String(y) !== String(fYear)) return;
-                    }
-
-                    let statusStr = String(getRowValue(row, 'ผลการประเมิน')).trim();
-                    let isPass = statusStr.includes('ผ่านการประเมิน') && !statusStr.includes('ไม่');
-                    let isFail = statusStr.includes('ไม่ผ่าน') || statusStr.includes('ยกเลิก') || statusStr.includes('ถอน');
-                    let isWait = !isPass && !isFail;
-
-                    if (!isWait) return;
-
-                    let rowReason = getRemarkReason(row);
-                    if (rowReason === reasonName) {
-                        matchedRows.push({ level: lvl, row: row });
-                    }
-                });
-            });
-
-            if (modalTitle) {
-                modalTitle.innerHTML = `<i class="fas fa-exclamation-circle me-2"></i> รายการเหตุผล: "${reasonName}" (${matchedRows.length} รายการ)`;
-            }
-            if (modalSub) {
-                modalSub.innerText = `รายการที่อยู่ระหว่างดำเนินการที่ตรงกับเหตุผล "${reasonName}"`;
-            }
-
-            if (matchedRows.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="text-center py-4 text-muted">ไม่พบรายการข้อมูลที่ตรงกับเหตุผลนี้</td></tr>';
-            } else {
-                matchedRows.forEach((item, i) => {
-                    let r = item.row;
-                    let seq = getRowValue(r, 'ลำดับ') || '-';
-                    let posNo = getRowValue(r, 'ตำแหน่งเลขที่') || '-';
-                    let prefix = getRowValue(r, 'คำนำหน้า') || '';
-                    let fname = getRowValue(r, 'ชื่อ -') || getRowValue(r, 'ชื่อ') || '';
-                    let lname = getRowValue(r, 'สกุล') || getRowValue(r, 'นามสกุล') || '';
-                    let fullName = `${prefix}${fname} ${lname}`.trim() || '-';
-                    let pos = getRowValue(r, 'ตำแหน่งปัจจุบัน') || '-';
-                    let hosp = getRowValue(r, 'สังกัด') || '-';
-                    let date1 = cleanDateStr(getRowValue(r, 'วันที่ส่งเล่ม 1'));
-                    let staff = getStaffFromRow(r, item.level, activeStaffMap, {}) || getRowValue(r, 'เจ้าหน้าที่ 1') || '-';
-                    let remark = getRowValue(r, 'หมายเหตุ') || reasonName;
-
-                    let safePosNo = String(posNo).replace(/'/g, "\\'");
-
-                    tbody.innerHTML += `
-                        <tr style="cursor: pointer;" onclick="inspectFromPendingModal('${item.level}', '${safePosNo}')" title="คลิกเพื่อไปยังหน้าทะเบียนนี้">
-                            <td>${i + 1}</td>
-                            <td><span class="badge bg-light text-dark border">${item.level}</span></td>
-                            <td class="fw-bold text-primary">${posNo} (ลำดับ ${seq})</td>
-                            <td class="fw-bold">${fullName}</td>
-                            <td style="max-width: 180px; font-size: 0.82rem;">${pos}</td>
-                            <td>${hosp}</td>
-                            <td>${date1}</td>
-                            <td class="fw-bold text-secondary">${staff}</td>
-                            <td class="text-warning-emphasis fw-semibold">${remark}</td>
-                        </tr>
-                    `;
-                });
-            }
-
-            new bootstrap.Modal(document.getElementById('pendingReasonModal')).show();
-        }
-
-        function openStaffInspectionModal(staffName, isMeetingStaff = false) {
-            const modalTitle = document.getElementById('staffInspectionTitle');
-            const tbody = document.getElementById('staffInspectionTableBody');
-            tbody.innerHTML = '';
-
-            let matchedRows = [];
-            let levels = isMeetingStaff 
-                ? ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)'] 
-                : ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
-
-            let activeStaffMap = {};
-            if (appData['Users'] && Array.isArray(appData['Users'])) {
-                appData['Users'].forEach(u => {
-                    let shortName = (u['Unnamed: 4'] || u['ชื่อย่อ'] || u['ชื่อ-สกุลเต็ม'] || u.Username || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-                    let fullName = (u['ชื่อ-สกุลเต็ม'] || '').replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-                    if (shortName) {
-                        activeStaffMap[shortName] = shortName;
-                        activeStaffMap[normalizeThaiName(shortName)] = shortName;
-                        if (fullName) activeStaffMap[fullName] = shortName;
-                    }
-                });
-            }
-
-            levels.forEach(lvl => {
-                let rawData = appData[lvl] || [];
-                rawData.forEach(row => {
-                    if (!isValidRow(row)) return;
-                    if (isMeetingStaff) {
-                        let msVal = getRowValue(row, 'เจ้าหน้าที่จัดประชุม') || getRowValue(row, 'เจ้าหน้าที่จัดประชุม1') || getRowValue(row, 'เจ้าหน้าที่ประชุม');
-                        if (msVal && msVal !== '-') {
-                            msVal = String(msVal).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
-                            let normMs = normalizeThaiName(msVal);
-                            let canonicalMs = activeStaffMap[msVal] || activeStaffMap[normMs] || msVal;
-                            if (canonicalMs === staffName || msVal === staffName) {
-                                matchedRows.push({ level: lvl, row: row });
-                            }
-                        }
-                    } else {
-                        let matched = getStaffFromRow(row, lvl, activeStaffMap, {});
-                        if (matched === staffName) {
-                            matchedRows.push({ level: lvl, row: row });
-                        }
-                    }
-                });
-            });
-
-            modalTitle.innerHTML = isMeetingStaff 
-                ? `<i class="fas fa-users me-2"></i> รายการจัดประชุมของ: ${staffName} (${matchedRows.length} รายการ)`
-                : `<i class="fas fa-user-check me-2"></i> รายการภาระงานของ: ${staffName} (${matchedRows.length} รายการ)`;
-
-            if (matchedRows.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">ไม่พบรายการข้อมูลที่ตรงกับเจ้าหน้าที่ท่านนี้</td></tr>';
-            } else {
-                matchedRows.forEach((item, i) => {
-                    let r = item.row;
-                    let seq = getRowValue(r, 'ลำดับ') || '-';
-                    let posNo = getRowValue(r, 'ตำแหน่งเลขที่') || '-';
-                    let prefix = getRowValue(r, 'คำนำหน้า') || '';
-                    let fname = getRowValue(r, 'ชื่อ -') || getRowValue(r, 'ชื่อ') || '';
-                    let lname = getRowValue(r, 'สกุล') || getRowValue(r, 'นามสกุล') || '';
-                    let fullName = `${prefix}${fname} ${lname}`.trim() || '-';
-                    let pos = getRowValue(r, 'ตำแหน่งปัจจุบัน') || '-';
-                    let hosp = getRowValue(r, 'สังกัด') || '-';
-                    let date1 = cleanDateStr(getRowValue(r, 'วันที่ส่งเล่ม 1'));
-                    let status = getRowValue(r, 'ผลการประเมิน') || '-';
-
-                    let statusBadgeClass = 'bg-secondary';
-                    if (status.includes('ผ่าน') && !status.includes('ไม่')) statusBadgeClass = 'bg-success';
-                    else if (status.includes('ไม่ผ่าน') || status.includes('ยกเลิก')) statusBadgeClass = 'bg-danger';
-                    else statusBadgeClass = 'bg-warning text-dark';
-
-                    let safePosNo = String(posNo).replace(/'/g, "\\'");
-
-                    tbody.innerHTML += `
-                        <tr style="cursor: pointer;" onclick="inspectFromStaffModal('${item.level}', '${safePosNo}')" title="คลิกเพื่อไปยังหน้าทะเบียนนี้">
-                            <td>${i + 1}</td>
-                            <td><span class="badge bg-light text-dark border">${item.level}</span></td>
-                            <td class="fw-bold text-primary">${posNo} (ลำดับ ${seq})</td>
-                            <td class="fw-bold">${fullName}</td>
-                            <td style="max-width: 180px; font-size: 0.82rem;">${pos}</td>
-                            <td>${hosp}</td>
-                            <td>${date1}</td>
-                            <td class="text-center"><span class="badge ${statusBadgeClass}">${status}</span></td>
-                        </tr>
-                    `;
-                });
-            }
-
-            new bootstrap.Modal(document.getElementById('staffInspectionModal')).show();
         }
 
         function showPrintModal(row) {
