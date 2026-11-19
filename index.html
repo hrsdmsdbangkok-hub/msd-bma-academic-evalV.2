@@ -3835,6 +3835,7 @@
                 }
             }
 
+            let elPass = getEl(['วันที่ผ่านประเมิน', 'ผ่านประเมินลงวันที่']);
             let el6M = getEl(['วันที่ครบกำหนด 6 เดือน', 'ครบกำหนด 6 เดือน']);
             if (el6M) {
                 let dBase = parseDate(el30?.value) || parseDate(elPass?.value) || parseDate(elAnn?.value);
