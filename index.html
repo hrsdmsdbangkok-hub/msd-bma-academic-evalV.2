@@ -817,32 +817,38 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4 bg-light">
-                    <!-- Notification Summary Tabs -->
-                    <div class="row g-2 mb-3">
+                    <!-- Notification Summary Tabs (Clickable Filter) -->
+                    <div class="row g-2 mb-2">
                         <div class="col-md-3 col-sm-6">
-                            <div class="p-3 bg-white rounded-3 border-start border-4 border-danger shadow-sm">
+                            <div id="notifCard_critical" onclick="filterNotificationModal('critical')" style="cursor: pointer; transition: all 0.2s;" class="p-3 bg-white rounded-3 border-start border-4 border-danger shadow-sm h-100" title="คลิกเพื่อกรองเฉพาะรายการวิกฤต">
                                 <div class="text-muted small fw-bold">⚠️ วิกฤต (เหลือ &le; 15 วัน)</div>
                                 <div class="h4 fw-bold text-danger mb-0" id="notifCriticalCount">0 รายการ</div>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
-                            <div class="p-3 bg-white rounded-3 border-start border-4 border-warning shadow-sm">
+                            <div id="notifCard_warning" onclick="filterNotificationModal('warning')" style="cursor: pointer; transition: all 0.2s;" class="p-3 bg-white rounded-3 border-start border-4 border-warning shadow-sm h-100" title="คลิกเพื่อกรองเฉพาะรายการเตือนล่วงหน้า">
                                 <div class="text-muted small fw-bold">⏳ เตือนล่วงหน้า (16 - 30 วัน)</div>
                                 <div class="h4 fw-bold text-warning mb-0" id="notifWarningCount">0 รายการ</div>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
-                            <div class="p-3 bg-white rounded-3 border-start border-4 border-dark shadow-sm">
+                            <div id="notifCard_overdue" onclick="filterNotificationModal('overdue')" style="cursor: pointer; transition: all 0.2s;" class="p-3 bg-white rounded-3 border-start border-4 border-dark shadow-sm h-100" title="คลิกเพื่อกรองเฉพาะรายการเกินกำหนด">
                                 <div class="text-muted small fw-bold">❌ เกินกำหนด (ยังไม่ส่งเล่ม 2)</div>
                                 <div class="h4 fw-bold text-dark mb-0" id="notifOverdueCount">0 รายการ</div>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6">
-                            <div class="p-3 bg-white rounded-3 border-start border-4 border-info shadow-sm">
+                            <div id="notifCard_no_announce" onclick="filterNotificationModal('no_announce')" style="cursor: pointer; transition: all 0.2s;" class="p-3 bg-white rounded-3 border-start border-4 border-info shadow-sm h-100" title="คลิกเพื่อกรองเฉพาะรายการรอลงประกาศลงวันที่">
                                 <div class="text-muted small fw-bold">📢 รอลงประกาศลงวันที่</div>
                                 <div class="h4 fw-bold text-info mb-0" id="notifNoAnnounceCount">0 รายการ</div>
                             </div>
                         </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+                        <small class="text-muted" id="notifFilterStatusText"><i class="fas fa-filter me-1"></i> แสดงทั้งหมด (คลิกที่การ์ดด้านบนเพื่อเลือกดูเฉพาะประเภท)</small>
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-0 px-3" id="notifResetFilterBtn" style="display: none; font-size: 0.78rem;" onclick="filterNotificationModal('all')">
+                            <i class="fas fa-list me-1"></i> แสดงทั้งหมด
+                        </button>
                     </div>
 
                     <div class="table-responsive bg-white rounded-3 shadow-sm border p-2">
@@ -1445,6 +1451,8 @@
             return false;
         }
 
+        let activeNotifFilter = 'all';
+
         function updateNotifications() {
             cachedNotificationList = [];
             const levels = ['ชำนาญการ', 'ชำนาญการ (พยาบาลวิชาชีพ)', 'ชำนาญการพิเศษ', 'เชี่ยวชาญ', 'ทรงคุณวุฒิ'];
@@ -1470,41 +1478,10 @@
                     const fullName = `${prefix}${fname} ${lname}`.trim() || '-';
                     const staffName = getStaffFromRow(row, lvl) || '-';
 
-                    // ตรวจสอบกรณีคอลัมน์ "ประกาศลงวันที่" ยังไม่มีการลงข้อมูล และคอลัมน์ "สนพ. รับเรื่อง" ยังไม่มีการลงวันที่ (เฉพาะเรื่องที่อยู่ระหว่างดำเนินการ)
-                    const announceVal = String(getRowValue(row, 'ประกาศลงวันที่') || '').trim();
-                    const hasAnnounceDate = announceVal !== '' && announceVal !== '-' && announceVal !== 'null' && announceVal !== 'undefined';
-
-                    const snpReceiveCols = ['สนพ. รับเรื่อง', 'สนพ.รับเรื่อง', 'สนพ รับเรื่อง', 'สนพ. รับผลงาน', 'สนพ.รับผลงาน', 'สนพ รับผลงาน', 'วันที่ส่งเล่ม 2', 'วันที่ส่งเล่ม2', 'วันส่งเล่ม 2', 'วันที่รับเล่ม 2'];
-                    let hasSnpReceiveDate = false;
-                    for (let colName of snpReceiveCols) {
-                        let v = String(getRowValue(row, colName) || '').trim();
-                        if (v && v !== '-' && v !== 'null' && v !== 'undefined') {
-                            hasSnpReceiveDate = true;
-                            break;
-                        }
-                    }
-
-                    if (!hasAnnounceDate && !hasSnpReceiveDate) {
-                        noAnnounceCount++;
-                        cachedNotificationList.push({
-                            level: lvl,
-                            row: row,
-                            posNo: getRowValue(row, 'ตำแหน่งเลขที่') || '-',
-                            fullName: fullName,
-                            hosp: getRowValue(row, 'สังกัด') || '-',
-                            deadlineStr: '- (รอลงประกาศ)',
-                            diffDays: 999999,
-                            alertType: 'no_announce',
-                            alertLabel: '📢 ยังไม่มีข้อมูลประกาศลงวันที่',
-                            badgeClass: 'bg-info text-dark',
-                            staffName: staffName
-                        });
-                        return;
-                    }
-
                     const deadlineVal = getRowValue(row, 'วันที่ครบกำหนด 6 เดือน') || getRowValue(row, 'ครบกำหนด 6 เดือน');
                     const deadlineDate = parseDateStrict(deadlineVal);
 
+                    // 1. ตรวจสอบเคสที่มีวันครบกำหนด 6 เดือนก่อนเสมอ (เพื่อไม่ให้เคสเกินกำหนด/ใกล้ครบกำหนดหล่นหาย)
                     if (deadlineDate) {
                         const diffTime = deadlineDate.getTime() - today.getTime();
                         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -1543,6 +1520,38 @@
                                 staffName: staffName
                             });
                         }
+                        return;
+                    }
+
+                    // 2. กรณียังไม่มีวันครบกำหนด 6 เดือน: ตรวจสอบว่าคอลัมน์ "ประกาศลงวันที่" ยังไม่มีการลงข้อมูล และ "สนพ. รับเรื่อง" ยังไม่มีการลงวันที่ (เฉพาะเรื่องที่อยู่ระหว่างดำเนินการ)
+                    const announceVal = String(getRowValue(row, 'ประกาศลงวันที่') || getRowValue(row, 'วันประกาศ') || '').trim();
+                    const hasAnnounceDate = announceVal !== '' && announceVal !== '-' && announceVal !== 'null' && announceVal !== 'undefined';
+
+                    const snpReceiveCols = ['สนพ. รับเรื่อง', 'สนพ.รับเรื่อง', 'สนพ รับเรื่อง', 'สนพ. รับผลงาน', 'สนพ.รับผลงาน', 'สนพ รับผลงาน', 'วันที่ส่งเล่ม 2', 'วันที่ส่งเล่ม2', 'วันส่งเล่ม 2', 'วันที่รับเล่ม 2'];
+                    let hasSnpReceiveDate = false;
+                    for (let colName of snpReceiveCols) {
+                        let v = String(getRowValue(row, colName) || '').trim();
+                        if (v && v !== '-' && v !== 'null' && v !== 'undefined') {
+                            hasSnpReceiveDate = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasAnnounceDate && !hasSnpReceiveDate) {
+                        noAnnounceCount++;
+                        cachedNotificationList.push({
+                            level: lvl,
+                            row: row,
+                            posNo: getRowValue(row, 'ตำแหน่งเลขที่') || '-',
+                            fullName: fullName,
+                            hosp: getRowValue(row, 'สังกัด') || '-',
+                            deadlineStr: '- (รอลงประกาศ)',
+                            diffDays: 999999,
+                            alertType: 'no_announce',
+                            alertLabel: '📢 ยังไม่มีข้อมูลประกาศลงวันที่',
+                            badgeClass: 'bg-info text-dark',
+                            staffName: staffName
+                        });
                     }
                 });
             });
@@ -1572,15 +1581,60 @@
             if (elNoAnn) elNoAnn.innerText = `${noAnnounceCount.toLocaleString()} รายการ`;
         }
 
-        function openNotificationModal() {
-            updateNotifications();
+        function filterNotificationModal(filterType) {
+            if (activeNotifFilter === filterType && filterType !== 'all') {
+                activeNotifFilter = 'all';
+            } else {
+                activeNotifFilter = filterType;
+            }
+            renderNotificationTable();
+        }
+
+        function renderNotificationTable() {
+            const types = ['critical', 'warning', 'overdue', 'no_announce'];
+            types.forEach(t => {
+                const card = document.getElementById(`notifCard_${t}`);
+                if (!card) return;
+                if (activeNotifFilter === t) {
+                    card.style.outline = '2px solid #0d9488';
+                    card.style.backgroundColor = '#f0fdfa';
+                    card.style.transform = 'translateY(-2px)';
+                } else {
+                    card.style.outline = 'none';
+                    card.style.backgroundColor = '#ffffff';
+                    card.style.transform = 'none';
+                }
+            });
+
+            const filterLabels = {
+                all: 'แสดงทั้งหมด (คลิกที่การ์ดด้านบนเพื่อเลือกดูเฉพาะประเภท)',
+                critical: 'กำลังกรองเฉพาะ: ⚠️ วิกฤต (เหลือ ≤ 15 วัน)',
+                warning: 'กำลังกรองเฉพาะ: ⏳ เตือนล่วงหน้า (16 - 30 วัน)',
+                overdue: 'กำลังกรองเฉพาะ: ❌ เกินกำหนด (ยังไม่ส่งเล่ม 2)',
+                no_announce: 'กำลังกรองเฉพาะ: 📢 รอลงประกาศลงวันที่'
+            };
+
+            const statusTextEl = document.getElementById('notifFilterStatusText');
+            const resetBtnEl = document.getElementById('notifResetFilterBtn');
+            const filteredList = activeNotifFilter === 'all'
+                ? cachedNotificationList
+                : cachedNotificationList.filter(item => item.alertType === activeNotifFilter);
+
+            if (statusTextEl) {
+                statusTextEl.innerHTML = `<i class="fas fa-filter me-1 text-primary"></i> <b>${filterLabels[activeNotifFilter] || ''}</b> (${filteredList.length.toLocaleString()} รายการ)`;
+            }
+            if (resetBtnEl) {
+                resetBtnEl.style.display = activeNotifFilter === 'all' ? 'none' : 'inline-block';
+            }
+
             const tbody = document.getElementById('notificationTableBody');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
-            if (cachedNotificationList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted"><i class="fas fa-check-circle fa-3x mb-3 text-success opacity-50"></i><br><span class="fw-bold">ไม่มีรายการที่ใกล้ครบกำหนด 6 เดือนในขณะนี้</span><br><small class="text-secondary">ระบบจะแจ้งเตือนอัตโนมัติเมื่อมีเคสที่เหลือเวลา &le; 30 วัน หรือ &le; 15 วัน</small></td></tr>`;
+            if (filteredList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted"><i class="fas fa-check-circle fa-3x mb-3 text-success opacity-50"></i><br><span class="fw-bold">ไม่มีรายการแจ้งเตือนในหมวดหมู่นี้</span><br><small class="text-secondary">คลิก "แสดงทั้งหมด" หรือเลือกแถบหมวดหมู่อื่นด้านบน</small></td></tr>`;
             } else {
-                cachedNotificationList.forEach((item, i) => {
+                filteredList.forEach((item, i) => {
                     tbody.innerHTML += `
                         <tr style="cursor: pointer;" onclick="inspectFromNotification('${item.level}', '${item.posNo}')" title="คลิกเพื่อไปยังหน้าทะเบียนนี้">
                             <td>${i + 1}</td>
@@ -1595,7 +1649,12 @@
                     `;
                 });
             }
+        }
 
+        function openNotificationModal() {
+            activeNotifFilter = 'all';
+            updateNotifications();
+            renderNotificationTable();
             new bootstrap.Modal(document.getElementById('notificationModal')).show();
         }
 
