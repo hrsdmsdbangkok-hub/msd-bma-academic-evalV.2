@@ -819,22 +819,28 @@
                 <div class="modal-body p-4 bg-light">
                     <!-- Notification Summary Tabs -->
                     <div class="row g-2 mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-3 col-sm-6">
                             <div class="p-3 bg-white rounded-3 border-start border-4 border-danger shadow-sm">
                                 <div class="text-muted small fw-bold">⚠️ วิกฤต (เหลือ &le; 15 วัน)</div>
                                 <div class="h4 fw-bold text-danger mb-0" id="notifCriticalCount">0 รายการ</div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3 col-sm-6">
                             <div class="p-3 bg-white rounded-3 border-start border-4 border-warning shadow-sm">
                                 <div class="text-muted small fw-bold">⏳ เตือนล่วงหน้า (16 - 30 วัน)</div>
                                 <div class="h4 fw-bold text-warning mb-0" id="notifWarningCount">0 รายการ</div>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3 col-sm-6">
                             <div class="p-3 bg-white rounded-3 border-start border-4 border-dark shadow-sm">
                                 <div class="text-muted small fw-bold">❌ เกินกำหนด (ยังไม่ส่งเล่ม 2)</div>
                                 <div class="h4 fw-bold text-dark mb-0" id="notifOverdueCount">0 รายการ</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="p-3 bg-white rounded-3 border-start border-4 border-info shadow-sm">
+                                <div class="text-muted small fw-bold">📢 รอลงประกาศลงวันที่</div>
+                                <div class="h4 fw-bold text-info mb-0" id="notifNoAnnounceCount">0 รายการ</div>
                             </div>
                         </div>
                     </div>
@@ -1448,6 +1454,7 @@
             let criticalCount = 0;
             let warningCount = 0;
             let overdueCount = 0;
+            let noAnnounceCount = 0;
 
             levels.forEach(lvl => {
                 const rows = appData[lvl] || [];
@@ -1456,6 +1463,44 @@
 
                     // ตัดเคสที่ผ่านการประเมิน / ออกคำสั่งเลื่อน / ส่งเล่ม 2 / ไม่ได้อยู่ระหว่างดำเนินการ ออกทั้งหมด
                     if (isCaseCompletedOrPassed(row)) return;
+
+                    const prefix = getRowValue(row, 'คำนำหน้า') || '';
+                    const fname = getRowValue(row, 'ชื่อ -') || getRowValue(row, 'ชื่อ') || '';
+                    const lname = getRowValue(row, 'สกุล') || getRowValue(row, 'นามสกุล') || '';
+                    const fullName = `${prefix}${fname} ${lname}`.trim() || '-';
+                    const staffName = getStaffFromRow(row, lvl) || '-';
+
+                    // ตรวจสอบกรณีคอลัมน์ "ประกาศลงวันที่" ยังไม่มีการลงข้อมูล และคอลัมน์ "สนพ. รับเรื่อง" ยังไม่มีการลงวันที่ (เฉพาะเรื่องที่อยู่ระหว่างดำเนินการ)
+                    const announceVal = String(getRowValue(row, 'ประกาศลงวันที่') || '').trim();
+                    const hasAnnounceDate = announceVal !== '' && announceVal !== '-' && announceVal !== 'null' && announceVal !== 'undefined';
+
+                    const snpReceiveCols = ['สนพ. รับเรื่อง', 'สนพ.รับเรื่อง', 'สนพ รับเรื่อง', 'สนพ. รับผลงาน', 'สนพ.รับผลงาน', 'สนพ รับผลงาน', 'วันที่ส่งเล่ม 2', 'วันที่ส่งเล่ม2', 'วันส่งเล่ม 2', 'วันที่รับเล่ม 2'];
+                    let hasSnpReceiveDate = false;
+                    for (let colName of snpReceiveCols) {
+                        let v = String(getRowValue(row, colName) || '').trim();
+                        if (v && v !== '-' && v !== 'null' && v !== 'undefined') {
+                            hasSnpReceiveDate = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasAnnounceDate && !hasSnpReceiveDate) {
+                        noAnnounceCount++;
+                        cachedNotificationList.push({
+                            level: lvl,
+                            row: row,
+                            posNo: getRowValue(row, 'ตำแหน่งเลขที่') || '-',
+                            fullName: fullName,
+                            hosp: getRowValue(row, 'สังกัด') || '-',
+                            deadlineStr: '- (รอลงประกาศ)',
+                            diffDays: 999999,
+                            alertType: 'no_announce',
+                            alertLabel: '📢 ยังไม่มีข้อมูลประกาศลงวันที่',
+                            badgeClass: 'bg-info text-dark',
+                            staffName: staffName
+                        });
+                        return;
+                    }
 
                     const deadlineVal = getRowValue(row, 'วันที่ครบกำหนด 6 เดือน') || getRowValue(row, 'ครบกำหนด 6 เดือน');
                     const deadlineDate = parseDateStrict(deadlineVal);
@@ -1483,12 +1528,6 @@
                             } else {
                                 warningCount++;
                             }
-
-                            const prefix = getRowValue(row, 'คำนำหน้า') || '';
-                            const fname = getRowValue(row, 'ชื่อ -') || getRowValue(row, 'ชื่อ') || '';
-                            const lname = getRowValue(row, 'สกุล') || getRowValue(row, 'นามสกุล') || '';
-                            const fullName = `${prefix}${fname} ${lname}`.trim() || '-';
-                            const staffName = getStaffFromRow(row, lvl) || '-';
 
                             cachedNotificationList.push({
                                 level: lvl,
@@ -1525,10 +1564,12 @@
             const elCrit = document.getElementById('notifCriticalCount');
             const elWarn = document.getElementById('notifWarningCount');
             const elOver = document.getElementById('notifOverdueCount');
+            const elNoAnn = document.getElementById('notifNoAnnounceCount');
 
             if (elCrit) elCrit.innerText = `${criticalCount.toLocaleString()} รายการ`;
             if (elWarn) elWarn.innerText = `${warningCount.toLocaleString()} รายการ`;
             if (elOver) elOver.innerText = `${overdueCount.toLocaleString()} รายการ`;
+            if (elNoAnn) elNoAnn.innerText = `${noAnnounceCount.toLocaleString()} รายการ`;
         }
 
         function openNotificationModal() {
